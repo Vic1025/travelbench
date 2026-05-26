@@ -92,6 +92,19 @@ pip install -r requirements.txt
 # Optional for other model providers: openai, google-generativeai
 ```
 
+### Configure API keys
+
+Scripts read API keys from environment variables — no `--api-key` flag needed
+when they're set. Either:
+
+- **Persistent (recommended):** Copy [`.env.example`](.env.example) to `.env`
+  or paste the same `export …` lines into `~/.zshrc`. See `.env.example` for
+  the full list of supported providers (Anthropic, OpenAI, Gemini, DeepSeek,
+  + optional Doubao / Moonshot / Zhipu).
+- **Per-session:** `export ANTHROPIC_API_KEY=...` in your current shell.
+
+`.env` is gitignored — keys never leave your machine.
+
 ### Inspect the reference corpus (no API key needed)
 
 ```bash
@@ -107,9 +120,7 @@ python scripts/analysis/fetch_venue.py heHfpkV   # Borough Market in London test
 
 ```bash
 # All 4 models in parallel, all 6 types, one seasonal window
-export ANTHROPIC_API_KEY=...
-export OPENAI_API_KEY=...
-export GOOGLE_API_KEY=...
+# (keys loaded from env automatically)
 python test_generate_tasks.py \
     --city new_york --run-name test_70 \
     --window new_york_july_4th_2026
@@ -121,20 +132,22 @@ python test_generate_tasks.py \
 python run_benchmark.py \
     --city new_york --run-name test_70 \
     --window new_york_july_4th_2026 \
-    --model claude-sonnet-4-5 --api-key $ANTHROPIC_API_KEY
+    --model claude-sonnet-4-5
 ```
 
 ### Generate a fresh city corpus (full pipeline)
 
 ```bash
+# (keys loaded from env — see .env.example)
+
 # 1. Research city: OSM polygon + Nominatim + Overpass district children
-python scripts/generation/research_city.py --city paris --api-key $ANTHROPIC_API_KEY
+python scripts/generation/research_city.py --city paris
 
 # 2. Populate 2-4 seasonal windows (each with per-window weather)
 python scripts/generation/populate_seasonal_windows.py --city paris
 
 # 3. Generate ~70 venues using an LLM agent loop
-python scripts/generation/generate_city_venues.py --city paris --api-key $ANTHROPIC_API_KEY
+python scripts/generation/generate_city_venues.py --city paris
 
 # 4. Generate per-window events for each venue
 python scripts/generation/generate_events.py --city paris
