@@ -1,0 +1,87 @@
+{
+  "task_id": "london_spring_weekend_2d",
+  "city": "London",
+  "window_id": "london_late_spring_2026",
+  "days": 2,
+  "start_date": "2026-05-24",
+  "public_input": {
+    "query": "My partner and I want a relaxed weekend exploring outdoor activities and casual dining in London. We have about 6 hours to spend on activities over our 2-day trip. Looking for outdoor activities and want to explore different parts of London to get a feel for the city's diversity.",
+    "query_resources": {
+      "time_ceiling_minutes": 380
+    }
+  },
+  "structural_type": "type2_subset_selection",
+  "difficulty": "medium",
+  "rubric": {
+    "hard_constraints": [
+      {
+        "id": "hc_001",
+        "type": "hours_check",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_002",
+        "type": "no_overlap",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_003",
+        "type": "travel_time_hard",
+        "check_method": "code",
+        "params": {}
+      }
+    ],
+    "personal_constraints": [
+      {
+        "id": "pc_001",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "outdoor activities",
+        "description": "Include at least 2 outdoor venues",
+        "scope": "all",
+        "condition": {
+          "has_tag": "outdoor"
+        },
+        "aggregation": {
+          "at_least": 2
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_002",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "relaxed weekend",
+        "description": "All meals must be at casual dining venues",
+        "scope": "activity_type=meal",
+        "condition": {
+          "has_tag": "casual-dining"
+        },
+        "aggregation": "all",
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_003",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "explore different parts of London",
+        "description": "Visit at most 2 districts per day",
+        "scope": "per_day",
+        "condition": {},
+        "aggregation": {
+          "at_most_distinct": 2,
+          "field": "district"
+        },
+        "consequence": "p_score_full"
+      }
+    ],
+    "b_score_constraints": [],
+    "required_venue_ids": []
+  },
+  "_validation_warnings": []
+}

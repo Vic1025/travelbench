@@ -1,0 +1,87 @@
+{
+  "task_id": "type5_london_easter_accessibility_hidden",
+  "city": "london",
+  "window_id": "london_easter_2026",
+  "days": 2,
+  "start_date": "2026-04-04",
+  "public_input": {
+    "query": "My partner and I are celebrating our anniversary in London during Easter week. I use a wheelchair and need fully accessible venues. We prefer discovering hidden gems and avoiding tourist crowds, as we want intimate experiences away from the masses. Please plan 2 days that include some lovely meals and interesting cultural museums with historical significance."
+  },
+  "structural_type": "type5_hard_feasibility_reduction",
+  "difficulty": "hard",
+  "rubric": {
+    "hard_constraints": [
+      {
+        "id": "hc_001",
+        "type": "hours_check",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_002",
+        "type": "no_overlap",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_003",
+        "type": "travel_time_hard",
+        "check_method": "code",
+        "params": {}
+      }
+    ],
+    "personal_constraints": [
+      {
+        "id": "pc_001",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "I use a wheelchair",
+        "description": "All venues must be wheelchair accessible",
+        "scope": "all",
+        "condition": {
+          "field": "wheelchair_accessible",
+          "operator": "==",
+          "value": true
+        },
+        "aggregation": "all",
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_002",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "avoiding tourist crowds",
+        "description": "All venues must be low-traffic hidden gems",
+        "scope": "all",
+        "condition": {
+          "field": "traffic_tier",
+          "operator": "==",
+          "value": "low"
+        },
+        "aggregation": "all",
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_003",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "cultural museums with historical significance",
+        "description": "Include at least 1 museum with historical heritage",
+        "scope": "category=museum",
+        "condition": {
+          "has_tag": "history-royal-heritage"
+        },
+        "aggregation": {
+          "at_least": 1
+        },
+        "consequence": "p_score_full"
+      }
+    ],
+    "b_score_constraints": [],
+    "required_venue_ids": []
+  },
+  "_validation_warnings": []
+}

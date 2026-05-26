@@ -1,0 +1,110 @@
+{
+  "task_id": "claude_sonnet_4_5_new_york_type4_20260521_1779375721",
+  "city": "New_York",
+  "window_id": "new_york_july_4th_2026",
+  "days": 3,
+  "start_date": "2026-07-04",
+  "structural_type": "type4_precision_allocation",
+  "difficulty": "medium",
+  "public_input": {
+    "query": "I'm a YouTuber creating content about experiencing NYC's iconic 4th of July weekend on a tight budget of $26 per day. I want to catch the famous fireworks from Brooklyn Bridge Park, eat at authentic local spots that won't break the bank, and visit some of the city's most iconic places. All my meals need to stay budget-friendly for the challenge, and I need at least 2 iconic NYC venues to make compelling content. Can you help me plan 3 days from July 4-6?",
+    "query_resources": {
+      "budget_per_day": 26,
+      "currency": "USD"
+    }
+  },
+  "rubric": {
+    "hard_constraints": [
+      {
+        "id": "hc_001",
+        "type": "hours_check",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_002",
+        "type": "no_overlap",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_003",
+        "type": "travel_time_hard",
+        "check_method": "code",
+        "params": {}
+      }
+    ],
+    "personal_constraints": [
+      {
+        "id": "pc_001",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "$26 per day",
+        "description": "Daily spending must not exceed $26",
+        "scope": "per_day",
+        "condition": {},
+        "aggregation": {
+          "sum": "estimated_cost_local",
+          "operator": "<=",
+          "value": 26
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_002",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "tight budget",
+        "description": "All meals must be budget or mid price tier to keep costs down",
+        "scope": "activity_type=meal",
+        "condition": {
+          "field": "price_tier",
+          "operator": "<=",
+          "value": "mid"
+        },
+        "aggregation": "all",
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_003",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "iconic NYC venues to make compelling content",
+        "description": "Plan must include at least 2 iconic NYC venues",
+        "scope": "all",
+        "condition": {
+          "has_tag": "iconic"
+        },
+        "aggregation": {
+          "at_least": 2
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_004",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "authentic local spots",
+        "description": "At least one meal must be at a popular-with-locals venue",
+        "scope": "activity_type=meal",
+        "condition": {
+          "has_tag": "popular-with-locals"
+        },
+        "aggregation": {
+          "at_least": 1
+        },
+        "consequence": "p_score_full"
+      }
+    ],
+    "b_score_constraints": [],
+    "required_venue_ids": [
+      "IhQ1cao"
+    ]
+  },
+  "_validation_warnings": [],
+  "_turns_used": 13
+}

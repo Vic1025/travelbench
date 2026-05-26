@@ -1,0 +1,105 @@
+{
+  "task_id": "lon_spring_easter_type1_hidden_gems_slowweekend",
+  "city": "London",
+  "window_id": "london_easter_2026",
+  "days": 3,
+  "start_date": "2026-04-04",
+  "public_input": {
+    "query": "My partner and I are London-based magazine editors taking a low-key three-day staycation over Easter weekend. Because Saturday and Sunday will be packed with obvious attractions and markets, we want the trip to feel like a breather rather than a checklist. Please build us a plan around lesser-known places that still feel like they matter to locals, keep the pace gentle, and include at least one outdoor stop so we actually enjoy the first spring weather. We also do not want to spend every day trapped in museums, so please cap museum-heavy days."
+  },
+  "structural_type": "type1_cascading_requirements",
+  "difficulty": "medium",
+  "rubric": {
+    "hard_constraints": [
+      {
+        "id": "hc_001",
+        "type": "hours_check",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_002",
+        "type": "no_overlap",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_003",
+        "type": "travel_time_hard",
+        "check_method": "code",
+        "params": {}
+      }
+    ],
+    "personal_constraints": [
+      {
+        "id": "pc_001",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "lesser-known places that still feel like they matter to locals",
+        "description": "All activities should use low-traffic venues that fit a hidden-gem, local-feeling staycation",
+        "scope": "all",
+        "condition": {
+          "field": "traffic_tier",
+          "operator": "==",
+          "value": "low"
+        },
+        "aggregation": "all",
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_002",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "keep the pace gentle",
+        "description": "All activities should have a relaxed or moderate pace",
+        "scope": "all",
+        "condition": {
+          "field": "recommended_pace",
+          "operator": "<=",
+          "value": "moderate"
+        },
+        "aggregation": "all",
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_003",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "include at least one outdoor stop",
+        "description": "Include at least one outdoor venue in the plan",
+        "scope": "all",
+        "condition": {
+          "has_tag": "outdoor"
+        },
+        "aggregation": {
+          "at_least": 1
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_004",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "cap museum-heavy days",
+        "description": "No more than one museum per day",
+        "scope": "per_day",
+        "condition": {
+          "field": "category",
+          "operator": "==",
+          "value": "museum"
+        },
+        "aggregation": {
+          "at_most": 1
+        },
+        "consequence": "p_score_full"
+      }
+    ],
+    "b_score_constraints": [],
+    "required_venue_ids": []
+  },
+  "_validation_warnings": []
+}

@@ -1,0 +1,94 @@
+{
+  "city": "New_York",
+  "window_id": "new_york_july_4th_2026",
+  "days": 1,
+  "start_date": "2026-07-04",
+  "public_input": {
+    "query": "I have Saturday afternoon 14:00-15:30 free to explore the Downtown Manhattan / Financial District area. I want to visit at least two attractions, and keep it mostly free.",
+    "query_resources": {
+      "time_ceiling_minutes": 90,
+      "ceiling_mode": "contiguous",
+      "start_time": "14:00",
+      "currency": "USD"
+    }
+  },
+  "structural_type": "type2_subset_selection",
+  "difficulty": "medium",
+  "rubric": {
+    "required_venue_ids": [],
+    "hard_constraints": [
+      {
+        "id": "hc_001",
+        "type": "hours_check",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_002",
+        "type": "no_overlap",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_003",
+        "type": "travel_time_hard",
+        "check_method": "code",
+        "params": {}
+      }
+    ],
+    "personal_constraints": [
+      {
+        "id": "pc_001",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "explore the Downtown Manhattan / Financial District area",
+        "description": "All activities must be in Downtown Manhattan / Financial District",
+        "scope": "all",
+        "condition": {
+          "field": "district",
+          "operator": "==",
+          "value": "Downtown Manhattan / Financial District"
+        },
+        "aggregation": "all",
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_002",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "keep it mostly free",
+        "description": "At least 50% of activities must be free",
+        "scope": "all",
+        "condition": {
+          "field": "avg_cost_local",
+          "operator": "==",
+          "value": 0
+        },
+        "aggregation": {
+          "ratio": 0.5
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_003",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "visit at least two attractions",
+        "description": "At least 2 attractions must be scheduled",
+        "scope": "category=attraction",
+        "condition": {},
+        "aggregation": {
+          "at_least": 2
+        },
+        "consequence": "p_score_full"
+      }
+    ],
+    "b_score_constraints": []
+  },
+  "task_id": "gemini_3_1_pro_preview_new_york_type2_20260521_1779375520",
+  "_validation_warnings": [],
+  "_turns_used": 16
+}

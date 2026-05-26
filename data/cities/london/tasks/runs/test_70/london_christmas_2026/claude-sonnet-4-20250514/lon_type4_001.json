@@ -1,0 +1,91 @@
+{
+  "task_id": "lon_type4_001",
+  "city": "london",
+  "window_id": "london_christmas_2026",
+  "days": 3,
+  "start_date": "2026-12-27",
+  "public_input": {
+    "query": "I'm planning a special New Year celebration weekend in London from December 27-29. We want one really memorable fine dining experience during the trip - money is no object for that special meal! But otherwise we need to keep to a tight budget of \u00a332 per day total. Would love to visit some museums and try local restaurants.",
+    "query_resources": {
+      "budget_per_day": 32
+    }
+  },
+  "structural_type": "type4_precision_allocation",
+  "difficulty": "medium",
+  "rubric": {
+    "hard_constraints": [
+      {
+        "id": "hc_001",
+        "type": "hours_check",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_002",
+        "type": "no_overlap",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_003",
+        "type": "travel_time_hard",
+        "check_method": "code",
+        "params": {}
+      }
+    ],
+    "personal_constraints": [
+      {
+        "id": "pc_001",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "tight budget of \u00a332 per day total",
+        "description": "Daily spending must not exceed \u00a332",
+        "scope": "per_day",
+        "condition": {},
+        "aggregation": {
+          "sum": "estimated_cost_local",
+          "operator": "<=",
+          "value": 32
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_002",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "really memorable fine dining experience",
+        "description": "Must include at least one upscale or fine-dining restaurant",
+        "scope": "activity_type=meal",
+        "condition": {
+          "field": "price_tier",
+          "operator": ">=",
+          "value": "upscale"
+        },
+        "aggregation": {
+          "at_least": 1
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_003",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "visit some museums",
+        "description": "Must include at least 2 museum visits",
+        "scope": "category=museum",
+        "condition": {},
+        "aggregation": {
+          "at_least": 2
+        },
+        "consequence": "p_score_full"
+      }
+    ],
+    "b_score_constraints": [],
+    "required_venue_ids": []
+  },
+  "_validation_warnings": [],
+  "_turns_used": 17
+}

@@ -1,0 +1,91 @@
+{
+  "task_id": "london_type3_002",
+  "city": "London",
+  "window_id": "london_late_spring_2026",
+  "days": 3,
+  "start_date": "2026-05-24",
+  "public_input": {
+    "query": "My partner and I are visiting London for our spring bank holiday weekend getaway, but we have very different spending philosophies. I'm really budget-conscious and want to find great value experiences and cheap eats throughout our trip. My partner, however, thinks this is a special occasion and wants to splurge on upscale restaurants and premium experiences. We need to balance both approaches during our 3 days."
+  },
+  "structural_type": "type3_competing_requirements",
+  "difficulty": "medium",
+  "rubric": {
+    "hard_constraints": [
+      {
+        "id": "hc_001",
+        "type": "hours_check",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_002",
+        "type": "no_overlap",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_003",
+        "type": "travel_time_hard",
+        "check_method": "code",
+        "params": {}
+      }
+    ],
+    "personal_constraints": [
+      {
+        "id": "pc_001",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "budget-conscious and want to find great value experiences and cheap eats",
+        "description": "Include at least 4 budget-friendly venues",
+        "scope": "all",
+        "condition": {
+          "has_tag": "budget-friendly"
+        },
+        "aggregation": {
+          "at_least": 4
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_002",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "wants to splurge on upscale restaurants and premium experiences",
+        "description": "Include at least 4 upscale or luxury venues",
+        "scope": "all",
+        "condition": {
+          "field": "price_tier",
+          "operator": ">=",
+          "value": "upscale"
+        },
+        "aggregation": {
+          "at_least": 4
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_003",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "special occasion",
+        "description": "At most one museum per day to focus on experiences",
+        "scope": "per_day",
+        "condition": {
+          "field": "category",
+          "operator": "==",
+          "value": "museum"
+        },
+        "aggregation": {
+          "at_most": 1
+        },
+        "consequence": "p_score_full"
+      }
+    ],
+    "b_score_constraints": [],
+    "required_venue_ids": []
+  },
+  "_validation_warnings": []
+}

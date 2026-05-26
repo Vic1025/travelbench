@@ -1,0 +1,100 @@
+{
+  "task_id": "london_easter_type1_01",
+  "city": "London",
+  "window_id": "london_easter_2026",
+  "days": 2,
+  "start_date": "2026-04-03",
+  "public_input": {
+    "query": "I am travelling to London with my elderly father. He relies on a wheelchair, so every place we visit must be fully accessible. He also finds large crowds overwhelming, so please ensure we stick to quieter places that aren't too busy. We are spending 2 days here, starting April 3rd. We both love the arts and want to see at least 2 museums during our trip, and ideally we'd like those museums in at least 2 distinct districts."
+  },
+  "structural_type": "type1_cascading_requirements",
+  "difficulty": "hard",
+  "rubric": {
+    "hard_constraints": [
+      {
+        "id": "hc_001",
+        "type": "hours_check",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_002",
+        "type": "no_overlap",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_003",
+        "type": "travel_time_hard",
+        "check_method": "code",
+        "params": {}
+      }
+    ],
+    "personal_constraints": [
+      {
+        "id": "pc_001",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "relies on a wheelchair",
+        "description": "All venues must be wheelchair accessible",
+        "scope": "all",
+        "condition": {
+          "field": "wheelchair_accessible",
+          "operator": "==",
+          "value": true
+        },
+        "aggregation": "all",
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_002",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "stick to quieter places that aren't too busy",
+        "description": "All venues must not be high traffic",
+        "scope": "all",
+        "condition": {
+          "field": "traffic_tier",
+          "operator": "<=",
+          "value": "mid"
+        },
+        "aggregation": "all",
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_003",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "at least 2 museums",
+        "description": "Include at least 2 museums in the plan",
+        "scope": "category=museum",
+        "condition": {},
+        "aggregation": {
+          "at_least": 2
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_004",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "museums in at least 2 distinct districts",
+        "description": "Museum visits must cover at least 2 distinct districts",
+        "scope": "category=museum",
+        "condition": {},
+        "aggregation": {
+          "count_distinct": 2,
+          "field": "district"
+        },
+        "consequence": "p_score_full"
+      }
+    ],
+    "b_score_constraints": [],
+    "required_venue_ids": []
+  },
+  "_validation_warnings": []
+}

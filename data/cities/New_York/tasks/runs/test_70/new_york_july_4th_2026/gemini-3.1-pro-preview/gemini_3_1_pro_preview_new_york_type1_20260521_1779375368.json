@@ -1,0 +1,106 @@
+{
+  "city": "new_york",
+  "window_id": "new_york_july_4th_2026",
+  "days": 3,
+  "start_date": "2026-07-02",
+  "public_input": {
+    "query": "My wife and I are coming to New York to celebrate our anniversary from July 2nd to July 4th. Since it's a special occasion, we want to avoid anything budget or free for our entire trip. We absolutely love exploring places where we can learn about the past, so please include at least two visits like that. We also adore Italian food and would love to dine at Italian places at least twice. Lastly, we really want to see different parts of the city, so make sure our museums are located in at least 2 distinct districts overall.",
+    "query_resources": {
+      "currency": "USD"
+    }
+  },
+  "structural_type": "type1_cascading_requirements",
+  "difficulty": "medium",
+  "rubric": {
+    "hard_constraints": [
+      {
+        "id": "hc_001",
+        "type": "hours_check",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_002",
+        "type": "no_overlap",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_003",
+        "type": "travel_time_hard",
+        "check_method": "code",
+        "params": {}
+      }
+    ],
+    "personal_constraints": [
+      {
+        "id": "pc_001",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "avoid anything budget or free",
+        "description": "All venues must be at least mid-range in price",
+        "scope": "all",
+        "condition": {
+          "field": "price_tier",
+          "operator": ">=",
+          "value": "mid"
+        },
+        "aggregation": "all",
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_002",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "learn about the past",
+        "description": "Include at least two history-related visits",
+        "scope": "activity_type=visit",
+        "condition": {
+          "has_tag": "history"
+        },
+        "aggregation": {
+          "at_least": 2
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_003",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "dine at Italian places",
+        "description": "Include at least two meals at Italian places",
+        "scope": "activity_type=meal",
+        "condition": {
+          "has_tag": "italian"
+        },
+        "aggregation": {
+          "at_least": 2
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_004",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "museums are located in at least 2 distinct districts",
+        "description": "Visit museums in at least 2 distinct districts",
+        "scope": "category=museum",
+        "condition": {},
+        "aggregation": {
+          "count_distinct": 2,
+          "field": "district"
+        },
+        "consequence": "p_score_full"
+      }
+    ],
+    "b_score_constraints": [],
+    "required_venue_ids": []
+  },
+  "task_id": "gemini_3_1_pro_preview_new_york_type1_20260521_1779375368",
+  "_validation_warnings": [],
+  "_turns_used": 20
+}

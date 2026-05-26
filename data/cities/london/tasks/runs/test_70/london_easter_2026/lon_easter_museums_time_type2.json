@@ -1,0 +1,104 @@
+{
+  "task_id": "lon_easter_museums_time_type2",
+  "city": "london",
+  "window_id": "london_easter_2026",
+  "days": 2,
+  "start_date": "2026-04-04",
+  "public_input": {
+    "query": "I'm visiting London for Easter weekend and want to explore several art museums and cultural venues within 4 hours total. I particularly love contemporary art and architecture, and I'd prefer at least 3 different museums. I also want at least one venue that's family-friendly since I'm bringing my kids, and would like to stay within central London areas.",
+    "query_resources": {
+      "time_ceiling_minutes": 240
+    }
+  },
+  "structural_type": "type2_subset_selection",
+  "difficulty": "medium",
+  "rubric": {
+    "hard_constraints": [
+      {
+        "id": "hc_001",
+        "type": "hours_check",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_002",
+        "type": "no_overlap",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_003",
+        "type": "travel_time_hard",
+        "check_method": "code",
+        "params": {}
+      }
+    ],
+    "personal_constraints": [
+      {
+        "id": "pc_001",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "several art museums",
+        "description": "Must include at least 3 museum visits",
+        "scope": "category=museum",
+        "condition": {},
+        "aggregation": {
+          "at_least": 3
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_002",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "contemporary art",
+        "description": "At least one venue must feature contemporary art",
+        "scope": "all",
+        "condition": {
+          "has_tag": "contemporary-modern-art"
+        },
+        "aggregation": {
+          "at_least": 1
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_003",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "family-friendly",
+        "description": "At least one venue must be family-friendly",
+        "scope": "all",
+        "condition": {
+          "has_tag": "family-friendly"
+        },
+        "aggregation": {
+          "at_least": 1
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_004",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "central London areas",
+        "description": "All venues must be in central London districts",
+        "scope": "all",
+        "condition": {
+          "field": "district",
+          "operator": "==",
+          "value": "Westminster"
+        },
+        "aggregation": "all",
+        "consequence": "p_score_full"
+      }
+    ],
+    "b_score_constraints": [],
+    "required_venue_ids": []
+  },
+  "_validation_warnings": []
+}

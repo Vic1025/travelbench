@@ -1,0 +1,122 @@
+{
+  "task_id": "lon_winter_christmasweek_type6_01",
+  "city": "London",
+  "window_id": "london_christmas_2026",
+  "days": 1,
+  "start_date": "2026-12-28",
+  "public_input": {
+    "query": "I'm spending Monday 28 Dec 2026 in London during the Christmas substitute holiday. I want a calm central-London day with art and one easy meal, and I really want to avoid the post-Christmas shopping crowds. Please keep everything walkable and don't make me cross the city for just one day."
+  },
+  "structural_type": "type6_context_window_tension",
+  "difficulty": "medium",
+  "rubric": {
+    "hard_constraints": [
+      {
+        "id": "hc_001",
+        "type": "hours_check",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_002",
+        "type": "no_overlap",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_003",
+        "type": "travel_time_hard",
+        "check_method": "code",
+        "params": {}
+      }
+    ],
+    "personal_constraints": [
+      {
+        "id": "pc_001",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "art",
+        "description": "Include at least one art museum visit",
+        "scope": "category=museum",
+        "condition": {
+          "has_tag": "art"
+        },
+        "aggregation": {
+          "at_least": 1
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_002",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "calm central-London day",
+        "description": "All activities should stay in Westminster to keep the day calm and central",
+        "scope": "all",
+        "condition": {
+          "field": "district",
+          "operator": "==",
+          "value": "Westminster"
+        },
+        "aggregation": "all",
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_003",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "avoid the post-Christmas shopping crowds",
+        "description": "Avoid high-traffic venues that are more likely to be overwhelmed during post-Christmas crowd surges",
+        "scope": "all",
+        "condition": {
+          "field": "traffic_tier",
+          "operator": "==",
+          "value": "high"
+        },
+        "aggregation": "none",
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_004",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "keep everything walkable",
+        "description": "Total travel time for the day should stay under 40 minutes",
+        "scope": "per_day",
+        "condition": {},
+        "aggregation": {
+          "sum": "travel_minutes",
+          "operator": "<=",
+          "value": 40
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_005",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "Monday 28 Dec 2026",
+        "description": "Anchor the plan around a holiday-sensitive art stop on the substitute holiday daytime window",
+        "scope": [
+          "venue_id=rdKg9bt",
+          "time_window=10:00-17:00"
+        ],
+        "condition": {},
+        "aggregation": {
+          "at_most": 1
+        },
+        "consequence": "p_score_full"
+      }
+    ],
+    "b_score_constraints": [],
+    "required_venue_ids": [
+      "rdKg9bt"
+    ]
+  },
+  "_validation_warnings": []
+}

@@ -1,0 +1,141 @@
+{
+  "task_id": "type6_london_easter_family",
+  "city": "London",
+  "window_id": "london_easter_2026",
+  "days": 3,
+  "start_date": "2026-04-03",
+  "public_input": {
+    "query": "Our family (parents and kids) is visiting London for the Easter weekend from Good Friday (April 3rd) to Easter Sunday (April 5th). We're excited about the first outdoor weekend of the year and want to enjoy as many 'outdoor' spots as possible, provided they are family-friendly. We'd love to visit the Museum of London Docklands on Good Friday, but we heard some places have modified hours or closures on bank holidays. On Easter Sunday, we're interested in checking out a market. Also, we really want to try Duck & Waffle for a meal with a view, but we've heard it might be sold out on some days. Please ensure our daily travel time is under 60 minutes and all our meal spots are kid-friendly and budget-friendly (budget tier)."
+  },
+  "structural_type": "type6_context_window_tension",
+  "difficulty": "hard",
+  "rubric": {
+    "hard_constraints": [
+      {
+        "id": "hc_001",
+        "type": "hours_check",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_002",
+        "type": "no_overlap",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_003",
+        "type": "travel_time_hard",
+        "check_method": "code",
+        "params": {}
+      }
+    ],
+    "personal_constraints": [
+      {
+        "id": "pc_001",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "enjoy as many 'outdoor' spots as possible",
+        "description": "At least 50% of visit activities at outdoor venues",
+        "scope": "activity_type=visit",
+        "condition": {
+          "has_tag": "outdoor"
+        },
+        "aggregation": {
+          "ratio": 0.5
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_002",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "all our meal spots are kid-friendly and budget-friendly (budget tier)",
+        "description": "All meal venues must be family-friendly and budget tier price",
+        "scope": "activity_type=meal",
+        "condition": {
+          "all": [
+            {
+              "field": "family_friendly",
+              "operator": "==",
+              "value": true
+            },
+            {
+              "field": "price_tier",
+              "operator": "==",
+              "value": "budget"
+            }
+          ]
+        },
+        "aggregation": "all",
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_003",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "daily travel time is under 60 minutes",
+        "description": "Total travel time per day under 60 minutes",
+        "scope": "per_day",
+        "condition": {},
+        "aggregation": {
+          "sum": "travel_minutes",
+          "operator": "<=",
+          "value": 60
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_004",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "visit the Museum of London Docklands on Good Friday",
+        "description": "Visit Museum of London Docklands on April 3rd",
+        "scope": "venue_id=JrJO2bc",
+        "condition": {},
+        "aggregation": {
+          "at_least": 1
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_005",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "on Easter Sunday, we're interested in checking out a market",
+        "description": "Visit a venue with 'multicultural-food-markets' or 'street-food' on April 5th",
+        "scope": [
+          "activity_type=visit",
+          "time_window=2026-04-05"
+        ],
+        "condition": {
+          "any": [
+            {
+              "has_tag": "multicultural-food-markets"
+            },
+            {
+              "has_tag": "street-food"
+            }
+          ]
+        },
+        "aggregation": {
+          "at_least": 1
+        },
+        "consequence": "p_score_full"
+      }
+    ],
+    "b_score_constraints": [],
+    "required_venue_ids": [
+      "JrJO2bc",
+      "y1QkOtV"
+    ]
+  },
+  "_validation_warnings": [
+    "~ query is long (> 600 chars) \u2014 real users write shorter messages"
+  ]
+}

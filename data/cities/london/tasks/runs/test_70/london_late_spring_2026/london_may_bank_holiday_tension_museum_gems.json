@@ -1,0 +1,89 @@
+{
+  "task_id": "london_may_bank_holiday_tension_museum_gems",
+  "city": "London",
+  "window_id": "london_late_spring_2026",
+  "days": 3,
+  "start_date": "2026-05-23",
+  "structural_type": "type3_competing_requirements",
+  "difficulty": "medium",
+  "public_input": {
+    "query": "I'm planning a 3-day trip to London over the May Bank Holiday weekend (May 23-25). My partner is a huge museum buff and wants us to visit at least 6 different museums during our stay. However, I really want to avoid the crowds and prefer discovering hidden gems. I'd like at least 5 of our activities to be at low-traffic venues. Can you help us balance these interests? To keep it manageable, we should visit at most two museums on any single day. We'll be using public transit to get around."
+  },
+  "rubric": {
+    "hard_constraints": [
+      {
+        "id": "hc_001",
+        "type": "hours_check",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_002",
+        "type": "no_overlap",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_003",
+        "type": "travel_time_hard",
+        "check_method": "code",
+        "params": {}
+      }
+    ],
+    "personal_constraints": [
+      {
+        "id": "pc_001",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "visit at least 6 different museums",
+        "description": "Include at least 6 different museum activities in the plan",
+        "scope": "category=museum",
+        "condition": {},
+        "aggregation": {
+          "at_least": 6
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_002",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "at least 5 of our activities to be at low-traffic venues",
+        "description": "At least 5 activities must be at venues with a 'low' traffic tier",
+        "scope": "all",
+        "condition": {
+          "field": "traffic_tier",
+          "operator": "==",
+          "value": "low"
+        },
+        "aggregation": {
+          "at_least": 5
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_003",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "visit at most two museums on any single day",
+        "description": "No more than two museums per day",
+        "scope": "per_day",
+        "condition": {
+          "field": "category",
+          "operator": "==",
+          "value": "museum"
+        },
+        "aggregation": {
+          "at_most": 2
+        },
+        "consequence": "p_score_full"
+      }
+    ],
+    "b_score_constraints": [],
+    "required_venue_ids": []
+  },
+  "_validation_warnings": []
+}

@@ -1,0 +1,1267 @@
+{
+  "outcome": "failure",
+  "model": "claude-sonnet-4-20250514",
+  "type_key": "type6",
+  "city": "london",
+  "window_id": "london_late_spring_2026",
+  "window_label": "Late Spring — Bank Holiday Weekend",
+  "max_turns": 20,
+  "stop_info": {
+    "turns_used": 20,
+    "max_turns": 20,
+    "stop_reason": "exhausted",
+    "last_submit_errors": [
+      "[pc_003] Pool satisfiability: Pool-level check failed: Must include outdoor venues or parks: 68/68 matching (fail). The constraint is not fully satisfiable against this pool — review the matching count above and adjust scope, condition, or aggregation.",
+      "Solvability: Constraints eliminate all venues from pool. Universal constraints [pc_003] are pool filters — one of them eliminates every venue. Check each universal (scope='all', aggregation='all'/'none') constraint individually with query_pool to find which one wipes the pool."
+    ],
+    "usage_totals": {
+      "input_tokens": 39127,
+      "output_tokens": 8896,
+      "cache_creation_input_tokens": 22992,
+      "cache_read_input_tokens": 300599,
+      "total_tokens": 371614
+    }
+  },
+  "initial_message": "\n        Generate a type6 benchmark task for london in the 'Late Spring — Bank Holiday Weekend' window.\n\n        BEFORE YOU START — read the handbook. It contains pool-specific data that\n        varies per city and is NOT in your system prompt:\n\n        HELP('-h tags')         — REQUIRED. All tags in this pool with counts.\n                                    You cannot use has_tag conditions without this.\n        HELP('-h regulations')  — REQUIRED. Regulation fields and their true/false\n                                    distributions. Constraints on regulations with\n                                    100% one-sided values are unsolvable.\n        HELP('-h pool_fields')  — REQUIRED. All filterable fields for query_pool.\n                                    Do not guess field names.\n        HELP('-h window')       — REQUIRED for type6. Anchor event details, dates,\n                                    and window character. Other types: optional but\n                                    useful for grounding.\n        HELP('-h validate')     — REQUIRED for understanding SUBMIT. Full validation\n                                    checklist and common failure modes.\n        HELP('-h venue_sample') — Optional. Shows what get_venue returns.\n        HELP('-h tools')        — Optional. Tool signatures (already in prompt).\n\n        You have 20 turns total — each tool call costs one turn.\n        Aim to call SUBMIT by turn 12 at the latest.\n        After reading the handbook, use THINK to plan your approach,\n        explore the pool with query_pool/get_venue, and call SUBMIT.\n        ",
+  "transcript": [
+    {
+      "turn": 1,
+      "assistant_text": "I'll start by reading the required handbook sections to understand the pool-specific data for London, then generate a type 6 task.",
+      "stop_reason_api": "tool_use",
+      "tool_calls": [
+        {
+          "name": "HELP",
+          "input": {
+            "query": "-h tags"
+          },
+          "status": "ok",
+          "result": {
+            "status": "ok",
+            "content": "All tags in this city's pool (99 total):\n\n  afternoon-tea\n  architecture-city-skyline\n  art\n  barbecue\n  bombay-cafe\n  borough-market\n  brasserie\n  breakfast\n  british\n  brunch\n  budget-friendly\n  caribbean\n  cash-only\n  cashless\n  cask-ale\n  casual-dining\n  central-london\n  charcoal-grill\n  cheap-eats\n  cocktails\n  coffee\n  communal-seating\n  contemporary-modern-art\n  counter-deli\n  counter-dining\n  counter-seating\n  crown-jewels\n  dance-music\n  design\n  dinner\n  dog-friendly\n  european\n  experimental-music\n  family-friendly\n  fashion-vintage-shopping\n  fine-dining\n  fish-and-chips\n  free-entry\n  french\n  fresh-pasta\n  hidden-gem\n  history-royal-heritage\n  indian\n  instagrammable\n  italian\n  japanese\n  jewish\n  late-night\n  lively\n  lunch\n  lunch-spot\n  malaysian\n  medieval-fortress\n  mexican\n  michelin-star\n  middle-eastern\n  multicultural-food-markets\n  museum\n  music-nightlife\n  no-reservations\n  open-kitchen\n  outdoor\n  park\n  pasta\n  pet-friendly\n  photography-allowed\n  photography-friendly\n  picnic-spot\n  popcorn\n  popular-with-locals\n  pre-theatre\n  queue-only\n  quiet\n  reservation-required\n  romantic\n  rooftop\n  small-plates\n  soho\n  spanish\n  speciality-coffee\n  steak-frites\n  steakhouse\n  steamed-buns\n  street-food\n  sushi\n  taiwanese\n  tapas\n  thai\n  theatre-performing-arts\n  trendy\n  udon-noodles\n  upscale\n  vegetarian-options\n  vietnamese\n  views\n  wheelchair-accessible\n  whisky-bar\n  wine\n  wood-fired\n\nUse the 'tag' filter key in query_pool to filter by tag.\nA venue may have multiple tags.\nTags come from Yelp listings and source docs — not all venues have tags.",
+            "turns_remaining": 19
+          }
+        }
+      ],
+      "nudge_sent": false,
+      "usage": {
+        "input_tokens": 495,
+        "output_tokens": 83,
+        "cache_creation_input_tokens": 6433,
+        "cache_read_input_tokens": 1114,
+        "total_tokens": 8125
+      }
+    },
+    {
+      "turn": 2,
+      "assistant_text": "",
+      "stop_reason_api": "tool_use",
+      "tool_calls": [
+        {
+          "name": "HELP",
+          "input": {
+            "query": "-h regulations"
+          },
+          "status": "ok",
+          "result": {
+            "status": "ok",
+            "content": "Regulation fields (use the 'regulation' filter key in query_pool):\n\n  wheelchair_accessible  — venue is fully wheelchair accessible (bool)\n  pet_friendly           — pets allowed (bool)\n  photography_allowed    — photography permitted (bool)\n  family_friendly        — suitable for children (bool)\n  age_restriction        — minimum age in years (int or null — null means no restriction)\n  dress_code             — dress code description (string or null)\n  noise_level            — one of: quiet, moderate, lively, loud\n  reservation_required   — advance booking required (bool)\n  outside_food_allowed   — outside food permitted (bool)\n\nNote: the 'regulation' filter in query_pool matches venues where the regulation is TRUE\n(or non-null for string fields). For noise_level filtering, use get_venue to check\nthe exact value on specific venues.",
+            "turns_remaining": 18
+          }
+        }
+      ],
+      "nudge_sent": false,
+      "usage": {
+        "input_tokens": 753,
+        "output_tokens": 54,
+        "cache_creation_input_tokens": 493,
+        "cache_read_input_tokens": 7547,
+        "total_tokens": 8847
+      }
+    },
+    {
+      "turn": 3,
+      "assistant_text": "",
+      "stop_reason_api": "tool_use",
+      "tool_calls": [
+        {
+          "name": "HELP",
+          "input": {
+            "query": "-h pool_fields"
+          },
+          "status": "ok",
+          "result": {
+            "status": "ok",
+            "content": "Filterable fields for query_pool:\n\n  category        — one of: attraction, bar, cafe, museum, neighbourhood, park, restaurant\n                    pool counts: {\"restaurant\": 24, \"cafe\": 5, \"bar\": 5, \"museum\": 15, \"attraction\": 10, \"park\": 5, \"neighbourhood\": 4}\n  tag             — any tag from the list in '-h tags'\n  regulation      — any regulation key from '-h regulations' (matches if true/non-null)\n  district        — one of: Bexley, Camden, City of London, Greenwich, Hackney, Haringey, Islington, Kensington And Chelsea, Lambeth, Lewisham, Richmond Upon Thames, Southwark, Tower Hamlets, Westminster\n  traffic_tier    — one of: high, mid, low\n  price_tier      — one of: free, budget, mid, upscale, luxury\n  booking_required — true or false\n\nAll filters are AND — all conditions must match.\nSingle-field calls are fine.\n\nExample: query_pool({\"category\": \"restaurant\", \"tag\": \"halal\", \"regulation\": \"wheelchair_accessible\"})\n→ returns restaurants that are halal AND wheelchair accessible\n\nExample: query_pool({\"traffic_tier\": \"low\"})\n→ returns all low-traffic (hidden gem) venues",
+            "turns_remaining": 17
+          }
+        }
+      ],
+      "nudge_sent": false,
+      "usage": {
+        "input_tokens": 1045,
+        "output_tokens": 56,
+        "cache_creation_input_tokens": 493,
+        "cache_read_input_tokens": 7547,
+        "total_tokens": 9141
+      }
+    },
+    {
+      "turn": 4,
+      "assistant_text": "",
+      "stop_reason_api": "tool_use",
+      "tool_calls": [
+        {
+          "name": "HELP",
+          "input": {
+            "query": "-h window"
+          },
+          "status": "ok",
+          "result": {
+            "status": "ok",
+            "content": "Current window context:\n\n  Window: Late Spring — Bank Holiday Weekend\n  Dates:  2026-05-23 – 2026-05-29\n  Anchor events: Spring Bank Holiday (2026-05-25)\n  Anchor dates: 2026-05-25\n\nCharacter:\nLondon's long May weekend — the unofficial start of summer. Beer gardens reach peak capacity. The Spring Bank Holiday (Monday May 25) means another mid-trip closure day for some venues. Chelsea Flower Show falls the week before, leaving the city in a garden-party mood. Street markets are at full swing. This is the most 'normal' of London's windows — relatively stable hours, good weather, busy but manageable crowds. Bank holiday Monday closures remain a quiet trap.\n\nConditional wrong info hints:\n[\n  {\n    \"type\": \"hours_trap\",\n    \"description\": \"A source shows Monday hours that don't account for the Bank Holiday; venue opens 2 hours later or not at all.\"\n  },\n  {\n    \"type\": \"access_trap\",\n    \"description\": \"A normally walk-in pub or caf\\u00e9 operates table service only during the busy weekend; source says no booking needed.\"\n  },\n  {\n    \"type\": \"character_trap\",\n    \"description\": \"A source describes a rooftop bar as 'often quiet on weekday evenings' when the bank holiday weekend makes every evening feel like Saturday.\"\n  }\n]",
+            "turns_remaining": 16
+          }
+        }
+      ],
+      "nudge_sent": false,
+      "usage": {
+        "input_tokens": 727,
+        "output_tokens": 54,
+        "cache_creation_input_tokens": 672,
+        "cache_read_input_tokens": 8117,
+        "total_tokens": 9570
+      }
+    },
+    {
+      "turn": 5,
+      "assistant_text": "",
+      "stop_reason_api": "tool_use",
+      "tool_calls": [
+        {
+          "name": "HELP",
+          "input": {
+            "query": "-h validate"
+          },
+          "status": "ok",
+          "result": {
+            "status": "ok",
+            "content": "Validation checks run on SUBMIT.\n\n═══════════════════════════════════════════════════════════════════════════\nEXACT CONSTRAINT SCHEMA — THIS IS THE #1 REASON SUBMIT FAILS\n═══════════════════════════════════════════════════════════════════════════\n\nEvery personal_constraint MUST have these 8 fields:\n  {\n    \"id\":                \"pc_001\",              // unique within rubric\n    \"score_tier\":        \"P\",                   // literal \"P\" (not \"hard\"/\"medium\")\n    \"hop\":               2,                     // integer: 1 or 2\n    \"check_method\":      \"code\",                // always \"code\" for P-constraints\n    \"source_in_profile\": \"art museums\",         // verbatim phrase from query\n    \"description\":       \"Must include ≥1 art museum\",\n    \"scope\":             \"all\",                 // see SCOPE section below\n    \"condition\":         {\"has_tag\": \"art\"},    // see CONDITION section below\n    \"aggregation\":       {\"at_least\": 1},       // see AGGREGATION section below\n    \"consequence\":       \"p_score_full\"         // always \"p_score_full\"\n  }\n\nDO NOT use \"pattern\"/\"params\" — that's the old format. The evaluator now uses\nscope/condition/aggregation. Using the old format is a SUBMIT failure mode.\n\n═══════════════════════════════════════════════════════════════════════════\nSCOPE — which activities does this constraint apply to?\n═══════════════════════════════════════════════════════════════════════════\n  \"all\"                         every activity in the plan\n  \"activity_type=meal\"          only meal-type activities\n  \"activity_type=visit\"         only visit-type activities\n  \"per_day\"                     applied independently per day\n  \"category=museum\"             activities at museum-category venues\n  \"has_tag=halal\"               activities at venues with the \"halal\" tag\n  \"venue_id=lon_abc123\"         the specific venue with that id\n  \"time_window=18:00-23:59\"     activities starting in that time range\n\n  List = AND:  [\"activity_type=meal\", \"has_tag=vegetarian\"]\n   ... [truncated, total 10295 chars]",
+            "turns_remaining": 15
+          }
+        }
+      ],
+      "nudge_sent": false,
+      "usage": {
+        "input_tokens": 886,
+        "output_tokens": 54,
+        "cache_creation_input_tokens": 293,
+        "cache_read_input_tokens": 8789,
+        "total_tokens": 10022
+      }
+    },
+    {
+      "turn": 6,
+      "assistant_text": "Now let me plan my approach for a type 6 task:",
+      "stop_reason_api": "tool_use",
+      "tool_calls": [
+        {
+          "name": "THINK",
+          "input": {
+            "thought": "For a type 6 task (Context-Window Tension), I need to create a seasonal situation that puts the persona in conflict with the Spring Bank Holiday (Monday May 25). The window character mentions:\n\n1. Bank Holiday Monday closures are a \"quiet trap\" \n2. Beer gardens at peak capacity\n3. Some venues have modified hours or closures on May 25\n4. Street markets are in full swing\n5. Garden-party mood from Chelsea Flower Show week\n\nKey opportunities for tension:\n- A persona wanting Monday activities when many venues are closed\n- Someone seeking quiet/intimate venues during the busiest weekend\n- Early morning plans when venues open later due to bank holiday\n- Need for specific venue types that may be heavily booked/crowded\n\nI should look at which venues have SOLD tags or might be affected by the bank holiday. From the pool summary, I see venues with [SOLD] flags. Let me explore venues that might create good tension scenarios.\n\nMy approach:\n1. Check which venues have sold-out dates or might be affected by bank holiday\n2. Create a persona whose needs conflict with the seasonal situation\n3. Design constraints that require the solving agent to discover the conflict via get_official_site\n4. Ensure the task is grounded with a time_window scope or venue_id constraint on affected venues"
+          },
+          "status": "ok",
+          "result": {
+            "status": "ok",
+            "logged": "For a type 6 task (Context-Window Tension), I need to create a seasonal situation that puts the persona in conflict with the Spring Bank Holiday (Monday May 25). The window character mentions:\n\n1. Ban...",
+            "turns_remaining": 14
+          }
+        }
+      ],
+      "nudge_sent": false,
+      "usage": {
+        "input_tokens": 4023,
+        "output_tokens": 354,
+        "cache_creation_input_tokens": 432,
+        "cache_read_input_tokens": 9082,
+        "total_tokens": 13891
+      }
+    },
+    {
+      "turn": 7,
+      "assistant_text": "Let me first explore venues with sold-out dates to understand what's available:",
+      "stop_reason_api": "tool_use",
+      "tool_calls": [
+        {
+          "name": "query_pool",
+          "input": {
+            "filters": {},
+            "include": [
+              "duration",
+              "coords"
+            ]
+          },
+          "status": "ok",
+          "result": {
+            "status": "ok",
+            "count": 68,
+            "food_count": 34,
+            "site_count": 34,
+            "venues": [
+              {
+                "venue_id": "H0lOfmu",
+                "name": "Roti King",
+                "recommended_visit_minutes": 45,
+                "lat": 51.5285,
+                "lng": -0.1308,
+                "district": "Camden"
+              },
+              {
+                "venue_id": "W9r6e6K",
+                "name": "Barrafina Adelaide Street",
+                "recommended_visit_minutes": 75,
+                "lat": 51.5117,
+                "lng": -0.1212,
+                "district": "Westminster"
+              },
+              {
+                "venue_id": "EYwJPhB",
+                "name": "Bao Fitzrovia",
+                "recommended_visit_minutes": 60,
+                "lat": 51.5168,
+                "lng": -0.136,
+                "district": "Westminster"
+              },
+              {
+                "venue_id": "z4b085G",
+                "name": "Kiln",
+                "recommended_visit_minutes": 75,
+                "lat": 51.5132,
+                "lng": -0.1343,
+                "district": "Westminster"
+              },
+              {
+                "venue_id": "EZN4wAu",
+                "name": "Dishoom King's Cross",
+                "recommended_visit_minutes": 75,
+                "lat": 51.5368,
+                "lng": -0.1253,
+                "district": "Islington"
+              },
+              {
+                "venue_id": "wRvzwmq",
+                "name": "Gymkhana",
+                "recommended_visit_minutes": 120,
+                "lat": 51.5095,
+                "lng": -0.1418,
+                "district": "Westminster"
+              },
+              {
+                "venue_id": "GmRqjDy",
+                "name": "Flat Iron Covent Garden",
+                "recommended_visit_minutes": 60,
+                "lat": 51.512,
+                "lng": -0.123,
+                "district": "Westminster"
+              },
+              {
+                "venue_id": "ibedqIS",
+                "name": "Padella",
+                "recommended_visit_minutes": 60,
+                "lat": 51.5058,
+                "lng": -0.0913,
+                "district": "Southwark"
+              },
+              {
+                "venue_id": "uiZpzps",
+                "name": "Koya Bar",
+                "recommended_visit_minutes": 60,
+                "lat": 51.5142,
+                "lng": -0.1323,
+                "district": "Westminster"
+              },
+              {
+                "venue_id": "U4UtHGm",
+                "name": "Sketch – The Gallery",
+                "recommended_visit_minutes": 120,
+                "lat": 51.512,
+                "lng": -0.1425,
+                "district": "Westminster"
+              },
+              {
+                "venue_id": "EAZQP0k",
+                "name": "The Palomar",
+                "recommended_visit_minutes": 90,
+                "lat": 51.5113,
+                "lng": -0.1317,
+                "district": "Westminster"
+              },
+              {
+                "venue_id": "z1C34lE",
+                "name": "Brasserie Zédel",
+                "recommended_visit_minutes": 90,
+                "lat": 51.5103,
+                "lng": -0.1349,
+                "district": "Westminster"
+              },
+              {
+                "venue_id": "QFYcgIF",
+                "name": "Ottolenghi Islington",
+                "recommended_visit_minutes": 60,
+                "lat": 51.544,
+                "lng": -0.102,
+                "district": "Islington"
+              },
+              {
+                "venue_id": "kLWB6L4",
+                "name": "Smoking Goat",
+                "recommended_visit_minutes": 90,
+                "lat": 51.5245,
+                "lng": -0.0772,
+                "district": "Tower Hamlets"
+              },
+              {
+                "venue_id": "xvascDa",
+                "name": "The Ivy",
+                "recommended_visit_minutes": 120,
+                "lat": 51.5117,
+                "lng": -0.1279,
+                "district": "Westminster"
+              },
+              {
+                "venue_id": "y1QkOtV",
+                "name": "Duck & Waffle",
+                "recommended_visit_minutes": 90,
+                "lat": 51.5136,
+                "lng": -0.0812,
+                "district": "Tower Hamlets"
+              },
+              {
+                "venue_id": "VT5ADKh",
+                "name": "Workshop Coffee Clerkenwell",
+                "recommended_visit_minutes": 45,
+                "lat": 51.5285,
+                "lng": -0.1027,
+                "district": "Islington"
+              },
+              {
+                "venue_id": "va9c0qz",
+                "name": "Monmouth Coffee Borough",
+                "recommended_visit_minutes": 30,
+                "lat": 51.5058,
+                "lng": -0.0905,
+                "district": "Southwark"
+              },
+              {
+                "venue_id": "lv1VhcX",
+                "name": "The Hawksmoor Spitalfields",
+                "recommended_visit_minutes": 120,
+                "lat": 51.5208,
+                "lng": -0.0764,
+                "district": "Tower Hamlets"
+              },
+              {
+                "venue_id": "V2NQ1sa",
+                "name": "Proud Archivist",
+                "recommended_visit_minutes": 120,
+                "lat": 51.5375,
+                "lng": -0.0773,
+                "district": "Hackney"
+              },
+              {
+                "venue_id": "TefkDjV",
+                "name": "XOYO",
+                "recommended_visit_minutes": 180,
+                "lat": 51.525,
+                "lng": -0.082,
+                "district": "Hackney"
+              },
+              {
+                "venue_id": "ZBMFQfW",
+                "name": "Neon Palms",
+                "recommended_visit_minutes": 90,
+                "lat": 51.5312,
+                "lng": -0.0765,
+                "district": "Hackney"
+              },
+              {
+                "venue_id": "EsS0y6l",
+                "name": "The Grotto Wine Bar",
+                "recommended_visit_minutes": 90,
+                "lat": 51.5258,
+                "lng": -0.1103,
+                "district": "Islington"
+              },
+              {
+                "venue_id": "kMv0KUT",
+                "name": "The Ravenswood Tap",
+                "recommended_visit_minutes": 60,
+                "lat": 51.4565,
+                "lng": -0.0155,
+                "district": "Lewisham"
+              },
+              {
+                "venue_id": "GjmHbqS",
+                "name": "The British Museum",
+                "recommended_visit_minutes": 210,
+                "lat": 51.5194,
+                "lng": -0.1269,
+                "district": "Camden"
+              },
+              {
+                "venue_id": "Dd5AmE5",
+                "name": "Yildiz Palace Turkish Restaurant",
+                "recommended_visit_minutes": 75,
+                "lat": 51.5859,
+                "lng": -0.0938,
+                "district": "Haringey"
+              },
+              {
+                "venue_id": "RWyxo4B",
+                "name": "Café OTO",
+                "recommended_visit_minutes": 90,
+                "lat": 51.5467,
+                "lng": -0.074,
+                "district": "Hackney"
+              },
+              {
+                "venue_id": "ulyKPhD",
+                "name": "Buckingham Palace",
+                "recommended_visit_minutes": 120,
+                "lat": 51.5014,
+                "lng": -0.1419,
+                "district": "Westminster"
+              },
+              {
+                "venue_id": "lhoHP1h",
+                "name": "Tower of London",
+                "recommended_visit_minutes": 180,
+                "lat": 51.5081,
+                "lng": -0.0759,
+                "district": "Tower Hamlets"
+              },
+              {
+                "venue_id": "nsWMFtc",
+                "name": "The Dusty Knuckle Bakery",
+                "recommended_visit_minutes": 60,
+                "lat": 51.5485,
+                "lng": -0.0692,
+                "district": "Hackney"
+              },
+              {
+                "venue_id": "KWSA1XT",
+                "name": "The National Gallery",
+                "recommended_visit_minutes": 180,
+                "lat": 51.5089,
+                "lng": -0.1283,
+                "district": "Westminster"
+              },
+              {
+                "venue_id": "EIBl5SN",
+                "name": "Pham Sushi",
+                "recommended_visit_minutes": 45,
+                "lat": 51.5285,
+                "lng": -0.1028,
+                "district": "Islington"
+              },
+              {
+                "venue_id": "Pzj0QXo",
+                "name": "The Golden Chippy",
+                "recommended_visit_minutes": 40,
+                "lat": 51.4789,
+                "lng": -0.0097,
+                "district": "Greenwich"
+              },
+              {
+                "venue_id": "It9Cq87",
+                "name": "Volcano Coffee Works",
+                "recommended_visit_minutes": 30,
+                "lat": 51.4614,
+                "lng": -0.1147,
+                "district": "Lambeth"
+              },
+              {
+                "venue_id": "ncF5wXo",
+                "name": "Mangal 2",
+                "recommended_visit_minutes": 75,
+                "lat": 51.5455,
+                "lng": -0.0749,
+                "district": "Hackney"
+              },
+              {
+                "venue_id": "vfah5z7",
+                "name": "Tate Modern",
+                "recommended_visit_minutes": 180,
+                "lat": 51.5076,
+                "lng": -0.0994,
+                "district": "Southwark"
+              },
+              {
+                "venue_id": "llCcZmW",
+                "name": "Salvation in Noodles",
+                "recommended_visit_minutes": 45,
+                "lat": 51.5524,
+                "lng": -0.1168,
+                "district": "Islington"
+              },
+              {
+                "venue_id": "HKyuzE5",
+                "name": "Faulkner's Fish & Chips",
+                "recommended_visit_minutes": 45,
+                "lat": 51.5474,
+                "lng": -0.0749,
+                "district": "Hackney"
+              },
+              {
+                "venue_id": "MGn9tpR",
+                "name": "Taqueria",
+                "recommended_visit_minutes": 60,
+                "lat": 51.5098,
+                "lng": -0.206,
+                "district": "Kensington And Chelsea"
+              },
+              {
+                "venue_id": "zNWcaw5",
+                "name": "Hyde Park",
+                "recommended_visit_minutes": 120,
+                "lat": 51.5073,
+                "lng": -0.1657,
+                "district": "Westminster"
+              },
+              {
+                "venue_id": "heHfpkV",
+                "name": "Borough Market",
+                "recommended_visit_minutes": 120,
+                "lat": 51.5055,
+                "lng": -0.091,
+                "district": "Southwark"
+              },
+              {
+                "venue_id": "ed1tDai",
+                "name": "St Paul's Cathedral",
+                "recommended_visit_minutes": 120,
+                "lat": 51.5138,
+                "lng": -0.0984,
+                "district": "City of London"
+              },
+              {
+                "venue_id": "hDt6qJ5",
+                "name": "The Victoria and Albert Museum",
+                "recommended_visit_minutes": 180,
+                "lat": 51.4966,
+                "lng": -0.1722,
+                "district": "Kensington And Chelsea"
+              },
+              {
+                "venue_id": "oUFVQI9",
+                "name": "Kew Gardens",
+                "recommended_visit_minutes": 180,
+                "lat": 51.4785,
+                "lng": -0.2956,
+                "district": "Richmond Upon Thames"
+              },
+              {
+                "venue_id": "eJ0NCDT",
+                "name": "Portobello Road Market",
+                "recommended_visit_minutes": 120,
+                "lat": 51.5155,
+                "lng": -0.2025,
+                "district": "Kensington And Chelsea"
+              },
+              {
+                "venue_id": "fU3ubDm",
+                "name": "Greenwich Park & Royal Observatory",
+                "recommended_visit_minutes": 150,
+                "lat": 51.4768,
+                "lng": -0.0014,
+                "district": "Greenwich"
+              },
+              {
+                "venue_id": "XGdUaZK",
+                "name": "Shakespeare's Globe Theatre",
+                "recommended_visit_minutes": 150,
+                "lat": 51.5081,
+                "lng": -0.0972,
+                "district": "Southwark"
+              },
+              {
+                "venue_id": "qtIrHEa",
+                "name": "Natural History Museum",
+                "recommended_visit_minutes": 180,
+                "lat": 51.4964,
+                "lng": -0.1764,
+                "district": "Kensington And Chelsea"
+              },
+              {
+                "venue_id": "uq8lok1",
+                "name": "Covent Garden Piazza",
+                "recommended_visit_minutes": 120,
+                "lat": 51.512,
+                "lng": -0.122,
+                "district": "Westminster"
+              },
+              {
+                "venue_id": "vEWMxcY",
+                "name": "The Shard Viewing Gallery",
+                "recommended_visit_minutes": 60,
+                "lat": 51.5045,
+                "lng": -0.0865,
+                "district": "Southwark"
+              },
+              {
+                "venue_id": "CxvnSaC",
+                "name": "Brick Lane",
+                "recommended_visit_minutes": 180,
+                "lat": 51.5244,
+                "lng": -0.0723,
+                "district": "Tower Hamlets"
+              },
+              {
+                "venue_id": "Ug9sDHW",
+                "name": "Hampstead Heath",
+                "recommended_visit_minutes": 120,
+                "lat": 51.5584,
+                "lng": -0.1599,
+                "district": "Camden"
+              },
+              {
+                "venue_id": "v6dDsQL",
+                "name": "The Barbican Centre",
+                "recommended_visit_minutes": 180,
+                "lat": 51.52,
+                "lng": -0.0946,
+                "district": "Islington"
+              },
+              {
+                "venue_id": "UzglqUU",
+                "name": "The Courtauld Gallery",
+                "recommended_visit_minutes": 120,
+                "lat": 51.511,
+                "lng": -0.1175,
+                "district": "Westminster"
+              },
+              {
+                "venue_id": "JrJO2bc",
+                "name": "Museum of London Docklands",
+                "recommended_visit_minutes": 120,
+                "lat": 51.5052,
+                "lng": -0.0219,
+                "district": "Tower Hamlets"
+              },
+              {
+                "venue_id": "XDzLtxL",
+                "name": "Saatchi Gallery",
+                "recommended_visit_minutes": 90,
+                "lat": 51.4901,
+                "lng": -0.1564,
+                "district": "Kensington And Chelsea"
+              },
+              {
+                "venue_id": "WfNnqoV",
+                "name": "Whitechapel Gallery",
+                "recommended_visit_minutes": 120,
+                "lat": 51.516,
+                "lng": -0.0702,
+                "district": "Tower Hamlets"
+              },
+              {
+                "venue_id": "HgfGDed",
+                "name": "Brixton Market & Electric Avenue",
+                "recommended_visit_minutes": 90,
+                "lat": 51.4613,
+                "lng": -0.1149,
+                "district": "Lambeth"
+              },
+              {
+                "venue_id": "rdKg9bt",
+                "name": "Two Temple Place",
+                "recommended_visit_minutes": 90,
+                "lat": 51.5099,
+                "lng": -0.113,
+                "district": "Westminster"
+              },
+              {
+                "venue_id": "MavHE20",
+                "name": "Firepower Royal Artillery Museum",
+                "recommended_visit_minutes": 120,
+                "lat": 51.4905,
+                "lng": 0.0689,
+                "district": "Greenwich"
+              },
+              {
+                "venue_id": "Ulj02u3",
+                "name": "Columbia Road Flower Market",
+                "recommended_visit_minutes": 60,
+                "lat": 51.5275,
+                "lng": -0.071,
+                "district": "Tower Hamlets"
+              },
+              {
+                "venue_id": "jK1FHpi",
+                "name": "Geffrye Museum of the Home",
+                "recommended_visit_minutes": 90,
+                "lat": 51.5376,
+                "lng": -0.0734,
+                "district": "Hackney"
+              },
+              {
+                "venue_id": "WxTLSVq",
+                "name": "Horniman Museum and Gardens",
+                "recommended_visit_minutes": 120,
+                "lat": 51.4567,
+                "lng": -0.061,
+                "district": "Lewisham"
+              },
+              {
+                "venue_id": "ORPlAsN",
+                "name": "Sutton House",
+                "recommended_visit_minutes": 90,
+                "lat": 51.5361,
+                "lng": -0.0554,
+                "district": "Hackney"
+              },
+              {
+                "venue_id": "y8JOqtl",
+                "name": "Crossness Pumping Station",
+                "recommended_visit_minutes": 120,
+                "lat": 51.507,
+                "lng": 0.148,
+                "district": "Bexley"
+              },
+              {
+                "venue_id": "gMtSNc1",
+                "name": "Brunel Museum",
+                "recommended_visit_minutes": 90,
+                "lat": 51.4996,
+                "lng": -0.0545,
+                "district": "Southwark"
+              },
+              {
+                "venue_id": "MEhA91d",
+                "name": "The Spread Eagle",
+                "recommended_visit_minutes": 90,
+                "lat": 51.5405,
+                "lng": -0.0572,
+                "district": "Hackney"
+              },
+              {
+                "venue_id": "egL9G0a",
+                "name": "St Dunstan in the East Garden",
+                "recommended_visit_minutes": 45,
+                "lat": 51.5104,
+                "lng": -0.0825,
+                "district": "Tower Hamlets"
+              }
+            ],
+            "note": "Included fields: ['duration', 'coords']. Breakdown: food=34/34 (100%), site=34/34 (100%). Upper-bar targets (this task type): need ≤50% food AND ≤50% site surviving (i.e. ≤17 food, ≤17 site). Use get_venue(venue_id) for full detail on any venue.",
+            "turns_remaining": 13
+          }
+        }
+      ],
+      "nudge_sent": false,
+      "usage": {
+        "input_tokens": 4004,
+        "output_tokens": 92,
+        "cache_creation_input_tokens": 453,
+        "cache_read_input_tokens": 9514,
+        "total_tokens": 14063
+      }
+    },
+    {
+      "turn": 8,
+      "assistant_text": "Let me check some specific venues that are marked as SOLD to understand their situations:",
+      "stop_reason_api": "tool_use",
+      "tool_calls": [
+        {
+          "name": "get_venue",
+          "input": {
+            "venue_id": "U4UtHGm"
+          },
+          "status": "ok",
+          "result": {
+            "status": "ok",
+            "venue": {
+              "venue_id": "U4UtHGm",
+              "name": "Sketch – The Gallery",
+              "category": "restaurant",
+              "district": "Westminster",
+              "traffic_tier": "mid",
+              "recommended_pace": "intense",
+              "price_tier": "upscale",
+              "avg_cost_local": 85.0,
+              "lat": 51.512,
+              "lng": -0.1425,
+              "recommended_visit_minutes": 120,
+              "tags": [
+                "afternoon-tea",
+                "contemporary-modern-art",
+                "french",
+                "instagrammable",
+                "photography-friendly",
+                "reservation-required",
+                "romantic",
+                "trendy",
+                "wheelchair-accessible"
+              ],
+              "regulations": {
+                "wheelchair_accessible": true,
+                "pet_friendly": false,
+                "photography_allowed": true,
+                "family_friendly": false,
+                "age_restriction": null,
+                "dress_code": "smart casual",
+                "noise_level": "moderate",
+                "reservation_required": true,
+                "outside_food_allowed": false
+              },
+              "booking_required": true,
+              "has_official_site": true,
+              "window_flags": {
+                "london_carnival_2026": {
+                  "in_closure_zone": false,
+                  "in_wider_affected_area": false
+                },
+                "london_christmas_2026": {
+                  "in_shopping_crowd_zone": false
+                }
+              },
+              "unavailable_dates": [
+                "2026-05-25",
+                "2026-05-26"
+              ]
+            },
+            "turns_remaining": 12
+          }
+        }
+      ],
+      "nudge_sent": false,
+      "usage": {
+        "input_tokens": 4757,
+        "output_tokens": 79,
+        "cache_creation_input_tokens": 3570,
+        "cache_read_input_tokens": 9967,
+        "total_tokens": 18373
+      }
+    },
+    {
+      "turn": 9,
+      "assistant_text": "Perfect! Let me check what happens on the bank holiday at this venue:",
+      "stop_reason_api": "tool_use",
+      "tool_calls": [
+        {
+          "name": "get_official_site",
+          "input": {
+            "venue_id": "U4UtHGm",
+            "date": "2026-05-25"
+          },
+          "status": "error",
+          "result": {
+            "status": "error",
+            "message": "DB lookup failed: no such table: official_site_docs",
+            "turns_remaining": 11
+          }
+        }
+      ],
+      "nudge_sent": false,
+      "usage": {
+        "input_tokens": 4739,
+        "output_tokens": 101,
+        "cache_creation_input_tokens": 84,
+        "cache_read_input_tokens": 13888,
+        "total_tokens": 18812
+      }
+    },
+    {
+      "turn": 10,
+      "assistant_text": "Let me try another venue that shows as SOLD:",
+      "stop_reason_api": "tool_use",
+      "tool_calls": [
+        {
+          "name": "get_venue",
+          "input": {
+            "venue_id": "xvascDa"
+          },
+          "status": "ok",
+          "result": {
+            "status": "ok",
+            "venue": {
+              "venue_id": "xvascDa",
+              "name": "The Ivy",
+              "category": "restaurant",
+              "district": "Westminster",
+              "traffic_tier": "mid",
+              "recommended_pace": "intense",
+              "price_tier": "upscale",
+              "avg_cost_local": 55.0,
+              "lat": 51.5117,
+              "lng": -0.1279,
+              "recommended_visit_minutes": 120,
+              "tags": [
+                "brasserie",
+                "british",
+                "central-london",
+                "cocktails",
+                "dinner",
+                "family-friendly",
+                "lively",
+                "lunch",
+                "pre-theatre",
+                "reservation-required",
+                "upscale",
+                "wheelchair-accessible"
+              ],
+              "regulations": {
+                "wheelchair_accessible": true,
+                "pet_friendly": false,
+                "photography_allowed": true,
+                "family_friendly": true,
+                "age_restriction": null,
+                "dress_code": "smart casual",
+                "noise_level": "moderate",
+                "reservation_required": true,
+                "outside_food_allowed": false
+              },
+              "booking_required": true,
+              "has_official_site": true,
+              "window_flags": {
+                "london_carnival_2026": {
+                  "in_closure_zone": false,
+                  "in_wider_affected_area": false
+                },
+                "london_christmas_2026": {
+                  "in_shopping_crowd_zone": true
+                }
+              },
+              "unavailable_dates": [
+                "2026-05-25"
+              ]
+            },
+            "turns_remaining": 10
+          }
+        }
+      ],
+      "nudge_sent": false,
+      "usage": {
+        "input_tokens": 559,
+        "output_tokens": 71,
+        "cache_creation_input_tokens": 4235,
+        "cache_read_input_tokens": 14061,
+        "total_tokens": 18926
+      }
+    },
+    {
+      "turn": 11,
+      "assistant_text": "Great! Now I can see the pattern. Let me design a type 6 task around the bank holiday closures. Let me create a task now:",
+      "stop_reason_api": "tool_use",
+      "tool_calls": [
+        {
+          "name": "THINK",
+          "input": {
+            "thought": "Now I understand the conflict for type 6. Several upscale restaurants (Sketch – The Gallery, The Ivy) are unavailable on the bank holiday Monday (May 25), and the pool shows various venues marked as SOLD with specific unavailable dates.\n\nI'll create a task where:\n1. A couple wants an upscale/romantic dining experience for their anniversary, specifically wanting to celebrate on Monday (the bank holiday)\n2. They prefer highly-rated, romantic venues with fine dining\n3. The conflict: Many upscale restaurants are closed or fully booked on the bank holiday Monday\n4. The solving agent must discover this via checking official sites or noting unavailable_dates\n\nTo ground this as type 6, I'll use either:\n- A time_window constraint requiring activities on specific dates including May 25\n- A venue_id constraint on one of the affected venues\n\nI'll design around a 3-day weekend trip (May 24-26) with the constraint that they must have their anniversary dinner on Monday May 25, creating tension with venue closures.\n\nThis creates discoverable context-window tension: the persona's timing requirement conflicts with seasonal closures, forcing the solving agent to work around unavailable venues on the anchor date."
+          },
+          "status": "ok",
+          "result": {
+            "status": "ok",
+            "logged": "Now I understand the conflict for type 6. Several upscale restaurants (Sketch – The Gallery, The Ivy) are unavailable on the bank holiday Monday (May 25), and the pool shows various venues marked as S...",
+            "turns_remaining": 9
+          }
+        }
+      ],
+      "nudge_sent": false,
+      "usage": {
+        "input_tokens": 548,
+        "output_tokens": 351,
+        "cache_creation_input_tokens": 342,
+        "cache_read_input_tokens": 18372,
+        "total_tokens": 19613
+      }
+    },
+    {
+      "turn": 12,
+      "assistant_text": "Now let me submit my type 6 task:",
+      "stop_reason_api": "tool_use",
+      "tool_calls": [
+        {
+          "name": "SUBMIT",
+          "input": {
+            "task_json": "{\n  \"task_id\": \"london_type6_001\",\n  \"city\": \"london\", \n  \"window_id\": \"late_spring_bank_holiday_2026\",\n  \"days\": 3,\n  \"start_date\": \"2026-05-24\",\n  \"public_input\": {\n    \"query\": \"My partner and I are visiting London for our 5-year anniversary weekend, May 24-26. We absolutely must have our anniversary dinner on Monday night (May 25) at an upscale, romantic restaurant - this date is non-negotiable as it's our actual anniversary. We'd love fine dining with afternoon tea, and prefer trendy, instagrammable venues. We also want to visit some art museums and enjoy the spring weather at parks. Budget isn't a major concern for this special trip.\"\n  },\n  \"structural_type\": 6,\n  \"difficulty\": \"medium\",\n  \"rubric\": {\n    \"hard_constraints\": [\n      {\"id\": \"hc_001\", \"type\": \"hours_check\", \"check_method\": \"code\", \"params\": {}},\n      {\"id\": \"hc_002\", \"type\": \"no_overlap\", \"check_method\": \"code\", \"params\": {}}, \n      {\"id\": \"hc_003\", \"type\": \"travel_time_hard\", \"check_method\": \"code\", \"params\": {}}\n    ],\n    \"personal_constraints\": [\n      {\n        \"id\": \"pc_001\",\n        \"score_tier\": \"P\",\n        \"hop\": 1,\n        \"check_method\": \"code\",\n        \"source_in_profile\": \"anniversary dinner on Monday night (May 25)\",\n        \"description\": \"Must have dinner on Monday May 25th evening\",\n        \"scope\": [\"activity_type=meal\", \"time_window=18:00-23:59\"],\n        \"condition\": {},\n        \"aggregation\": {\"at_least\": 1},\n        \"consequence\": \"p_score_full\"\n      },\n      {\n        \"id\": \"pc_002\", \n        \"score_tier\": \"P\",\n        \"hop\": 2,\n        \"check_method\": \"code\",\n        \"source_in_profile\": \"upscale, romantic restaurant\",\n        \"description\": \"Anniversary dinner must be at upscale romantic venue\",\n        \"scope\": [\"activity_type=meal\", \"time_window=18:00-23:59\"],\n        \"condition\": {\"all\": [{\"field\": \"price_tier\", \"operator\": \">=\", \"value\": \"upscale\"}, {\"has_tag\": \"romantic\"}]},\n        \"aggregation\": {\"at_least\": 1},\n        \"consequence\": \"p_score_full\"\n      },\n... [truncated, total 3293 chars]"
+          },
+          "status": "validation_failed",
+          "result": {
+            "status": "validation_failed",
+            "errors": [
+              "structural_type must be one of: type1_cascading_requirements, type2_subset_selection, type3_competing_requirements, type4_precision_allocation, type5_hard_feasibility_reduction, type6_context_window_tension. Got '6'."
+            ],
+            "warnings": [],
+            "message": "Fix structural_type and SUBMIT again.",
+            "turns_remaining": 8,
+            "WARNING": "Only 8 turn(s) left! Call SUBMIT NOW with your best draft — an imperfect submission beats no submission."
+          }
+        }
+      ],
+      "nudge_sent": false,
+      "usage": {
+        "input_tokens": 833,
+        "output_tokens": 1129,
+        "cache_creation_input_tokens": 47,
+        "cache_read_input_tokens": 18812,
+        "total_tokens": 20821
+      }
+    },
+    {
+      "turn": 13,
+      "assistant_text": "",
+      "stop_reason_api": "tool_use",
+      "tool_calls": [
+        {
+          "name": "SUBMIT",
+          "input": {
+            "task_json": "{\n  \"task_id\": \"london_type6_001\",\n  \"city\": \"london\", \n  \"window_id\": \"late_spring_bank_holiday_2026\",\n  \"days\": 3,\n  \"start_date\": \"2026-05-24\",\n  \"public_input\": {\n    \"query\": \"My partner and I are visiting London for our 5-year anniversary weekend, May 24-26. We absolutely must have our anniversary dinner on Monday night (May 25) at an upscale, romantic restaurant - this date is non-negotiable as it's our actual anniversary. We'd love fine dining with afternoon tea, and prefer trendy, instagrammable venues. We also want to visit some art museums and enjoy the spring weather at parks. Budget isn't a major concern for this special trip.\"\n  },\n  \"structural_type\": \"type6_context_window_tension\",\n  \"difficulty\": \"medium\",\n  \"rubric\": {\n    \"hard_constraints\": [\n      {\"id\": \"hc_001\", \"type\": \"hours_check\", \"check_method\": \"code\", \"params\": {}},\n      {\"id\": \"hc_002\", \"type\": \"no_overlap\", \"check_method\": \"code\", \"params\": {}}, \n      {\"id\": \"hc_003\", \"type\": \"travel_time_hard\", \"check_method\": \"code\", \"params\": {}}\n    ],\n    \"personal_constraints\": [\n      {\n        \"id\": \"pc_001\",\n        \"score_tier\": \"P\",\n        \"hop\": 1,\n        \"check_method\": \"code\",\n        \"source_in_profile\": \"anniversary dinner on Monday night (May 25)\",\n        \"description\": \"Must have dinner on Monday May 25th evening\",\n        \"scope\": [\"activity_type=meal\", \"time_window=18:00-23:59\"],\n        \"condition\": {},\n        \"aggregation\": {\"at_least\": 1},\n        \"consequence\": \"p_score_full\"\n      },\n      {\n        \"id\": \"pc_002\", \n        \"score_tier\": \"P\",\n        \"hop\": 2,\n        \"check_method\": \"code\",\n        \"source_in_profile\": \"upscale, romantic restaurant\",\n        \"description\": \"Anniversary dinner must be at upscale romantic venue\",\n        \"scope\": [\"activity_type=meal\", \"time_window=18:00-23:59\"],\n        \"condition\": {\"all\": [{\"field\": \"price_tier\", \"operator\": \">=\", \"value\": \"upscale\"}, {\"has_tag\": \"romantic\"}]},\n        \"aggregation\": {\"at_least\": 1},\n        \"consequen... [truncated, total 3322 chars]"
+          },
+          "status": "validation_failed",
+          "result": {
+            "status": "validation_failed",
+            "errors": [
+              "[pc_004] Pool satisfiability: Pool-level check failed: At least half of activities at trendy or instagrammable venues: 13/68 matching (fail). The constraint is not fully satisfiable against this pool — review the matching count above and adjust scope, condition, or aggregation.",
+              "Solvability: Inclusion upper bar [pc_001]: 34/34 food venues (100%) already satisfy this inclusion constraint — need ≤25% so the constraint is genuinely selective. Use a rarer tag or a stricter condition so only a small fraction of venues qualify."
+            ],
+            "warnings": [],
+            "message": "2 issue(s) to fix. Use THINK to plan your fixes, then call SUBMIT again with the corrected JSON. Use '-h validate' to understand what each check requires.",
+            "turns_remaining": 7,
+            "WARNING": "Only 7 turn(s) left! Call SUBMIT NOW with your best draft — an imperfect submission beats no submission."
+          }
+        }
+      ],
+      "nudge_sent": false,
+      "usage": {
+        "input_tokens": 1696,
+        "output_tokens": 1124,
+        "cache_creation_input_tokens": 340,
+        "cache_read_input_tokens": 18927,
+        "total_tokens": 22087
+      }
+    },
+    {
+      "turn": 14,
+      "assistant_text": "",
+      "stop_reason_api": "tool_use",
+      "tool_calls": [
+        {
+          "name": "THINK",
+          "input": {
+            "thought": "Two issues to fix:\n1. pc_004 fails because only 13/68 venues have trendy or instagrammable tags - not enough for 50% ratio\n2. pc_001 is too broad - all 34 food venues satisfy it (100%) but needs ≤25% for selectivity\n\nFixes:\n1. Lower the ratio requirement in pc_004 or remove it entirely\n2. Make pc_001 more specific - add a date constraint to May 25 specifically or make it about upscale venues only\n\nLet me fix these issues:"
+          },
+          "status": "ok",
+          "result": {
+            "status": "ok",
+            "logged": "Two issues to fix:\n1. pc_004 fails because only 13/68 venues have trendy or instagrammable tags - not enough for 50% ratio\n2. pc_001 is too broad - all 34 food venues satisfy it (100%) but needs ≤25% ...",
+            "turns_remaining": 6,
+            "WARNING": "Only 6 turn(s) left! Call SUBMIT NOW with your best draft — an imperfect submission beats no submission."
+          }
+        }
+      ],
+      "nudge_sent": false,
+      "usage": {
+        "input_tokens": 2633,
+        "output_tokens": 177,
+        "cache_creation_input_tokens": 83,
+        "cache_read_input_tokens": 19615,
+        "total_tokens": 22508
+      }
+    },
+    {
+      "turn": 15,
+      "assistant_text": "",
+      "stop_reason_api": "tool_use",
+      "tool_calls": [
+        {
+          "name": "SUBMIT",
+          "input": {
+            "task_json": "{\n  \"task_id\": \"london_type6_001\",\n  \"city\": \"london\", \n  \"window_id\": \"late_spring_bank_holiday_2026\",\n  \"days\": 3,\n  \"start_date\": \"2026-05-24\",\n  \"public_input\": {\n    \"query\": \"My partner and I are visiting London for our 5-year anniversary weekend, May 24-26. We absolutely must have our anniversary dinner on Monday night (May 25) at an upscale, romantic restaurant - this date is non-negotiable as it's our actual anniversary. We'd love fine dining with afternoon tea, and prefer trendy, instagrammable venues. We also want to visit some art museums and enjoy the spring weather at parks. Budget isn't a major concern for this special trip.\"\n  },\n  \"structural_type\": \"type6_context_window_tension\",\n  \"difficulty\": \"medium\",\n  \"rubric\": {\n    \"hard_constraints\": [\n      {\"id\": \"hc_001\", \"type\": \"hours_check\", \"check_method\": \"code\", \"params\": {}},\n      {\"id\": \"hc_002\", \"type\": \"no_overlap\", \"check_method\": \"code\", \"params\": {}}, \n      {\"id\": \"hc_003\", \"type\": \"travel_time_hard\", \"check_method\": \"code\", \"params\": {}}\n    ],\n    \"personal_constraints\": [\n      {\n        \"id\": \"pc_001\",\n        \"score_tier\": \"P\",\n        \"hop\": 2,\n        \"check_method\": \"code\",\n        \"source_in_profile\": \"anniversary dinner on Monday night (May 25)\",\n        \"description\": \"Must have upscale romantic dinner on Monday May 25th evening\",\n        \"scope\": [\"activity_type=meal\", \"time_window=18:00-23:59\"],\n        \"condition\": {\"all\": [{\"field\": \"price_tier\", \"operator\": \">=\", \"value\": \"upscale\"}, {\"has_tag\": \"romantic\"}]},\n        \"aggregation\": {\"at_least\": 1},\n        \"consequence\": \"p_score_full\"\n      },\n      {\n        \"id\": \"pc_002\",\n        \"score_tier\": \"P\", \n        \"hop\": 1,\n        \"check_method\": \"code\",\n        \"source_in_profile\": \"afternoon tea\",\n        \"description\": \"Include at least one afternoon tea experience\",\n        \"scope\": \"all\",\n        \"condition\": {\"has_tag\": \"afternoon-tea\"},\n        \"aggregation\": {\"at_least\": 1},\n        \"consequence\": \"p_score_full\"\n   ... [truncated, total 2451 chars]"
+          },
+          "status": "validation_failed",
+          "result": {
+            "status": "validation_failed",
+            "errors": [
+              "All P-constraints use {at_least} aggregation — too uniform. At least one must use a different aggregation type: all, none, ratio, count_distinct, sum, at_most, at_most_distinct, at_least_days. See the AGGREGATION section in '-h validate' for examples."
+            ],
+            "warnings": [],
+            "message": "1 issue(s) to fix. Use THINK to plan your fixes, then call SUBMIT again with the corrected JSON. Use '-h validate' to understand what each check requires.",
+            "turns_remaining": 5,
+            "WARNING": "Only 5 turn(s) left! Call SUBMIT NOW with your best draft — an imperfect submission beats no submission."
+          }
+        }
+      ],
+      "nudge_sent": false,
+      "usage": {
+        "input_tokens": 1670,
+        "output_tokens": 840,
+        "cache_creation_input_tokens": 146,
+        "cache_read_input_tokens": 20824,
+        "total_tokens": 23480
+      }
+    },
+    {
+      "turn": 16,
+      "assistant_text": "",
+      "stop_reason_api": "tool_use",
+      "tool_calls": [
+        {
+          "name": "SUBMIT",
+          "input": {
+            "task_json": "{\n  \"task_id\": \"london_type6_001\",\n  \"city\": \"london\", \n  \"window_id\": \"late_spring_bank_holiday_2026\",\n  \"days\": 3,\n  \"start_date\": \"2026-05-24\",\n  \"public_input\": {\n    \"query\": \"My partner and I are visiting London for our 5-year anniversary weekend, May 24-26. We absolutely must have our anniversary dinner on Monday night (May 25) at an upscale, romantic restaurant - this date is non-negotiable as it's our actual anniversary. We'd love fine dining with afternoon tea, and prefer trendy, instagrammable venues. We also want to visit some art museums and enjoy the spring weather at parks. Budget isn't a major concern for this special trip.\"\n  },\n  \"structural_type\": \"type6_context_window_tension\",\n  \"difficulty\": \"medium\",\n  \"rubric\": {\n    \"hard_constraints\": [\n      {\"id\": \"hc_001\", \"type\": \"hours_check\", \"check_method\": \"code\", \"params\": {}},\n      {\"id\": \"hc_002\", \"type\": \"no_overlap\", \"check_method\": \"code\", \"params\": {}}, \n      {\"id\": \"hc_003\", \"type\": \"travel_time_hard\", \"check_method\": \"code\", \"params\": {}}\n    ],\n    \"personal_constraints\": [\n      {\n        \"id\": \"pc_001\",\n        \"score_tier\": \"P\",\n        \"hop\": 2,\n        \"check_method\": \"code\",\n        \"source_in_profile\": \"anniversary dinner on Monday night (May 25)\",\n        \"description\": \"Must have upscale romantic dinner on Monday May 25th evening\",\n        \"scope\": [\"activity_type=meal\", \"time_window=18:00-23:59\"],\n        \"condition\": {\"all\": [{\"field\": \"price_tier\", \"operator\": \">=\", \"value\": \"upscale\"}, {\"has_tag\": \"romantic\"}]},\n        \"aggregation\": {\"at_least\": 1},\n        \"consequence\": \"p_score_full\"\n      },\n      {\n        \"id\": \"pc_002\",\n        \"score_tier\": \"P\", \n        \"hop\": 1,\n        \"check_method\": \"code\",\n        \"source_in_profile\": \"afternoon tea\",\n        \"description\": \"Include at least one afternoon tea experience\",\n        \"scope\": \"all\",\n        \"condition\": {\"has_tag\": \"afternoon-tea\"},\n        \"aggregation\": {\"at_least\": 1},\n        \"consequence\": \"p_score_full\"\n   ... [truncated, total 2504 chars]"
+          },
+          "status": "validation_failed",
+          "result": {
+            "status": "validation_failed",
+            "errors": [
+              "[pc_003] Pool satisfiability: Pool-level check failed: All activities must be mid-tier or above in cost: 29/68 matching (fail). The constraint is not fully satisfiable against this pool — review the matching count above and adjust scope, condition, or aggregation.",
+              "Solvability: Universal upper bar: your constraints leave 19/34 food venues (56%) — need ≤50% (≤17 food venues). Add a constraint that filters food venues more aggressively. Use query_pool with food filters (tag, price_tier, noise_level, district) and check the 'food' count in the response until it's ≤17."
+            ],
+            "warnings": [],
+            "message": "2 issue(s) to fix. Use THINK to plan your fixes, then call SUBMIT again with the corrected JSON. Use '-h validate' to understand what each check requires.",
+            "turns_remaining": 4,
+            "WARNING": "Only 4 turn(s) left! Call SUBMIT NOW with your best draft — an imperfect submission beats no submission."
+          }
+        }
+      ],
+      "nudge_sent": false,
+      "usage": {
+        "input_tokens": 1323,
+        "output_tokens": 854,
+        "cache_creation_input_tokens": 1369,
+        "cache_read_input_tokens": 20970,
+        "total_tokens": 24516
+      }
+    },
+    {
+      "turn": 17,
+      "assistant_text": "",
+      "stop_reason_api": "tool_use",
+      "tool_calls": [
+        {
+          "name": "SUBMIT",
+          "input": {
+            "task_json": "{\n  \"task_id\": \"london_type6_001\",\n  \"city\": \"london\", \n  \"window_id\": \"late_spring_bank_holiday_2026\",\n  \"days\": 3,\n  \"start_date\": \"2026-05-24\",\n  \"public_input\": {\n    \"query\": \"My partner and I are visiting London for our 5-year anniversary weekend, May 24-26. We absolutely must have our anniversary dinner on Monday night (May 25) at an upscale, romantic restaurant - this date is non-negotiable as it's our actual anniversary. We'd love fine dining with afternoon tea, and prefer trendy, instagrammable venues. We also want to visit some art museums and enjoy the spring weather at parks. Budget isn't a major concern for this special trip.\"\n  },\n  \"structural_type\": \"type6_context_window_tension\",\n  \"difficulty\": \"medium\",\n  \"rubric\": {\n    \"hard_constraints\": [\n      {\"id\": \"hc_001\", \"type\": \"hours_check\", \"check_method\": \"code\", \"params\": {}},\n      {\"id\": \"hc_002\", \"type\": \"no_overlap\", \"check_method\": \"code\", \"params\": {}}, \n      {\"id\": \"hc_003\", \"type\": \"travel_time_hard\", \"check_method\": \"code\", \"params\": {}}\n    ],\n    \"personal_constraints\": [\n      {\n        \"id\": \"pc_001\",\n        \"score_tier\": \"P\",\n        \"hop\": 2,\n        \"check_method\": \"code\",\n        \"source_in_profile\": \"anniversary dinner on Monday night (May 25)\",\n        \"description\": \"Must have upscale romantic dinner on Monday May 25th evening\",\n        \"scope\": [\"activity_type=meal\", \"time_window=18:00-23:59\"],\n        \"condition\": {\"all\": [{\"field\": \"price_tier\", \"operator\": \">=\", \"value\": \"upscale\"}, {\"has_tag\": \"romantic\"}]},\n        \"aggregation\": {\"at_least\": 1},\n        \"consequence\": \"p_score_full\"\n      },\n      {\n        \"id\": \"pc_002\",\n        \"score_tier\": \"P\", \n        \"hop\": 1,\n        \"check_method\": \"code\",\n        \"source_in_profile\": \"afternoon tea\",\n        \"description\": \"Include at least one afternoon tea experience\",\n        \"scope\": \"all\",\n        \"condition\": {\"has_tag\": \"afternoon-tea\"},\n        \"aggregation\": {\"at_least\": 1},\n        \"consequence\": \"p_score_full\"\n   ... [truncated, total 2547 chars]"
+          },
+          "status": "validation_failed",
+          "result": {
+            "status": "validation_failed",
+            "errors": [
+              "[pc_003] Pool satisfiability: Pool-level check failed: All meals must be at fine dining or upscale venues: 7/34 matching (fail). The constraint is not fully satisfiable against this pool — review the matching count above and adjust scope, condition, or aggregation."
+            ],
+            "warnings": [],
+            "message": "1 issue(s) to fix. Use THINK to plan your fixes, then call SUBMIT again with the corrected JSON. Use '-h validate' to understand what each check requires.",
+            "turns_remaining": 3,
+            "WARNING": "Only 3 turn(s) left! Call SUBMIT NOW with your best draft — an imperfect submission beats no submission."
+          }
+        }
+      ],
+      "nudge_sent": false,
+      "usage": {
+        "input_tokens": 2133,
+        "output_tokens": 874,
+        "cache_creation_input_tokens": 310,
+        "cache_read_input_tokens": 22339,
+        "total_tokens": 25656
+      }
+    },
+    {
+      "turn": 18,
+      "assistant_text": "",
+      "stop_reason_api": "tool_use",
+      "tool_calls": [
+        {
+          "name": "SUBMIT",
+          "input": {
+            "task_json": "{\n  \"task_id\": \"london_type6_001\",\n  \"city\": \"london\", \n  \"window_id\": \"late_spring_bank_holiday_2026\",\n  \"days\": 3,\n  \"start_date\": \"2026-05-24\",\n  \"public_input\": {\n    \"query\": \"My partner and I are visiting London for our 5-year anniversary weekend, May 24-26. We absolutely must have our anniversary dinner on Monday night (May 25) at an upscale, romantic restaurant - this date is non-negotiable as it's our actual anniversary. We'd love fine dining with afternoon tea, and prefer trendy, instagrammable venues. We also want to visit some art museums and enjoy the spring weather at parks. Budget isn't a major concern for this special trip.\"\n  },\n  \"structural_type\": \"type6_context_window_tension\",\n  \"difficulty\": \"medium\",\n  \"rubric\": {\n    \"hard_constraints\": [\n      {\"id\": \"hc_001\", \"type\": \"hours_check\", \"check_method\": \"code\", \"params\": {}},\n      {\"id\": \"hc_002\", \"type\": \"no_overlap\", \"check_method\": \"code\", \"params\": {}}, \n      {\"id\": \"hc_003\", \"type\": \"travel_time_hard\", \"check_method\": \"code\", \"params\": {}}\n    ],\n    \"personal_constraints\": [\n      {\n        \"id\": \"pc_001\",\n        \"score_tier\": \"P\",\n        \"hop\": 2,\n        \"check_method\": \"code\",\n        \"source_in_profile\": \"anniversary dinner on Monday night (May 25)\",\n        \"description\": \"Must have upscale romantic dinner on Monday May 25th evening\",\n        \"scope\": [\"activity_type=meal\", \"time_window=18:00-23:59\"],\n        \"condition\": {\"all\": [{\"field\": \"price_tier\", \"operator\": \">=\", \"value\": \"upscale\"}, {\"has_tag\": \"romantic\"}]},\n        \"aggregation\": {\"at_least\": 1},\n        \"consequence\": \"p_score_full\"\n      },\n      {\n        \"id\": \"pc_002\",\n        \"score_tier\": \"P\", \n        \"hop\": 1,\n        \"check_method\": \"code\",\n        \"source_in_profile\": \"afternoon tea\",\n        \"description\": \"Include at least one afternoon tea experience\",\n        \"scope\": \"all\",\n        \"condition\": {\"has_tag\": \"afternoon-tea\"},\n        \"aggregation\": {\"at_least\": 1},\n        \"consequence\": \"p_score_full\"\n   ... [truncated, total 2528 chars]"
+          },
+          "status": "validation_failed",
+          "result": {
+            "status": "validation_failed",
+            "errors": [
+              "[pc_003] Pool satisfiability: Pool-level check failed: At least 60% of meals must be mid-tier or higher: 19/34 matching (fail). The constraint is not fully satisfiable against this pool — review the matching count above and adjust scope, condition, or aggregation."
+            ],
+            "warnings": [],
+            "message": "1 issue(s) to fix. Use THINK to plan your fixes, then call SUBMIT again with the corrected JSON. Use '-h validate' to understand what each check requires.",
+            "turns_remaining": 2,
+            "WARNING": "Only 2 turn(s) left! Call SUBMIT NOW with your best draft — an imperfect submission beats no submission."
+          }
+        }
+      ],
+      "nudge_sent": false,
+      "usage": {
+        "input_tokens": 2162,
+        "output_tokens": 866,
+        "cache_creation_input_tokens": 1023,
+        "cache_read_input_tokens": 22649,
+        "total_tokens": 26700
+      }
+    },
+    {
+      "turn": 19,
+      "assistant_text": "",
+      "stop_reason_api": "tool_use",
+      "tool_calls": [
+        {
+          "name": "SUBMIT",
+          "input": {
+            "task_json": "{\n  \"task_id\": \"london_type6_001\",\n  \"city\": \"london\", \n  \"window_id\": \"late_spring_bank_holiday_2026\",\n  \"days\": 3,\n  \"start_date\": \"2026-05-24\",\n  \"public_input\": {\n    \"query\": \"My partner and I are visiting London for our 5-year anniversary weekend, May 24-26. We absolutely must have our anniversary dinner on Monday night (May 25) at an upscale, romantic restaurant - this date is non-negotiable as it's our actual anniversary. We'd love fine dining with afternoon tea, and prefer trendy, instagrammable venues. We also want to visit some art museums and enjoy the spring weather at parks. Budget isn't a major concern for this special trip.\"\n  },\n  \"structural_type\": \"type6_context_window_tension\",\n  \"difficulty\": \"medium\",\n  \"rubric\": {\n    \"hard_constraints\": [\n      {\"id\": \"hc_001\", \"type\": \"hours_check\", \"check_method\": \"code\", \"params\": {}},\n      {\"id\": \"hc_002\", \"type\": \"no_overlap\", \"check_method\": \"code\", \"params\": {}}, \n      {\"id\": \"hc_003\", \"type\": \"travel_time_hard\", \"check_method\": \"code\", \"params\": {}}\n    ],\n    \"personal_constraints\": [\n      {\n        \"id\": \"pc_001\",\n        \"score_tier\": \"P\",\n        \"hop\": 2,\n        \"check_method\": \"code\",\n        \"source_in_profile\": \"anniversary dinner on Monday night (May 25)\",\n        \"description\": \"Must have upscale romantic dinner on Monday May 25th evening\",\n        \"scope\": [\"activity_type=meal\", \"time_window=18:00-23:59\"],\n        \"condition\": {\"all\": [{\"field\": \"price_tier\", \"operator\": \">=\", \"value\": \"upscale\"}, {\"has_tag\": \"romantic\"}]},\n        \"aggregation\": {\"at_least\": 1},\n        \"consequence\": \"p_score_full\"\n      },\n      {\n        \"id\": \"pc_002\",\n        \"score_tier\": \"P\", \n        \"hop\": 1,\n        \"check_method\": \"code\",\n        \"source_in_profile\": \"afternoon tea\",\n        \"description\": \"Include at least one afternoon tea experience\",\n        \"scope\": \"all\",\n        \"condition\": {\"has_tag\": \"afternoon-tea\"},\n        \"aggregation\": {\"at_least\": 1},\n        \"consequence\": \"p_score_full\"\n   ... [truncated, total 2459 chars]"
+          },
+          "status": "validation_failed",
+          "result": {
+            "status": "validation_failed",
+            "errors": [
+              "[pc_003] Pool satisfiability: Pool-level check failed: Visit no more than 2 art museums total: 6/15 matching (fail). The constraint is not fully satisfiable against this pool — review the matching count above and adjust scope, condition, or aggregation."
+            ],
+            "warnings": [],
+            "message": "1 issue(s) to fix. Use THINK to plan your fixes, then call SUBMIT again with the corrected JSON. Use '-h validate' to understand what each check requires.",
+            "turns_remaining": 1,
+            "WARNING": "Only 1 turn(s) left! Call SUBMIT NOW with your best draft — an imperfect submission beats no submission."
+          }
+        }
+      ],
+      "nudge_sent": false,
+      "usage": {
+        "input_tokens": 2087,
+        "output_tokens": 844,
+        "cache_creation_input_tokens": 1121,
+        "cache_read_input_tokens": 23672,
+        "total_tokens": 27724
+      }
+    },
+    {
+      "turn": 20,
+      "assistant_text": "",
+      "stop_reason_api": "tool_use",
+      "tool_calls": [
+        {
+          "name": "SUBMIT",
+          "input": {
+            "task_json": "{\n  \"task_id\": \"london_type6_001\",\n  \"city\": \"london\", \n  \"window_id\": \"late_spring_bank_holiday_2026\",\n  \"days\": 3,\n  \"start_date\": \"2026-05-24\",\n  \"public_input\": {\n    \"query\": \"My partner and I are visiting London for our 5-year anniversary weekend, May 24-26. We absolutely must have our anniversary dinner on Monday night (May 25) at an upscale, romantic restaurant - this date is non-negotiable as it's our actual anniversary. We'd love fine dining with afternoon tea, and prefer trendy, instagrammable venues. We also want to visit some art museums and enjoy the spring weather at parks.\"\n  },\n  \"structural_type\": \"type6_context_window_tension\",\n  \"difficulty\": \"medium\",\n  \"rubric\": {\n    \"hard_constraints\": [\n      {\"id\": \"hc_001\", \"type\": \"hours_check\", \"check_method\": \"code\", \"params\": {}},\n      {\"id\": \"hc_002\", \"type\": \"no_overlap\", \"check_method\": \"code\", \"params\": {}}, \n      {\"id\": \"hc_003\", \"type\": \"travel_time_hard\", \"check_method\": \"code\", \"params\": {}}\n    ],\n    \"personal_constraints\": [\n      {\n        \"id\": \"pc_001\",\n        \"score_tier\": \"P\",\n        \"hop\": 2,\n        \"check_method\": \"code\",\n        \"source_in_profile\": \"anniversary dinner on Monday night (May 25)\",\n        \"description\": \"Must have upscale romantic dinner on Monday May 25th evening\",\n        \"scope\": [\"activity_type=meal\", \"time_window=18:00-23:59\"],\n        \"condition\": {\"all\": [{\"field\": \"price_tier\", \"operator\": \">=\", \"value\": \"upscale\"}, {\"has_tag\": \"romantic\"}]},\n        \"aggregation\": {\"at_least\": 1},\n        \"consequence\": \"p_score_full\"\n      },\n      {\n        \"id\": \"pc_002\",\n        \"score_tier\": \"P\", \n        \"hop\": 1,\n        \"check_method\": \"code\",\n        \"source_in_profile\": \"afternoon tea\",\n        \"description\": \"Include at least one afternoon tea experience\",\n        \"scope\": \"all\",\n        \"condition\": {\"has_tag\": \"afternoon-tea\"},\n        \"aggregation\": {\"at_least\": 1},\n        \"consequence\": \"p_score_full\"\n      },\n      {\n        \"id\": \"pc_003\",\n        \"score... [truncated, total 2444 chars]"
+          },
+          "status": "validation_failed",
+          "result": {
+            "status": "validation_failed",
+            "errors": [
+              "[pc_003] Pool satisfiability: Pool-level check failed: Must include outdoor venues or parks: 68/68 matching (fail). The constraint is not fully satisfiable against this pool — review the matching count above and adjust scope, condition, or aggregation.",
+              "Solvability: Constraints eliminate all venues from pool. Universal constraints [pc_003] are pool filters — one of them eliminates every venue. Check each universal (scope='all', aggregation='all'/'none') constraint individually with query_pool to find which one wipes the pool."
+            ],
+            "warnings": [],
+            "message": "2 issue(s) to fix. Use THINK to plan your fixes, then call SUBMIT again with the corrected JSON. Use '-h validate' to understand what each check requires.",
+            "turns_remaining": 0,
+            "WARNING": "Only 0 turn(s) left! Call SUBMIT NOW with your best draft — an imperfect submission beats no submission."
+          }
+        }
+      ],
+      "nudge_sent": false,
+      "usage": {
+        "input_tokens": 2054,
+        "output_tokens": 839,
+        "cache_creation_input_tokens": 1053,
+        "cache_read_input_tokens": 24793,
+        "total_tokens": 28739
+      }
+    }
+  ],
+  "system_prompt": "You are a benchmark task generation agent for TravelBench.\n\nYour job: explore the venue pool using tools, design a valid type6 task,\nand call SUBMIT with the final task JSON. The loop ends when SUBMIT passes validation.\n\n═══════════════════════════════════════════════════════════════════════════\nHOW YOU INTERACT WITH THIS ENVIRONMENT — READ CAREFULLY\n═══════════════════════════════════════════════════════════════════════════\nThis is a TOOL-CALLING environment. You have access to 7 tools:\n  HELP, THINK, query_pool, get_venue, get_official_site, estimate_travel, SUBMIT\n\nEvery response you write must INVOKE ONE OR MORE TOOLS. Do not write prose\nresponses that describe what you would do — actually call the tool. In particular:\n\n  ✗ Do NOT write: \"I will now submit the task: {...task JSON...}\"\n  ✓ Instead: actually call SUBMIT(task_json=\"...\") as a tool invocation.\n\n  ✗ Do NOT write: \"Let me think about this. I would consider...\"\n  ✓ Instead: call THINK(thought=\"...\") as a tool invocation.\n\nA prose-only response with no tool call is a bug — you will receive a\nreminder asking you to use the tool, and the loop will terminate if you\nignore the reminder. The validation system only runs on SUBMIT tool calls.\n═══════════════════════════════════════════════════════════════════════════\n\nTURN BUDGET: You have 20 turns total. Each tool call costs one turn.\nBudget your turns like this:\n  • Turns 1-8:  EXPLORE — THINK, query_pool, get_venue to understand the pool\n  • Turns 9-12: DRAFT — call SUBMIT with your best task JSON (even if you\n                think it's not perfect — the validator will tell you what\n                to fix, which is more valuable than more exploration)\n  • Turns 13+:  FIX — use validation errors to correct the task and SUBMIT\n                again. Each SUBMIT failure gives you specific errors to fix.\n\nDo NOT spend 15+ turns exploring before your first SUBMIT. Once you see\nvalidation errors, you can fix them precisely. You cannot fix a task you\nhaven't drafted yet. If you hit turn 12 without a\nSUBMIT attempt, draft SOMETHING and submit — an imperfect SUBMIT that gets\nvalidator feedback is strictly better than a final turn with no submission.\n\nEvery tool result shows \"turns_remaining\". When it drops to 8,\nSUBMIT immediately regardless of how polished your task feels.\n\nCITY: London\nWINDOW: Late Spring — Bank Holiday Weekend (2026-05-23 – 2026-05-29)\nANCHOR EVENTS: Spring Bank Holiday (2026-05-25)\nPOOL: 68 venues (68 with coordinates, 10 with sold-out dates)\nPool breakdown: {\"restaurant\": 24, \"cafe\": 5, \"bar\": 5, \"museum\": 15, \"attraction\": 10, \"park\": 5, \"neighbourhood\": 4}\n\nWINDOW CHARACTER:\nLondon's long May weekend — the unofficial start of summer. Beer gardens reach peak capacity. The Spring Bank Holiday (Monday May 25) means another mid-trip closure day for some venues. Chelsea Flower Show falls the week before, leaving the city in a garden-party mood. Street markets are at full swing. This is the most 'normal' of London's windows — relatively stable hours, good weather, busy but manageable crowds. Bank holiday Monday closures remain a quiet trap.\n\nTRAVEL FORMULA (lng_factor=69.1 for this city):\ndist_km ≈ sqrt((Δlat×111)² + (Δlng×69.1)²)  walk=dist×12min  transit=dist×8+5min\nOr use estimate_travel(venue_id_a, venue_id_b, mode) for specific pairs.\n\nVENUE POOL (condensed — use get_venue for full detail):\nFormat: venue_id | name | category | district | tier | pace | cost | lat,lng | [flags]\n[SOLD]=sold-out dates in window  [WI:category]=wrong info exists (category: temporal_decay|propagation_error|conditional|subjective)  [activates:date-range]=conditional wrong info only active during these dates\n  H0lOfmu | Roti King | restaurant | Camden | mid | moderate | $10 | 51.529,-0.131\n  W9r6e6K | Barrafina Adelaide Street | restaurant | Westminster | mid | intense | $55 | 51.512,-0.121 [WI:?]\n  EYwJPhB | Bao Fitzrovia | restaurant | Westminster | mid | moderate | $20 | 51.517,-0.136\n  z4b085G | Kiln | restaurant | Westminste... [truncated]"
+}

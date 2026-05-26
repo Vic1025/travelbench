@@ -1,0 +1,88 @@
+{
+  "task_id": "london_spring_easterweek_type4_budget_westend_001",
+  "city": "London",
+  "window_id": "london_easter_2026",
+  "days": 2,
+  "start_date": "2026-04-04",
+  "public_input": {
+    "query": "We're in London for Easter weekend and want a 2-day plan for Saturday and Easter Sunday with a careful budget of \u00a328 per day. We want to keep each day affordable overall, include at least one museum visit during the trip, and avoid spending the whole day commuting so please keep things fairly concentrated. This is a celebratory getaway, so we'd love one memorable dinner option if it can fit the budget.",
+    "query_resources": {
+      "budget_per_day": 28
+    }
+  },
+  "structural_type": "type4_precision_allocation",
+  "difficulty": "medium",
+  "rubric": {
+    "hard_constraints": [
+      {
+        "id": "hc_001",
+        "type": "hours_check",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_002",
+        "type": "no_overlap",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_003",
+        "type": "travel_time_hard",
+        "check_method": "code",
+        "params": {}
+      }
+    ],
+    "personal_constraints": [
+      {
+        "id": "pc_001",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "careful budget of \u00a328 per day",
+        "description": "Total estimated venue spend must stay within \u00a328 per day",
+        "scope": "per_day",
+        "condition": {},
+        "aggregation": {
+          "sum": "estimated_cost_local",
+          "operator": "<=",
+          "value": 28
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_002",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "include at least one museum visit during the trip",
+        "description": "Include at least one museum visit",
+        "scope": "category=museum",
+        "condition": {},
+        "aggregation": {
+          "at_least": 1
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_003",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "avoid spending the whole day commuting",
+        "description": "Keep total travel time per day to 45 minutes or less",
+        "scope": "per_day",
+        "condition": {},
+        "aggregation": {
+          "sum": "travel_minutes",
+          "operator": "<=",
+          "value": 45
+        },
+        "consequence": "p_score_full"
+      }
+    ],
+    "b_score_constraints": [],
+    "required_venue_ids": []
+  },
+  "_validation_warnings": []
+}

@@ -1,0 +1,89 @@
+{
+  "city": "new_york",
+  "window_id": "new_york_july_4th_2026",
+  "days": 2,
+  "start_date": "2026-07-05",
+  "structural_type": "type5_hard_feasibility",
+  "difficulty": "hard",
+  "public_input": {
+    "query": "I am looking for a 2-day itinerary in New York. I will be using a wheelchair and I'm strictly on a budget, so no expensive places. Also, I love cafes.",
+    "query_resources": {
+      "currency": "USD"
+    }
+  },
+  "rubric": {
+    "hard_constraints": [
+      {
+        "id": "hc_001",
+        "type": "hours_check",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_002",
+        "type": "no_overlap",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_003",
+        "type": "travel_time_hard",
+        "check_method": "code",
+        "params": {}
+      }
+    ],
+    "personal_constraints": [
+      {
+        "id": "pc_001",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "on a budget",
+        "description": "All venues must be budget or free",
+        "scope": "all",
+        "condition": {
+          "field": "price_tier",
+          "operator": "<=",
+          "value": "budget"
+        },
+        "aggregation": "all",
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_002",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "using a wheelchair",
+        "description": "All venues must be wheelchair accessible",
+        "scope": "all",
+        "condition": {
+          "field": "wheelchair_accessible",
+          "operator": "==",
+          "value": true
+        },
+        "aggregation": "all",
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_003",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "cafes",
+        "description": "Visit at least 1 cafe",
+        "scope": "category=cafe",
+        "condition": {},
+        "aggregation": {
+          "at_least": 1
+        },
+        "consequence": "p_score_full"
+      }
+    ],
+    "b_score_constraints": [],
+    "required_venue_ids": []
+  },
+  "task_id": "gemini_3_1_pro_preview_new_york_type5_20260521_1779375933",
+  "_validation_warnings": [],
+  "_turns_used": 18
+}

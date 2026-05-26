@@ -1,0 +1,71 @@
+{
+  "task_id": "lon_spring_easter_type1_hackney_local_slow",
+  "city": "London",
+  "window_id": "london_easter_2026",
+  "days": 3,
+  "start_date": "2026-04-04",
+  "public_input": {
+    "query": "I'm a travel writer spending Easter weekend staying with a friend in Hackney, and my photographer friend is joining me for three days. Because bank-holiday transport can be annoying, we don't want to spend the holiday commuting back and forth across London. We want the trip to feel like the first proper outdoor weekend of spring, with at least one place where we can actually be outside."
+  },
+  "structural_type": "type1_cascading_requirements",
+  "difficulty": "medium",
+  "rubric": {
+    "hard_constraints": [
+      {
+        "id": "hc_001",
+        "type": "hours_check",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_002",
+        "type": "no_overlap",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_003",
+        "type": "travel_time_hard",
+        "check_method": "code",
+        "params": {}
+      }
+    ],
+    "personal_constraints": [
+      {
+        "id": "pc_001",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "staying with a friend in Hackney",
+        "description": "All activities should be in Hackney to keep the itinerary close to the host base.",
+        "scope": "all",
+        "condition": {
+          "field": "district",
+          "operator": "==",
+          "value": "Hackney"
+        },
+        "aggregation": "all",
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_002",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "feel like the first proper outdoor weekend of spring, with at least one place where we can actually be outside",
+        "description": "Include at least one outdoor visit activity.",
+        "scope": "activity_type=visit",
+        "condition": {
+          "has_tag": "outdoor"
+        },
+        "aggregation": {
+          "at_least": 1
+        },
+        "consequence": "p_score_full"
+      }
+    ],
+    "b_score_constraints": [],
+    "required_venue_ids": []
+  },
+  "_validation_warnings": []
+}

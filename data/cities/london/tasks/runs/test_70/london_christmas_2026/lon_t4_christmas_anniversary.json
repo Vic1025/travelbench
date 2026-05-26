@@ -1,0 +1,108 @@
+{
+  "task_id": "lon_t4_christmas_anniversary",
+  "city": "london",
+  "window_id": "london_christmas_2026",
+  "days": 3,
+  "start_date": "2026-12-26",
+  "structural_type": "type4_precision_allocation",
+  "difficulty": "medium",
+  "public_input": {
+    "query": "My partner and I are visiting London for our anniversary during Christmas week. We have a budget of \u00a332 per day total for activities and meals. We want to have at least one really special upscale anniversary dinner, and we'd love to visit some art museums. We prefer romantic spots when possible.",
+    "query_resources": {
+      "budget_per_day": 32
+    }
+  },
+  "rubric": {
+    "hard_constraints": [
+      {
+        "id": "hc_001",
+        "type": "hours_check",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_002",
+        "type": "no_overlap",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_003",
+        "type": "travel_time_hard",
+        "check_method": "code",
+        "params": {}
+      }
+    ],
+    "personal_constraints": [
+      {
+        "id": "pc_001",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "budget of \u00a332 per day",
+        "description": "Total spending per day must not exceed \u00a332",
+        "scope": "per_day",
+        "condition": {},
+        "aggregation": {
+          "sum": "estimated_cost_local",
+          "operator": "<=",
+          "value": 32
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_002",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "really special upscale anniversary dinner",
+        "description": "Must include at least one upscale meal for anniversary",
+        "scope": "activity_type=meal",
+        "condition": {
+          "field": "price_tier",
+          "operator": ">=",
+          "value": "upscale"
+        },
+        "aggregation": {
+          "at_least": 1
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_003",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "visit some art museums",
+        "description": "Must visit at least 1 art museum",
+        "scope": "category=museum",
+        "condition": {
+          "has_tag": "art"
+        },
+        "aggregation": {
+          "at_least": 1
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_004",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "romantic spots when possible",
+        "description": "At least 30% of venues should be romantic when available",
+        "scope": "all",
+        "condition": {
+          "has_tag": "romantic"
+        },
+        "aggregation": {
+          "ratio": 0.3
+        },
+        "consequence": "p_score_full"
+      }
+    ],
+    "b_score_constraints": [],
+    "required_venue_ids": []
+  },
+  "_validation_warnings": []
+}

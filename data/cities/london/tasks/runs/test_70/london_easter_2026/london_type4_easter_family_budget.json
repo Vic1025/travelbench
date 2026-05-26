@@ -1,0 +1,126 @@
+{
+  "task_id": "london_type4_easter_family_budget",
+  "city": "London",
+  "window_id": "london_easter_2026",
+  "days": 3,
+  "start_date": "2026-04-03",
+  "public_input": {
+    "query": "We're planning a 3-day family trip to London from April 3rd to April 5th. Everywhere we visit must be family-friendly. Our daily budget is \u00a333 per person. We want to celebrate our first night with dinner at Brasserie Z\u00e9del. Please include at least one museum each day and three outdoor activities total. Keep total travel time each day under 60 minutes.",
+    "query_resources": {
+      "budget_per_day": 33
+    }
+  },
+  "structural_type": "type4_precision_allocation",
+  "difficulty": "medium",
+  "rubric": {
+    "hard_constraints": [
+      {
+        "id": "hc_001",
+        "type": "hours_check",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_002",
+        "type": "no_overlap",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_003",
+        "type": "travel_time_hard",
+        "check_method": "code",
+        "params": {}
+      }
+    ],
+    "personal_constraints": [
+      {
+        "id": "pc_001",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "daily budget is \u00a333 per person",
+        "description": "Daily budget of \u00a333 for meals and activities",
+        "scope": "per_day",
+        "condition": {},
+        "aggregation": {
+          "sum": "estimated_cost_local",
+          "operator": "<=",
+          "value": 33
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_002",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "visit at least one museum each day",
+        "description": "At least one museum per day",
+        "scope": "per_day",
+        "condition": {
+          "field": "category",
+          "operator": "==",
+          "value": "museum"
+        },
+        "aggregation": {
+          "at_least": 1
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_003",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "three outdoor activities total",
+        "description": "At least three outdoor activities in total",
+        "scope": "all",
+        "condition": {
+          "has_tag": "outdoor"
+        },
+        "aggregation": {
+          "at_least": 3
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_004",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "everywhere we go must be family-friendly",
+        "description": "All venues must be family-friendly",
+        "scope": "all",
+        "condition": {
+          "field": "family_friendly",
+          "operator": "==",
+          "value": true
+        },
+        "aggregation": "all",
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_005",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "total travel time each day should be under 60 minutes",
+        "description": "Total travel time per day under 60 minutes",
+        "scope": "per_day",
+        "condition": {},
+        "aggregation": {
+          "sum": "travel_minutes",
+          "operator": "<=",
+          "value": 60
+        },
+        "consequence": "p_score_full"
+      }
+    ],
+    "b_score_constraints": [],
+    "required_venue_ids": [
+      "z1C34lE"
+    ]
+  },
+  "_validation_warnings": []
+}

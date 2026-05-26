@@ -1,0 +1,101 @@
+{
+  "task_id": "london_type5_christmas_accessibility_001",
+  "city": "London",
+  "window_id": "london_christmas_2026",
+  "days": 2,
+  "start_date": "2026-12-27",
+  "public_input": {
+    "query": "Planning a 2-day London visit during Christmas week for my elderly parents who use wheelchairs. We need accessible venues, prefer mid-range establishments over budget or luxury options, and want to experience established London institutions rather than hidden gems or tourist traps. Looking for a comfortable pace with good dining options and cultural sites."
+  },
+  "structural_type": "type5_hard_feasibility_reduction",
+  "difficulty": "hard",
+  "rubric": {
+    "hard_constraints": [
+      {
+        "id": "hc_001",
+        "type": "hours_check",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_002",
+        "type": "no_overlap",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_003",
+        "type": "travel_time_hard",
+        "check_method": "code",
+        "params": {}
+      }
+    ],
+    "personal_constraints": [
+      {
+        "id": "pc_001",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "use wheelchairs",
+        "description": "All venues must be wheelchair accessible",
+        "scope": "all",
+        "condition": {
+          "field": "wheelchair_accessible",
+          "operator": "==",
+          "value": true
+        },
+        "aggregation": "all",
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_002",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "mid-range establishments",
+        "description": "All venues must be mid-tier pricing",
+        "scope": "all",
+        "condition": {
+          "field": "price_tier",
+          "operator": "==",
+          "value": "mid"
+        },
+        "aggregation": "all",
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_003",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "established London institutions rather than hidden gems",
+        "description": "All venues must be mid-tier traffic (established institutions, not hidden gems)",
+        "scope": "all",
+        "condition": {
+          "field": "traffic_tier",
+          "operator": "==",
+          "value": "mid"
+        },
+        "aggregation": "all",
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_004",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "good dining options and cultural sites",
+        "description": "Must include at least one museum visit",
+        "scope": "category=museum",
+        "condition": {},
+        "aggregation": {
+          "at_least": 1
+        },
+        "consequence": "p_score_full"
+      }
+    ],
+    "b_score_constraints": [],
+    "required_venue_ids": []
+  },
+  "_validation_warnings": []
+}

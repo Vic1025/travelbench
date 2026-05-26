@@ -1,0 +1,118 @@
+{
+  "task_id": "lon_spring_type3_1",
+  "city": "London",
+  "window_id": "london_easter_2026",
+  "days": 2,
+  "start_date": "2026-04-04",
+  "structural_type": "type3_competing_requirements",
+  "difficulty": "hard",
+  "public_input": {
+    "query": "My partner and I are heading to London for a 2-day trip this Easter weekend (April 4th to 5th). We're going to base ourselves in East London, so we'd like to stick entirely to venues in Hackney or Tower Hamlets. I want to keep things cheap and include at least 5 budget-friendly venues. However, my partner wants to try nicer places for food, so we need to include at least 4 mid-tier or upscale meals. Also, we like culture but we don't want to overdo it, so please schedule not too many museums\u2014at most one per day."
+  },
+  "rubric": {
+    "hard_constraints": [
+      {
+        "id": "hc_001",
+        "type": "hours_check",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_002",
+        "type": "no_overlap",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_003",
+        "type": "travel_time_hard",
+        "check_method": "code",
+        "params": {}
+      }
+    ],
+    "personal_constraints": [
+      {
+        "id": "pc_001",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "stick entirely to venues in Hackney or Tower Hamlets",
+        "description": "All venues must be in East London (Hackney or Tower Hamlets)",
+        "scope": "all",
+        "condition": {
+          "any": [
+            {
+              "field": "district",
+              "operator": "==",
+              "value": "Hackney"
+            },
+            {
+              "field": "district",
+              "operator": "==",
+              "value": "Tower Hamlets"
+            }
+          ]
+        },
+        "aggregation": "all",
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_002",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "keep things cheap",
+        "description": "Include at least 5 budget-friendly venues",
+        "scope": "all",
+        "condition": {
+          "field": "price_tier",
+          "operator": "<=",
+          "value": "budget"
+        },
+        "aggregation": {
+          "at_least": 5
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_003",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "try nicer places for food",
+        "description": "Include at least 4 mid-tier or upscale meals",
+        "scope": "activity_type=meal",
+        "condition": {
+          "field": "price_tier",
+          "operator": ">=",
+          "value": "mid"
+        },
+        "aggregation": {
+          "at_least": 4
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_004",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "not too many museums",
+        "description": "At most 1 museum per day",
+        "scope": "per_day",
+        "condition": {
+          "field": "category",
+          "operator": "==",
+          "value": "museum"
+        },
+        "aggregation": {
+          "at_most": 1
+        },
+        "consequence": "p_score_full"
+      }
+    ],
+    "b_score_constraints": [],
+    "required_venue_ids": []
+  },
+  "_validation_warnings": []
+}

@@ -1,0 +1,101 @@
+{
+  "task_id": "lon_spring_easterweek_type6_britishmuseum_backup",
+  "city": "London",
+  "window_id": "london_easter_2026",
+  "days": 1,
+  "start_date": "2026-04-06",
+  "public_input": {
+    "query": "We're in London on Easter Monday and had planned to spend the afternoon at the British Museum, but we know bank holiday closures can ruin plans. Please build us a central London backup day for Easter Monday with one art-focused museum visit and an easy dinner nearby so we are not criss-crossing the city if the British Museum is shut."
+  },
+  "structural_type": "type6_context_window_tension",
+  "difficulty": "medium",
+  "rubric": {
+    "hard_constraints": [
+      {
+        "id": "hc_001",
+        "type": "hours_check",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_002",
+        "type": "no_overlap",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_003",
+        "type": "travel_time_hard",
+        "check_method": "code",
+        "params": {}
+      }
+    ],
+    "personal_constraints": [
+      {
+        "id": "pc_001",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "central London backup day",
+        "description": "Use only low-traffic venues to keep the backup day manageable on the bank holiday",
+        "scope": "all",
+        "condition": {
+          "field": "traffic_tier",
+          "operator": "==",
+          "value": "low"
+        },
+        "aggregation": "all",
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_002",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "one art-focused museum visit",
+        "description": "Include at least one art-focused museum visit",
+        "scope": "category=museum",
+        "condition": {
+          "has_tag": "art"
+        },
+        "aggregation": {
+          "at_least": 1
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_003",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "an easy dinner nearby so we are not criss-crossing the city",
+        "description": "Total travel time for the day should stay within 60 minutes",
+        "scope": "per_day",
+        "condition": {},
+        "aggregation": {
+          "sum": "travel_minutes",
+          "operator": "<=",
+          "value": 60
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_004",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "if the British Museum is shut",
+        "description": "Do not schedule the British Museum on this Easter Monday plan",
+        "scope": "venue_id=GjmHbqS",
+        "condition": {},
+        "aggregation": "none",
+        "consequence": "p_score_full"
+      }
+    ],
+    "b_score_constraints": [],
+    "required_venue_ids": [
+      "GjmHbqS"
+    ]
+  },
+  "_validation_warnings": []
+}

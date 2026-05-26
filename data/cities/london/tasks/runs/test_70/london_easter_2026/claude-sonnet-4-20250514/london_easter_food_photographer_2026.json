@@ -1,0 +1,106 @@
+{
+  "task_id": "london_easter_food_photographer_2026",
+  "city": "London",
+  "window_id": "london_easter_2026",
+  "days": 4,
+  "start_date": "2026-04-04",
+  "public_input": {
+    "query": "I'm a food photographer from the US visiting London for a magazine assignment during Easter week. I'm traveling with my elderly mother who uses a wheelchair, so accessibility is crucial. I need to capture diverse London food culture for my article and some really photogenic, instagrammable spots that will look great in the magazine. I prefer upscale venues for dinner since this is a professional assignment with a good budget."
+  },
+  "structural_type": "type1_cascading_requirements",
+  "difficulty": "medium",
+  "rubric": {
+    "hard_constraints": [
+      {
+        "id": "hc_001",
+        "type": "hours_check",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_002",
+        "type": "no_overlap",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_003",
+        "type": "travel_time_hard",
+        "check_method": "code",
+        "params": {}
+      }
+    ],
+    "personal_constraints": [
+      {
+        "id": "pc_001",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "elderly mother who uses a wheelchair",
+        "description": "At least 60% of venues must be wheelchair accessible",
+        "scope": "all",
+        "condition": {
+          "field": "wheelchair_accessible",
+          "operator": "==",
+          "value": true
+        },
+        "aggregation": {
+          "ratio": 0.6
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_002",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "diverse London food culture",
+        "description": "Include at least 2 upscale meal venues",
+        "scope": "activity_type=meal",
+        "condition": {
+          "field": "price_tier",
+          "operator": ">=",
+          "value": "upscale"
+        },
+        "aggregation": {
+          "at_least": 2
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_003",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "photogenic, instagrammable spots",
+        "description": "At least 1 instagrammable venue",
+        "scope": "all",
+        "condition": {
+          "has_tag": "instagrammable"
+        },
+        "aggregation": {
+          "at_least": 1
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_004",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "professional assignment",
+        "description": "Visit at least 2 museums for cultural content",
+        "scope": "category=museum",
+        "condition": {},
+        "aggregation": {
+          "at_least": 2
+        },
+        "consequence": "p_score_full"
+      }
+    ],
+    "b_score_constraints": [],
+    "required_venue_ids": []
+  },
+  "_validation_warnings": [],
+  "_turns_used": 18
+}

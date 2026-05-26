@@ -1,0 +1,88 @@
+{
+  "task_id": "london_winter_christmasweek_type2_westend_art_sprint",
+  "city": "London",
+  "window_id": "london_christmas_2026",
+  "days": 1,
+  "start_date": "2026-12-27",
+  "public_input": {
+    "query": "I have one day in London on 2026-12-27 and only 185 minutes total for sightseeing and food. Build a compact plan that fits within 185 minutes total. I want at least 2 museums, at least 1 coffee stop, and keep total travel time per day under 30 minutes because I don't want to spend the whole day commuting. Bonus if the day feels central and art-focused.",
+    "query_resources": {
+      "time_ceiling_minutes": 185
+    }
+  },
+  "structural_type": "type2_subset_selection",
+  "difficulty": "medium",
+  "rubric": {
+    "hard_constraints": [
+      {
+        "id": "hc_001",
+        "type": "hours_check",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_002",
+        "type": "no_overlap",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_003",
+        "type": "travel_time_hard",
+        "check_method": "code",
+        "params": {}
+      }
+    ],
+    "personal_constraints": [
+      {
+        "id": "pc_001",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "at least 2 museums",
+        "description": "Include at least two museum visits",
+        "scope": "category=museum",
+        "condition": {},
+        "aggregation": {
+          "at_least": 2
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_002",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "at least 1 coffee stop",
+        "description": "Include at least one coffee-focused meal stop",
+        "scope": "activity_type=meal",
+        "condition": {
+          "has_tag": "coffee"
+        },
+        "aggregation": {
+          "at_least": 1
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_003",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "I don't want to spend the whole day commuting",
+        "description": "Keep total travel time per day under 30 minutes",
+        "scope": "per_day",
+        "condition": {},
+        "aggregation": {
+          "sum": "travel_minutes",
+          "operator": "<=",
+          "value": 30
+        },
+        "consequence": "p_score_full"
+      }
+    ],
+    "b_score_constraints": [],
+    "required_venue_ids": []
+  },
+  "_validation_warnings": []
+}

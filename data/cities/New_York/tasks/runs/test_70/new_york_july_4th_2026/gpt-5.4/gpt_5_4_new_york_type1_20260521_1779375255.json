@@ -1,0 +1,110 @@
+{
+  "city": "New_York",
+  "window_id": "new_york_july_4th_2026",
+  "days": 2,
+  "start_date": "2026-07-02",
+  "public_input": {
+    "query": "My fiance and I are doing a two-day mini-moon in New York right before the July 4 crowds peak. We want this to feel romantic and local rather than like a checklist of famous tourist spots. We both love hidden gems, want special occasion dinners in the evenings, and would love at least one waterfront walk around sunset. We enjoy museums, but don't want every day to turn into a museum marathon.",
+    "query_resources": {
+      "currency": "USD"
+    }
+  },
+  "structural_type": "type1_cascading_requirements",
+  "difficulty": "medium",
+  "rubric": {
+    "hard_constraints": [
+      {
+        "id": "hc_001",
+        "type": "hours_check",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_002",
+        "type": "no_overlap",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_003",
+        "type": "travel_time_hard",
+        "check_method": "code",
+        "params": {}
+      }
+    ],
+    "personal_constraints": [
+      {
+        "id": "pc_001",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "hidden gems",
+        "description": "All venues should be hidden gems",
+        "scope": "all",
+        "condition": {
+          "has_tag": "hidden-gem"
+        },
+        "aggregation": "all",
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_002",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "special occasion dinners in the evenings",
+        "description": "Evening meal venues should be upscale or above",
+        "scope": [
+          "activity_type=meal",
+          "time_window=18:00-23:59"
+        ],
+        "condition": {
+          "field": "price_tier",
+          "operator": ">=",
+          "value": "upscale"
+        },
+        "aggregation": "all",
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_003",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "waterfront walk around sunset",
+        "description": "Include at least one waterfront visit",
+        "scope": "activity_type=visit",
+        "condition": {
+          "has_tag": "waterfront"
+        },
+        "aggregation": {
+          "at_least": 1
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_004",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "don't want every day to turn into a museum marathon",
+        "description": "At most one museum per day",
+        "scope": "per_day",
+        "condition": {
+          "field": "category",
+          "operator": "==",
+          "value": "museum"
+        },
+        "aggregation": {
+          "at_most": 1
+        },
+        "consequence": "p_score_full"
+      }
+    ],
+    "b_score_constraints": [],
+    "required_venue_ids": []
+  },
+  "task_id": "gpt_5_4_new_york_type1_20260521_1779375255",
+  "_validation_warnings": [],
+  "_turns_used": 9
+}

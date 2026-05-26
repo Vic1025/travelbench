@@ -1,0 +1,106 @@
+{
+  "task_id": "lon_easter_fine_dining_2026",
+  "city": "london",
+  "window_id": "london_easter_2026",
+  "days": 4,
+  "start_date": "2026-04-03",
+  "public_input": {
+    "query": "Planning a special 10th anniversary celebration during Easter week in London! We want to experience London's best fine dining, especially Duck & Waffle for their famous rooftop experience. We prefer restaurants requiring reservations and love Michelin-starred experiences. Please plan April 3-6."
+  },
+  "structural_type": "type6_context_window_tension",
+  "difficulty": "medium",
+  "rubric": {
+    "hard_constraints": [
+      {
+        "id": "hc_001",
+        "type": "hours_check",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_002",
+        "type": "no_overlap",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_003",
+        "type": "travel_time_hard",
+        "check_method": "code",
+        "params": {}
+      }
+    ],
+    "personal_constraints": [
+      {
+        "id": "pc_001",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "special 10th anniversary celebration",
+        "description": "All dinner meals must be at upscale or fine-dining restaurants",
+        "scope": [
+          "activity_type=meal",
+          "time_window=18:00-23:59"
+        ],
+        "condition": {
+          "field": "price_tier",
+          "operator": ">=",
+          "value": "upscale"
+        },
+        "aggregation": "all",
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_002",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "Duck & Waffle",
+        "description": "Must include Duck & Waffle restaurant",
+        "scope": "venue_id=y1QkOtV",
+        "condition": {},
+        "aggregation": {
+          "at_least": 1
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_003",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "restaurants requiring reservations",
+        "description": "All restaurants must require reservations",
+        "scope": "activity_type=meal",
+        "condition": {
+          "field": "reservation_required",
+          "operator": "==",
+          "value": true
+        },
+        "aggregation": "all",
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_004",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "love Michelin-starred experiences",
+        "description": "Include at least 1 Michelin-starred venue",
+        "scope": "all",
+        "condition": {
+          "has_tag": "michelin-star"
+        },
+        "aggregation": {
+          "at_least": 1
+        },
+        "consequence": "p_score_full"
+      }
+    ],
+    "b_score_constraints": [],
+    "required_venue_ids": [
+      "y1QkOtV"
+    ]
+  },
+  "_validation_warnings": []
+}

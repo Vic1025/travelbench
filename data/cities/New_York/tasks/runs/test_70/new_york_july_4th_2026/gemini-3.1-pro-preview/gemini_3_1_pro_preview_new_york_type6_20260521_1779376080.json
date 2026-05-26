@@ -1,0 +1,87 @@
+{
+  "task_id": "gemini_3_1_pro_preview_new_york_type6_20260521_1779376080",
+  "city": "New_York",
+  "window_id": "new_york_july_4th_2026",
+  "days": 3,
+  "start_date": "2026-07-03",
+  "public_input": {
+    "query": "I am taking the kids to New York for a 3-day trip. We want to visit the Empire State Building and The Metropolitan Museum of Art.",
+    "query_resources": {
+      "currency": "USD"
+    }
+  },
+  "structural_type": "type6_context_window_tension",
+  "difficulty": "hard",
+  "rubric": {
+    "hard_constraints": [
+      {
+        "id": "hc_001",
+        "type": "hours_check",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_002",
+        "type": "no_overlap",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_003",
+        "type": "travel_time_hard",
+        "check_method": "code",
+        "params": {}
+      }
+    ],
+    "personal_constraints": [
+      {
+        "id": "pc_001",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "taking the kids",
+        "description": "All venues must be family friendly.",
+        "scope": "all",
+        "condition": {
+          "field": "family_friendly",
+          "operator": "==",
+          "value": true
+        },
+        "aggregation": "all",
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_002",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "Empire State Building",
+        "description": "Must visit the Empire State Building.",
+        "scope": "venue_id=oROvMoN",
+        "condition": {},
+        "aggregation": {
+          "at_least": 1
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_003",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "The Metropolitan Museum of Art",
+        "description": "Must visit The Metropolitan Museum of Art.",
+        "scope": "venue_id=LZg9aPB",
+        "condition": {},
+        "aggregation": {
+          "at_least": 1
+        },
+        "consequence": "p_score_full"
+      }
+    ],
+    "b_score_constraints": [],
+    "required_venue_ids": []
+  },
+  "_validation_warnings": [],
+  "_turns_used": 16
+}

@@ -1,0 +1,657 @@
+{
+  "db_path": "/Users/victoriajin/Documents/Career_related/TravelPlanningAgent/travelbench_Phase5.10/data/cities/london/runs/test_70/travelbench.db",
+  "city": "london",
+  "generated_at": "2026-05-19T13:18:27",
+  "vocab_snapshot": {
+    "universal_core_count": 64,
+    "universal_cuisines_count": 18
+  },
+  "tag_actions": {
+    "history-royal-heritage": {
+      "action": "rename",
+      "target": "history",
+      "instances": 22
+    },
+    "central-london": {
+      "action": "drop",
+      "reason": "district name",
+      "instances": 14
+    },
+    "architecture-city-skyline": {
+      "action": "split",
+      "targets": [
+        "architecture",
+        "views"
+      ],
+      "instances": 13
+    },
+    "reservation-required": {
+      "action": "rename",
+      "target": "booking-required",
+      "instances": 12
+    },
+    "contemporary-modern-art": {
+      "action": "rename",
+      "target": "contemporary",
+      "instances": 9
+    },
+    "casual-dining": {
+      "action": "rename",
+      "target": "casual",
+      "instances": 8
+    },
+    "music-nightlife": {
+      "action": "split",
+      "targets": [
+        "live-music",
+        "lively"
+      ],
+      "instances": 6
+    },
+    "multicultural-food-markets": {
+      "action": "rename",
+      "target": "market",
+      "instances": 5
+    },
+    "picnic-spot": {
+      "action": "rename",
+      "target": "outdoor-seating",
+      "instances": 5
+    },
+    "counter-dining": {
+      "action": "rename",
+      "target": "counter-seating",
+      "instances": 4
+    },
+    "lunch-spot": {
+      "action": "rename",
+      "target": "lunch",
+      "instances": 4
+    },
+    "speciality-coffee": {
+      "action": "rename",
+      "target": "coffee",
+      "instances": 4
+    },
+    "borough-market": {
+      "action": "drop",
+      "reason": "district name",
+      "instances": 3
+    },
+    "cheap-eats": {
+      "action": "rename",
+      "target": "budget-friendly",
+      "instances": 3
+    },
+    "fashion-vintage-shopping": {
+      "action": "drop",
+      "reason": "not in canonical, shopping category",
+      "instances": 3
+    },
+    "theatre-performing-arts": {
+      "action": "drop",
+      "reason": "not in canonical",
+      "instances": 3
+    },
+    "wood-fired": {
+      "action": "rename",
+      "target": "speciality",
+      "instances": 3
+    },
+    "barbecue": {
+      "action": "rename",
+      "target": "american",
+      "instances": 2
+    },
+    "brasserie": {
+      "action": "rename",
+      "target": "french",
+      "instances": 2
+    },
+    "cask-ale": {
+      "action": "extend",
+      "instances": 2,
+      "reason": "UK pub culture; London-specific extension"
+    },
+    "counter-deli": {
+      "action": "rename",
+      "target": "counter-seating",
+      "instances": 2
+    },
+    "dance-music": {
+      "action": "rename",
+      "target": "live-music",
+      "instances": 2
+    },
+    "fish-and-chips": {
+      "action": "extend",
+      "instances": 2,
+      "reason": "British/London-specific cuisine concept"
+    },
+    "north-african": {
+      "action": "rename",
+      "target": "middle-eastern",
+      "instances": 2
+    },
+    "open-kitchen": {
+      "action": "rename",
+      "target": "communal-seating",
+      "instances": 2
+    },
+    "pre-theatre": {
+      "action": "extend",
+      "instances": 2,
+      "reason": "London theatre-district meal slot; city-specific"
+    },
+    "queue-only": {
+      "action": "rename",
+      "target": "no-reservations",
+      "instances": 2
+    },
+    "soho": {
+      "action": "drop",
+      "reason": "district name",
+      "instances": 2
+    },
+    "steakhouse": {
+      "action": "rename",
+      "target": "american",
+      "instances": 2
+    },
+    "bombay-cafe": {
+      "action": "drop",
+      "reason": "singleton, venue-name",
+      "instances": 1
+    },
+    "charcoal-grill": {
+      "action": "drop",
+      "reason": "singleton, cooking method",
+      "instances": 1
+    },
+    "crown-jewels": {
+      "action": "drop",
+      "reason": "singleton, venue-name",
+      "instances": 1
+    },
+    "european": {
+      "action": "rename",
+      "target": "french",
+      "instances": 1
+    },
+    "experimental-music": {
+      "action": "rename",
+      "target": "live-music",
+      "instances": 1
+    },
+    "fine-dining": {
+      "action": "rename",
+      "target": "formal",
+      "instances": 1
+    },
+    "fresh-pasta": {
+      "action": "rename",
+      "target": "italian",
+      "instances": 1
+    },
+    "jewish": {
+      "action": "rename",
+      "target": "kosher",
+      "instances": 1
+    },
+    "malaysian": {
+      "action": "rename",
+      "target": "fusion",
+      "instances": 1,
+      "reason": "Aligns with Roti King cuisine=fusion backfill (user-edited)"
+    },
+    "medieval-fortress": {
+      "action": "rename",
+      "target": "history",
+      "instances": 1
+    },
+    "museum": {
+      "action": "rename",
+      "target": "history",
+      "instances": 1
+    },
+    "pasta": {
+      "action": "rename",
+      "target": "italian",
+      "instances": 1
+    },
+    "photography-friendly": {
+      "action": "rename",
+      "target": "photography-allowed",
+      "instances": 1
+    },
+    "popcorn": {
+      "action": "drop",
+      "reason": "singleton, specific item",
+      "instances": 1
+    },
+    "steak-frites": {
+      "action": "rename",
+      "target": "french",
+      "instances": 1
+    },
+    "steamed-buns": {
+      "action": "rename",
+      "target": "chinese",
+      "instances": 1
+    },
+    "sushi": {
+      "action": "rename",
+      "target": "japanese",
+      "instances": 1
+    },
+    "taiwanese": {
+      "action": "rename",
+      "target": "chinese",
+      "instances": 1
+    },
+    "tapas": {
+      "action": "rename",
+      "target": "spanish",
+      "instances": 1
+    },
+    "udon-noodles": {
+      "action": "rename",
+      "target": "japanese",
+      "instances": 1
+    },
+    "upscale": {
+      "action": "rename",
+      "target": "formal",
+      "instances": 1
+    },
+    "whisky-bar": {
+      "action": "rename",
+      "target": "cocktails",
+      "instances": 1
+    }
+  },
+  "city_extension": [
+    "cask-ale",
+    "fish-and-chips",
+    "pre-theatre"
+  ],
+  "cuisine_backfill": {
+    "EYwJPhB": {
+      "name": "Bao Fitzrovia",
+      "source": "llm",
+      "cuisine": "chinese",
+      "tags_seen": [
+        "cashless",
+        "dinner",
+        "lunch",
+        "no-reservations",
+        "photography-allowed",
+        "small-plates",
+        "steamed-buns",
+        "taiwanese",
+        "trendy"
+      ],
+      "reasoning": "The restaurant specializes in Taiwanese cuisine, which is a regional variety of Chinese cuisine."
+    },
+    "W9r6e6K": {
+      "name": "Barrafina Adelaide Street",
+      "source": "tag",
+      "cuisine": "spanish",
+      "tags_seen": [
+        "counter-seating",
+        "michelin-star",
+        "no-reservations",
+        "reservation-required",
+        "spanish",
+        "tapas"
+      ]
+    },
+    "z1C34lE": {
+      "name": "Brasserie Zédel",
+      "source": "tag",
+      "cuisine": "french",
+      "tags_seen": [
+        "brasserie",
+        "cocktails",
+        "family-friendly",
+        "french",
+        "pre-theatre",
+        "steak-frites",
+        "wheelchair-accessible"
+      ]
+    },
+    "EZN4wAu": {
+      "name": "Dishoom King's Cross",
+      "source": "tag",
+      "cuisine": "indian",
+      "tags_seen": [
+        "bombay-cafe",
+        "breakfast",
+        "cocktails",
+        "family-friendly",
+        "indian",
+        "reservation-required",
+        "vegetarian-options",
+        "wheelchair-accessible"
+      ]
+    },
+    "y1QkOtV": {
+      "name": "Duck & Waffle",
+      "source": "tag",
+      "cuisine": "british",
+      "tags_seen": [
+        "architecture-city-skyline",
+        "breakfast",
+        "british",
+        "cocktails",
+        "dinner",
+        "instagrammable",
+        "late-night",
+        "lunch",
+        "reservation-required",
+        "romantic",
+        "rooftop",
+        "trendy"
+      ]
+    },
+    "HKyuzE5": {
+      "name": "Faulkner's Fish & Chips",
+      "source": "tag",
+      "cuisine": "british",
+      "tags_seen": [
+        "british",
+        "cash-only",
+        "casual-dining",
+        "cheap-eats",
+        "dinner",
+        "family-friendly",
+        "fish-and-chips",
+        "lunch",
+        "popular-with-locals",
+        "wheelchair-accessible"
+      ]
+    },
+    "GmRqjDy": {
+      "name": "Flat Iron Covent Garden",
+      "source": "tag",
+      "cuisine": "british",
+      "tags_seen": [
+        "british",
+        "budget-friendly",
+        "central-london",
+        "family-friendly",
+        "no-reservations",
+        "popcorn",
+        "steakhouse",
+        "wheelchair-accessible"
+      ]
+    },
+    "wRvzwmq": {
+      "name": "Gymkhana",
+      "source": "tag",
+      "cuisine": "indian",
+      "tags_seen": [
+        "dinner",
+        "fine-dining",
+        "indian",
+        "lunch",
+        "michelin-star",
+        "reservation-required",
+        "wheelchair-accessible"
+      ]
+    },
+    "z4b085G": {
+      "name": "Kiln",
+      "source": "tag",
+      "cuisine": "thai",
+      "tags_seen": [
+        "photography-allowed",
+        "reservation-required",
+        "small-plates",
+        "soho",
+        "thai",
+        "wine"
+      ]
+    },
+    "uiZpzps": {
+      "name": "Koya Bar",
+      "source": "tag",
+      "cuisine": "japanese",
+      "tags_seen": [
+        "counter-dining",
+        "family-friendly",
+        "japanese",
+        "no-reservations",
+        "udon-noodles"
+      ]
+    },
+    "ncF5wXo": {
+      "name": "Mangal 2",
+      "source": "tag",
+      "cuisine": "middle-eastern",
+      "tags_seen": [
+        "barbecue",
+        "casual-dining",
+        "communal-seating",
+        "dinner",
+        "family-friendly",
+        "middle-eastern",
+        "open-kitchen",
+        "photography-allowed",
+        "popular-with-locals",
+        "wood-fired"
+      ]
+    },
+    "QFYcgIF": {
+      "name": "Ottolenghi Islington",
+      "source": "tag",
+      "cuisine": "middle-eastern",
+      "tags_seen": [
+        "communal-seating",
+        "counter-deli",
+        "family-friendly",
+        "middle-eastern",
+        "vegetarian-options",
+        "wheelchair-accessible"
+      ]
+    },
+    "ibedqIS": {
+      "name": "Padella",
+      "source": "tag",
+      "cuisine": "italian",
+      "tags_seen": [
+        "borough-market",
+        "casual-dining",
+        "family-friendly",
+        "fresh-pasta",
+        "italian",
+        "lunch-spot",
+        "no-reservations",
+        "pasta",
+        "queue-only"
+      ]
+    },
+    "EIBl5SN": {
+      "name": "Pham Sushi",
+      "source": "tag",
+      "cuisine": "japanese",
+      "tags_seen": [
+        "budget-friendly",
+        "casual-dining",
+        "counter-dining",
+        "family-friendly",
+        "japanese",
+        "lunch",
+        "no-reservations",
+        "popular-with-locals",
+        "sushi"
+      ]
+    },
+    "H0lOfmu": {
+      "name": "Roti King",
+      "source": "llm",
+      "cuisine": "fusion",
+      "tags_seen": [
+        "cash-only",
+        "cheap-eats",
+        "family-friendly",
+        "malaysian",
+        "no-reservations"
+      ],
+      "reasoning": "LLM failed (None); defaulted to fusion"
+    },
+    "llCcZmW": {
+      "name": "Salvation in Noodles",
+      "source": "tag",
+      "cuisine": "vietnamese",
+      "tags_seen": [
+        "casual-dining",
+        "cheap-eats",
+        "communal-seating",
+        "dinner",
+        "family-friendly",
+        "lively",
+        "lunch",
+        "no-reservations",
+        "popular-with-locals",
+        "vietnamese"
+      ]
+    },
+    "U4UtHGm": {
+      "name": "Sketch – The Gallery",
+      "source": "tag",
+      "cuisine": "french",
+      "tags_seen": [
+        "afternoon-tea",
+        "contemporary-modern-art",
+        "french",
+        "instagrammable",
+        "photography-friendly",
+        "reservation-required",
+        "romantic",
+        "trendy",
+        "wheelchair-accessible"
+      ]
+    },
+    "kLWB6L4": {
+      "name": "Smoking Goat",
+      "source": "tag",
+      "cuisine": "thai",
+      "tags_seen": [
+        "barbecue",
+        "family-friendly",
+        "late-night",
+        "photography-allowed",
+        "thai",
+        "whisky-bar"
+      ]
+    },
+    "MGn9tpR": {
+      "name": "Taqueria",
+      "source": "tag",
+      "cuisine": "mexican",
+      "tags_seen": [
+        "budget-friendly",
+        "casual-dining",
+        "counter-dining",
+        "dinner",
+        "family-friendly",
+        "lunch",
+        "mexican",
+        "no-reservations"
+      ]
+    },
+    "Pzj0QXo": {
+      "name": "The Golden Chippy",
+      "source": "tag",
+      "cuisine": "british",
+      "tags_seen": [
+        "british",
+        "budget-friendly",
+        "cash-only",
+        "dinner",
+        "family-friendly",
+        "fish-and-chips",
+        "lunch",
+        "popular-with-locals",
+        "wheelchair-accessible"
+      ]
+    },
+    "lv1VhcX": {
+      "name": "The Hawksmoor Spitalfields",
+      "source": "tag",
+      "cuisine": "british",
+      "tags_seen": [
+        "british",
+        "cocktails",
+        "dinner",
+        "lunch",
+        "reservation-required",
+        "romantic",
+        "steakhouse",
+        "wheelchair-accessible",
+        "wine"
+      ]
+    },
+    "xvascDa": {
+      "name": "The Ivy",
+      "source": "tag",
+      "cuisine": "british",
+      "tags_seen": [
+        "brasserie",
+        "british",
+        "central-london",
+        "cocktails",
+        "dinner",
+        "family-friendly",
+        "lively",
+        "lunch",
+        "pre-theatre",
+        "reservation-required",
+        "upscale",
+        "wheelchair-accessible"
+      ]
+    },
+    "EAZQP0k": {
+      "name": "The Palomar",
+      "source": "tag",
+      "cuisine": "middle-eastern",
+      "tags_seen": [
+        "counter-seating",
+        "dinner",
+        "jewish",
+        "lively",
+        "lunch",
+        "middle-eastern",
+        "open-kitchen",
+        "photography-allowed",
+        "reservation-required",
+        "soho"
+      ]
+    },
+    "Dd5AmE5": {
+      "name": "Yildiz Palace Turkish Restaurant",
+      "source": "tag",
+      "cuisine": "middle-eastern",
+      "tags_seen": [
+        "budget-friendly",
+        "casual-dining",
+        "charcoal-grill",
+        "dinner",
+        "family-friendly",
+        "lunch",
+        "middle-eastern",
+        "no-reservations",
+        "popular-with-locals",
+        "vegetarian-options"
+      ]
+    }
+  },
+  "summary": {
+    "tags_renamed": 37,
+    "tags_split": 2,
+    "tags_dropped": 9,
+    "tags_extended": 3,
+    "restaurants_with_cuisine_set": 24
+  }
+}

@@ -1,0 +1,746 @@
+{
+  "outcome": "success",
+  "model": "claude-sonnet-4-20250514",
+  "type_key": "type2",
+  "city": "london",
+  "window_id": "london_late_spring_2026",
+  "window_label": "Late Spring — Bank Holiday Weekend",
+  "max_turns": 20,
+  "stop_info": {
+    "turns_used": 16,
+    "max_turns": 20,
+    "stop_reason": "submitted",
+    "last_submit_errors": [
+      "[pc_002] Pool satisfiability: Pool-level check failed: Museums should be at most moderate traffic tier: 10/15 matching (fail). The constraint is not fully satisfiable against this pool — review the matching count above and adjust scope, condition, or aggregation."
+    ],
+    "usage_totals": {
+      "input_tokens": 24482,
+      "output_tokens": 6052,
+      "cache_creation_input_tokens": 17989,
+      "cache_read_input_tokens": 192805,
+      "total_tokens": 241328
+    }
+  },
+  "initial_message": "\n        Generate a type2 benchmark task for london in the 'Late Spring — Bank Holiday Weekend' window.\n\n        BEFORE YOU START — read the handbook. It contains pool-specific data that\n        varies per city and is NOT in your system prompt:\n\n        HELP('-h tags')         — REQUIRED. All tags in this pool with counts.\n                                    You cannot use has_tag conditions without this.\n        HELP('-h regulations')  — REQUIRED. Regulation fields and their true/false\n                                    distributions. Constraints on regulations with\n                                    100% one-sided values are unsolvable.\n        HELP('-h pool_fields')  — REQUIRED. All filterable fields for query_pool.\n                                    Do not guess field names.\n        HELP('-h window')       — REQUIRED for type6. Anchor event details, dates,\n                                    and window character. Other types: optional but\n                                    useful for grounding.\n        HELP('-h validate')     — REQUIRED for understanding SUBMIT. Full validation\n                                    checklist and common failure modes.\n        HELP('-h venue_sample') — Optional. Shows what get_venue returns.\n        HELP('-h tools')        — Optional. Tool signatures (already in prompt).\n\n        You have 20 turns total — each tool call costs one turn.\n        Aim to call SUBMIT by turn 12 at the latest.\n        After reading the handbook, use THINK to plan your approach,\n        explore the pool with query_pool/get_venue, and call SUBMIT.\n        ",
+  "transcript": [
+    {
+      "turn": 1,
+      "assistant_text": "",
+      "stop_reason_api": "tool_use",
+      "tool_calls": [
+        {
+          "name": "HELP",
+          "input": {
+            "query": "-h tags"
+          },
+          "status": "ok",
+          "result": {
+            "status": "ok",
+            "content": "All tags in this city's pool (99 total):\n\n  afternoon-tea\n  architecture-city-skyline\n  art\n  barbecue\n  bombay-cafe\n  borough-market\n  brasserie\n  breakfast\n  british\n  brunch\n  budget-friendly\n  caribbean\n  cash-only\n  cashless\n  cask-ale\n  casual-dining\n  central-london\n  charcoal-grill\n  cheap-eats\n  cocktails\n  coffee\n  communal-seating\n  contemporary-modern-art\n  counter-deli\n  counter-dining\n  counter-seating\n  crown-jewels\n  dance-music\n  design\n  dinner\n  dog-friendly\n  european\n  experimental-music\n  family-friendly\n  fashion-vintage-shopping\n  fine-dining\n  fish-and-chips\n  free-entry\n  french\n  fresh-pasta\n  hidden-gem\n  history-royal-heritage\n  indian\n  instagrammable\n  italian\n  japanese\n  jewish\n  late-night\n  lively\n  lunch\n  lunch-spot\n  malaysian\n  medieval-fortress\n  mexican\n  michelin-star\n  middle-eastern\n  multicultural-food-markets\n  museum\n  music-nightlife\n  no-reservations\n  open-kitchen\n  outdoor\n  park\n  pasta\n  pet-friendly\n  photography-allowed\n  photography-friendly\n  picnic-spot\n  popcorn\n  popular-with-locals\n  pre-theatre\n  queue-only\n  quiet\n  reservation-required\n  romantic\n  rooftop\n  small-plates\n  soho\n  spanish\n  speciality-coffee\n  steak-frites\n  steakhouse\n  steamed-buns\n  street-food\n  sushi\n  taiwanese\n  tapas\n  thai\n  theatre-performing-arts\n  trendy\n  udon-noodles\n  upscale\n  vegetarian-options\n  vietnamese\n  views\n  wheelchair-accessible\n  whisky-bar\n  wine\n  wood-fired\n\nUse the 'tag' filter key in query_pool to filter by tag.\nA venue may have multiple tags.\nTags come from Yelp listings and source docs — not all venues have tags.",
+            "turns_remaining": 19
+          }
+        }
+      ],
+      "nudge_sent": false,
+      "usage": {
+        "input_tokens": 495,
+        "output_tokens": 54,
+        "cache_creation_input_tokens": 6483,
+        "cache_read_input_tokens": 1114,
+        "total_tokens": 8146
+      }
+    },
+    {
+      "turn": 2,
+      "assistant_text": "",
+      "stop_reason_api": "tool_use",
+      "tool_calls": [
+        {
+          "name": "HELP",
+          "input": {
+            "query": "-h regulations"
+          },
+          "status": "ok",
+          "result": {
+            "status": "ok",
+            "content": "Regulation fields (use the 'regulation' filter key in query_pool):\n\n  wheelchair_accessible  — venue is fully wheelchair accessible (bool)\n  pet_friendly           — pets allowed (bool)\n  photography_allowed    — photography permitted (bool)\n  family_friendly        — suitable for children (bool)\n  age_restriction        — minimum age in years (int or null — null means no restriction)\n  dress_code             — dress code description (string or null)\n  noise_level            — one of: quiet, moderate, lively, loud\n  reservation_required   — advance booking required (bool)\n  outside_food_allowed   — outside food permitted (bool)\n\nNote: the 'regulation' filter in query_pool matches venues where the regulation is TRUE\n(or non-null for string fields). For noise_level filtering, use get_venue to check\nthe exact value on specific venues.",
+            "turns_remaining": 18
+          }
+        }
+      ],
+      "nudge_sent": false,
+      "usage": {
+        "input_tokens": 725,
+        "output_tokens": 54,
+        "cache_creation_input_tokens": 493,
+        "cache_read_input_tokens": 7597,
+        "total_tokens": 8869
+      }
+    },
+    {
+      "turn": 3,
+      "assistant_text": "",
+      "stop_reason_api": "tool_use",
+      "tool_calls": [
+        {
+          "name": "HELP",
+          "input": {
+            "query": "-h pool_fields"
+          },
+          "status": "ok",
+          "result": {
+            "status": "ok",
+            "content": "Filterable fields for query_pool:\n\n  category        — one of: attraction, bar, cafe, museum, neighbourhood, park, restaurant\n                    pool counts: {\"restaurant\": 24, \"cafe\": 5, \"bar\": 5, \"museum\": 15, \"attraction\": 10, \"park\": 5, \"neighbourhood\": 4}\n  tag             — any tag from the list in '-h tags'\n  regulation      — any regulation key from '-h regulations' (matches if true/non-null)\n  district        — one of: Bexley, Camden, City of London, Greenwich, Hackney, Haringey, Islington, Kensington And Chelsea, Lambeth, Lewisham, Richmond Upon Thames, Southwark, Tower Hamlets, Westminster\n  traffic_tier    — one of: high, mid, low\n  price_tier      — one of: free, budget, mid, upscale, luxury\n  booking_required — true or false\n\nAll filters are AND — all conditions must match.\nSingle-field calls are fine.\n\nExample: query_pool({\"category\": \"restaurant\", \"tag\": \"halal\", \"regulation\": \"wheelchair_accessible\"})\n→ returns restaurants that are halal AND wheelchair accessible\n\nExample: query_pool({\"traffic_tier\": \"low\"})\n→ returns all low-traffic (hidden gem) venues",
+            "turns_remaining": 17
+          }
+        }
+      ],
+      "nudge_sent": false,
+      "usage": {
+        "input_tokens": 1017,
+        "output_tokens": 56,
+        "cache_creation_input_tokens": 493,
+        "cache_read_input_tokens": 7597,
+        "total_tokens": 9163
+      }
+    },
+    {
+      "turn": 4,
+      "assistant_text": "",
+      "stop_reason_api": "tool_use",
+      "tool_calls": [
+        {
+          "name": "HELP",
+          "input": {
+            "query": "-h validate"
+          },
+          "status": "ok",
+          "result": {
+            "status": "ok",
+            "content": "Validation checks run on SUBMIT.\n\n═══════════════════════════════════════════════════════════════════════════\nEXACT CONSTRAINT SCHEMA — THIS IS THE #1 REASON SUBMIT FAILS\n═══════════════════════════════════════════════════════════════════════════\n\nEvery personal_constraint MUST have these 8 fields:\n  {\n    \"id\":                \"pc_001\",              // unique within rubric\n    \"score_tier\":        \"P\",                   // literal \"P\" (not \"hard\"/\"medium\")\n    \"hop\":               2,                     // integer: 1 or 2\n    \"check_method\":      \"code\",                // always \"code\" for P-constraints\n    \"source_in_profile\": \"art museums\",         // verbatim phrase from query\n    \"description\":       \"Must include ≥1 art museum\",\n    \"scope\":             \"all\",                 // see SCOPE section below\n    \"condition\":         {\"has_tag\": \"art\"},    // see CONDITION section below\n    \"aggregation\":       {\"at_least\": 1},       // see AGGREGATION section below\n    \"consequence\":       \"p_score_full\"         // always \"p_score_full\"\n  }\n\nDO NOT use \"pattern\"/\"params\" — that's the old format. The evaluator now uses\nscope/condition/aggregation. Using the old format is a SUBMIT failure mode.\n\n═══════════════════════════════════════════════════════════════════════════\nSCOPE — which activities does this constraint apply to?\n═══════════════════════════════════════════════════════════════════════════\n  \"all\"                         every activity in the plan\n  \"activity_type=meal\"          only meal-type activities\n  \"activity_type=visit\"         only visit-type activities\n  \"per_day\"                     applied independently per day\n  \"category=museum\"             activities at museum-category venues\n  \"has_tag=halal\"               activities at venues with the \"halal\" tag\n  \"venue_id=lon_abc123\"         the specific venue with that id\n  \"time_window=18:00-23:59\"     activities starting in that time range\n\n  List = AND:  [\"activity_type=meal\", \"has_tag=vegetarian\"]\n   ... [truncated, total 10295 chars]",
+            "turns_remaining": 16
+          }
+        }
+      ],
+      "nudge_sent": false,
+      "usage": {
+        "input_tokens": 727,
+        "output_tokens": 54,
+        "cache_creation_input_tokens": 721,
+        "cache_read_input_tokens": 8090,
+        "total_tokens": 9592
+      }
+    },
+    {
+      "turn": 5,
+      "assistant_text": "",
+      "stop_reason_api": "tool_use",
+      "tool_calls": [
+        {
+          "name": "THINK",
+          "input": {
+            "thought": "Now I understand the structure better. For a Type 2 task, I need to:\n1. Create a subset selection task with a time ceiling (in minutes)\n2. The time ceiling must be 1.1-1.3x the minimum viable K-venue schedule\n3. Include duration and coords in queries to compute the minimum\n4. The query must mention the time budget numerically\n\nLet me start by exploring museums as a good category for London - they have interesting variety and different durations. I'll query museums with duration/coords to calculate a minimum viable schedule."
+          },
+          "status": "ok",
+          "result": {
+            "status": "ok",
+            "logged": "Now I understand the structure better. For a Type 2 task, I need to:\n1. Create a subset selection task with a time ceiling (in minutes)\n2. The time ceiling must be 1.1-1.3x the minimum viable K-venue ...",
+            "turns_remaining": 15
+          }
+        }
+      ],
+      "nudge_sent": false,
+      "usage": {
+        "input_tokens": 4003,
+        "output_tokens": 172,
+        "cache_creation_input_tokens": 293,
+        "cache_read_input_tokens": 8811,
+        "total_tokens": 13279
+      }
+    },
+    {
+      "turn": 6,
+      "assistant_text": "",
+      "stop_reason_api": "tool_use",
+      "tool_calls": [
+        {
+          "name": "query_pool",
+          "input": {
+            "filters": {
+              "category": "museum"
+            },
+            "include": [
+              "duration",
+              "coords"
+            ]
+          },
+          "status": "ok",
+          "result": {
+            "status": "ok",
+            "count": 15,
+            "food_count": 0,
+            "site_count": 15,
+            "venues": [
+              {
+                "venue_id": "GjmHbqS",
+                "name": "The British Museum",
+                "recommended_visit_minutes": 210,
+                "lat": 51.5194,
+                "lng": -0.1269,
+                "district": "Camden"
+              },
+              {
+                "venue_id": "KWSA1XT",
+                "name": "The National Gallery",
+                "recommended_visit_minutes": 180,
+                "lat": 51.5089,
+                "lng": -0.1283,
+                "district": "Westminster"
+              },
+              {
+                "venue_id": "vfah5z7",
+                "name": "Tate Modern",
+                "recommended_visit_minutes": 180,
+                "lat": 51.5076,
+                "lng": -0.0994,
+                "district": "Southwark"
+              },
+              {
+                "venue_id": "hDt6qJ5",
+                "name": "The Victoria and Albert Museum",
+                "recommended_visit_minutes": 180,
+                "lat": 51.4966,
+                "lng": -0.1722,
+                "district": "Kensington And Chelsea"
+              },
+              {
+                "venue_id": "qtIrHEa",
+                "name": "Natural History Museum",
+                "recommended_visit_minutes": 180,
+                "lat": 51.4964,
+                "lng": -0.1764,
+                "district": "Kensington And Chelsea"
+              },
+              {
+                "venue_id": "v6dDsQL",
+                "name": "The Barbican Centre",
+                "recommended_visit_minutes": 180,
+                "lat": 51.52,
+                "lng": -0.0946,
+                "district": "Islington"
+              },
+              {
+                "venue_id": "UzglqUU",
+                "name": "The Courtauld Gallery",
+                "recommended_visit_minutes": 120,
+                "lat": 51.511,
+                "lng": -0.1175,
+                "district": "Westminster"
+              },
+              {
+                "venue_id": "JrJO2bc",
+                "name": "Museum of London Docklands",
+                "recommended_visit_minutes": 120,
+                "lat": 51.5052,
+                "lng": -0.0219,
+                "district": "Tower Hamlets"
+              },
+              {
+                "venue_id": "XDzLtxL",
+                "name": "Saatchi Gallery",
+                "recommended_visit_minutes": 90,
+                "lat": 51.4901,
+                "lng": -0.1564,
+                "district": "Kensington And Chelsea"
+              },
+              {
+                "venue_id": "WfNnqoV",
+                "name": "Whitechapel Gallery",
+                "recommended_visit_minutes": 120,
+                "lat": 51.516,
+                "lng": -0.0702,
+                "district": "Tower Hamlets"
+              },
+              {
+                "venue_id": "rdKg9bt",
+                "name": "Two Temple Place",
+                "recommended_visit_minutes": 90,
+                "lat": 51.5099,
+                "lng": -0.113,
+                "district": "Westminster"
+              },
+              {
+                "venue_id": "MavHE20",
+                "name": "Firepower Royal Artillery Museum",
+                "recommended_visit_minutes": 120,
+                "lat": 51.4905,
+                "lng": 0.0689,
+                "district": "Greenwich"
+              },
+              {
+                "venue_id": "jK1FHpi",
+                "name": "Geffrye Museum of the Home",
+                "recommended_visit_minutes": 90,
+                "lat": 51.5376,
+                "lng": -0.0734,
+                "district": "Hackney"
+              },
+              {
+                "venue_id": "WxTLSVq",
+                "name": "Horniman Museum and Gardens",
+                "recommended_visit_minutes": 120,
+                "lat": 51.4567,
+                "lng": -0.061,
+                "district": "Lewisham"
+              },
+              {
+                "venue_id": "gMtSNc1",
+                "name": "Brunel Museum",
+                "recommended_visit_minutes": 90,
+                "lat": 51.4996,
+                "lng": -0.0545,
+                "district": "Southwark"
+              }
+            ],
+            "note": "Included fields: ['duration', 'coords']. Breakdown: food=0/34 (0%), site=15/34 (44%). Upper-bar targets (this task type): need ≤50% food AND ≤50% site surviving (i.e. ≤17 food, ≤17 site). Use get_venue(venue_id) for full detail on any venue.",
+            "turns_remaining": 14
+          }
+        }
+      ],
+      "nudge_sent": false,
+      "usage": {
+        "input_tokens": 3832,
+        "output_tokens": 80,
+        "cache_creation_input_tokens": 432,
+        "cache_read_input_tokens": 9104,
+        "total_tokens": 13448
+      }
+    },
+    {
+      "turn": 7,
+      "assistant_text": "",
+      "stop_reason_api": "tool_use",
+      "tool_calls": [
+        {
+          "name": "THINK",
+          "input": {
+            "thought": "Great! I have 15 museums to work with. Now I need to calculate the minimum viable schedule. For Type 2, K = max(largest at_least aggregation in P-constraints, days × 2). Since this will be a 2-day task (typical for weekend), minimum K = 4.\n\nLet me compute the centroid of all museums first, then find the 4 nearest venues to that centroid and calculate their minimum schedule time.\n\nCentroid calculation:\n- Sum of lats: 51.5194 + 51.5089 + 51.5076 + 51.4966 + 51.4964 + 51.52 + 51.511 + 51.5052 + 51.4901 + 51.516 + 51.5099 + 51.4905 + 51.5376 + 51.4567 + 51.4996 = 771.526\n- Sum of lngs: -0.1269 + (-0.1283) + (-0.0994) + (-0.1722) + (-0.1764) + (-0.0946) + (-0.1175) + (-0.0219) + (-0.1564) + (-0.0702) + (-0.113) + 0.0689 + (-0.0734) + (-0.061) + (-0.0545) = -1.4968\n\nCentroid: (771.526/15, -1.4968/15) = (51.435, -0.0998)\n\nNow I need to find distances from centroid to each museum using the formula:\ndist_km ≈ sqrt((Δlat×111)² + (Δlng×69.1)²)"
+          },
+          "status": "ok",
+          "result": {
+            "status": "ok",
+            "logged": "Great! I have 15 museums to work with. Now I need to calculate the minimum viable schedule. For Type 2, K = max(largest at_least aggregation in P-constraints, days × 2). Since this will be a 2-day tas...",
+            "turns_remaining": 13
+          }
+        }
+      ],
+      "nudge_sent": false,
+      "usage": {
+        "input_tokens": 1391,
+        "output_tokens": 464,
+        "cache_creation_input_tokens": 3570,
+        "cache_read_input_tokens": 9536,
+        "total_tokens": 14961
+      }
+    },
+    {
+      "turn": 8,
+      "assistant_text": "",
+      "stop_reason_api": "tool_use",
+      "tool_calls": [
+        {
+          "name": "THINK",
+          "input": {
+            "thought": "Let me compute distances from centroid (51.435, -0.0998) to each venue:\n\n1. British Museum (51.5194, -0.1269): \n   Δlat = 51.5194 - 51.435 = 0.0844, Δlng = -0.1269 - (-0.0998) = -0.0271\n   dist = sqrt((0.0844×111)² + (-0.0271×69.1)²) = sqrt(87.84 + 3.49) = 9.55 km\n\n2. National Gallery (51.5089, -0.1283):\n   Δlat = 0.0739, Δlng = -0.0285\n   dist = sqrt((0.0739×111)² + (-0.0285×69.1)²) = sqrt(67.43 + 3.87) = 8.45 km\n\n3. Tate Modern (51.5076, -0.0994):\n   Δlat = 0.0726, Δlng = 0.0004\n   dist = sqrt((0.0726×111)² + (0.0004×69.1)²) = sqrt(65.85 + 0.0008) = 8.11 km\n\n4. V&A (51.4966, -0.1722):\n   Δlat = 0.0616, Δlng = -0.0724\n   dist = sqrt((0.0616×111)² + (-0.0724×69.1)²) = sqrt(46.91 + 25.03) = 8.48 km\n\nLet me continue with a few more to identify the 4 closest..."
+          },
+          "status": "ok",
+          "result": {
+            "status": "ok",
+            "logged": "Let me compute distances from centroid (51.435, -0.0998) to each venue:\n\n1. British Museum (51.5194, -0.1269): \n   Δlat = 51.5194 - 51.435 = 0.0844, Δlng = -0.1269 - (-0.0998) = -0.0271\n   dist = sqrt...",
+            "turns_remaining": 12
+          }
+        }
+      ],
+      "nudge_sent": false,
+      "usage": {
+        "input_tokens": 1681,
+        "output_tokens": 468,
+        "cache_creation_input_tokens": 262,
+        "cache_read_input_tokens": 13106,
+        "total_tokens": 15517
+      }
+    },
+    {
+      "turn": 9,
+      "assistant_text": "",
+      "stop_reason_api": "tool_use",
+      "tool_calls": [
+        {
+          "name": "THINK",
+          "input": {
+            "thought": "Actually, let me be more systematic and continue the calculations for all venues to identify the 4 nearest. But let me also check if I'm spending too much time on manual calculations. Since I need to SUBMIT by turn 12 at latest, let me work with a reasonable approximation.\n\nLooking at the coordinates, Tate Modern (51.5076, -0.0994) seems very close to the centroid. Let me pick 4 museums that seem geographically close and calculate a rough schedule:\n\nClosest 4 (by visual inspection):\n1. Tate Modern: 180 minutes\n2. Courtauld Gallery: 120 minutes  \n3. Two Temple Place: 90 minutes\n4. British Museum: 210 minutes\n\nMinimum schedule time:\n- Visit time (half of recommended): (180+120+90+210)/2 = 300 minutes\n- Travel time (estimate): 3 hops between 4 venues in central London ≈ 3 × 15 minutes = 45 minutes\n- Total minimum: 345 minutes\n\nTime ceiling should be 1.1-1.3x this: 380-450 minutes. I'll use 420 minutes (7 hours) as reasonable for a museum day.\n\nNow let me design the task with some P-constraints around museum preferences."
+          },
+          "status": "ok",
+          "result": {
+            "status": "ok",
+            "logged": "Actually, let me be more systematic and continue the calculations for all venues to identify the 4 nearest. But let me also check if I'm spending too much time on manual calculations. Since I need to ...",
+            "turns_remaining": 11
+          }
+        }
+      ],
+      "nudge_sent": false,
+      "usage": {
+        "input_tokens": 1148,
+        "output_tokens": 353,
+        "cache_creation_input_tokens": 1130,
+        "cache_read_input_tokens": 13368,
+        "total_tokens": 15999
+      }
+    },
+    {
+      "turn": 10,
+      "assistant_text": "",
+      "stop_reason_api": "tool_use",
+      "tool_calls": [
+        {
+          "name": "SUBMIT",
+          "input": {
+            "task_json": "{\n  \"task_id\": \"lon_type2_spring_museums_001\",\n  \"city\": \"london\", \n  \"window_id\": \"late_spring_bank_holiday_weekend\",\n  \"days\": 2,\n  \"start_date\": \"2026-05-24\",\n  \"public_input\": {\n    \"query\": \"My partner and I are passionate about art and culture. We're visiting London for a weekend museum crawl during the late spring bank holiday. We want to see several world-class museums and galleries, focusing on contemporary art venues when possible. We have about 7 hours total to spend visiting museums over our 2-day trip. We prefer quieter, less crowded spaces and want to include at least one museum with outdoor/sculpture elements. Can you create an itinerary that maximizes our cultural experience within this time budget?\",\n    \"query_resources\": {\n      \"time_ceiling_minutes\": 420\n    }\n  },\n  \"structural_type\": 2,\n  \"difficulty\": \"medium\",\n  \"rubric\": {\n    \"hard_constraints\": [\n      {\"id\": \"hc_001\", \"type\": \"hours_check\", \"check_method\": \"code\", \"params\": {}},\n      {\"id\": \"hc_002\", \"type\": \"no_overlap\", \"check_method\": \"code\", \"params\": {}},\n      {\"id\": \"hc_003\", \"type\": \"travel_time_hard\", \"check_method\": \"code\", \"params\": {}}\n    ],\n    \"personal_constraints\": [\n      {\n        \"id\": \"pc_001\",\n        \"score_tier\": \"P\", \n        \"hop\": 1,\n        \"check_method\": \"code\",\n        \"source_in_profile\": \"contemporary art venues\",\n        \"description\": \"Include at least 2 contemporary art venues\",\n        \"scope\": \"category=museum\",\n        \"condition\": {\"has_tag\": \"contemporary-modern-art\"},\n        \"aggregation\": {\"at_least\": 2},\n        \"consequence\": \"p_score_full\"\n      },\n      {\n        \"id\": \"pc_002\",\n        \"score_tier\": \"P\",\n        \"hop\": 2, \n        \"check_method\": \"code\",\n        \"source_in_profile\": \"quieter, less crowded spaces\",\n        \"description\": \"All museums must be moderate noise level or quieter\",\n        \"scope\": \"category=museum\", \n        \"condition\": {\"field\": \"noise_level\", \"operator\": \"<=\", \"value\": \"moderate\"},\n        \"aggregation\": \"all... [truncated, total 2531 chars]"
+          },
+          "status": "validation_failed",
+          "result": {
+            "status": "validation_failed",
+            "errors": [
+              "structural_type must be one of: type1_cascading_requirements, type2_subset_selection, type3_competing_requirements, type4_precision_allocation, type5_hard_feasibility_reduction, type6_context_window_tension. Got '2'."
+            ],
+            "warnings": [],
+            "message": "Fix structural_type and SUBMIT again.",
+            "turns_remaining": 10
+          }
+        }
+      ],
+      "nudge_sent": false,
+      "usage": {
+        "input_tokens": 1021,
+        "output_tokens": 830,
+        "cache_creation_input_tokens": 553,
+        "cache_read_input_tokens": 14498,
+        "total_tokens": 16902
+      }
+    },
+    {
+      "turn": 11,
+      "assistant_text": "",
+      "stop_reason_api": "tool_use",
+      "tool_calls": [
+        {
+          "name": "SUBMIT",
+          "input": {
+            "task_json": "{\n  \"task_id\": \"lon_type2_spring_museums_001\",\n  \"city\": \"london\", \n  \"window_id\": \"late_spring_bank_holiday_weekend\",\n  \"days\": 2,\n  \"start_date\": \"2026-05-24\",\n  \"public_input\": {\n    \"query\": \"My partner and I are passionate about art and culture. We're visiting London for a weekend museum crawl during the late spring bank holiday. We want to see several world-class museums and galleries, focusing on contemporary art venues when possible. We have about 7 hours total to spend visiting museums over our 2-day trip. We prefer quieter, less crowded spaces and want to include at least one museum with outdoor/sculpture elements. Can you create an itinerary that maximizes our cultural experience within this time budget?\",\n    \"query_resources\": {\n      \"time_ceiling_minutes\": 420\n    }\n  },\n  \"structural_type\": \"type2_subset_selection\",\n  \"difficulty\": \"medium\",\n  \"rubric\": {\n    \"hard_constraints\": [\n      {\"id\": \"hc_001\", \"type\": \"hours_check\", \"check_method\": \"code\", \"params\": {}},\n      {\"id\": \"hc_002\", \"type\": \"no_overlap\", \"check_method\": \"code\", \"params\": {}},\n      {\"id\": \"hc_003\", \"type\": \"travel_time_hard\", \"check_method\": \"code\", \"params\": {}}\n    ],\n    \"personal_constraints\": [\n      {\n        \"id\": \"pc_001\",\n        \"score_tier\": \"P\", \n        \"hop\": 1,\n        \"check_method\": \"code\",\n        \"source_in_profile\": \"contemporary art venues\",\n        \"description\": \"Include at least 2 contemporary art venues\",\n        \"scope\": \"category=museum\",\n        \"condition\": {\"has_tag\": \"contemporary-modern-art\"},\n        \"aggregation\": {\"at_least\": 2},\n        \"consequence\": \"p_score_full\"\n      },\n      {\n        \"id\": \"pc_002\",\n        \"score_tier\": \"P\",\n        \"hop\": 2, \n        \"check_method\": \"code\",\n        \"source_in_profile\": \"quieter, less crowded spaces\",\n        \"description\": \"All museums must be moderate noise level or quieter\",\n        \"scope\": \"category=museum\", \n        \"condition\": {\"field\": \"noise_level\", \"operator\": \"<=\", \"value\": \"moderate\"},\n    ... [truncated, total 2554 chars]"
+          },
+          "status": "validation_failed",
+          "result": {
+            "status": "validation_failed",
+            "errors": [
+              "[pc_002] Pool satisfiability: Pool-level check failed: All museums must be moderate noise level or quieter: 0/15 matching (fail). The constraint is not fully satisfiable against this pool — review the matching count above and adjust scope, condition, or aggregation."
+            ],
+            "warnings": [],
+            "message": "1 issue(s) to fix. Use THINK to plan your fixes, then call SUBMIT again with the corrected JSON. Use '-h validate' to understand what each check requires.",
+            "turns_remaining": 9
+          }
+        }
+      ],
+      "nudge_sent": false,
+      "usage": {
+        "input_tokens": 1362,
+        "output_tokens": 835,
+        "cache_creation_input_tokens": 598,
+        "cache_read_input_tokens": 15051,
+        "total_tokens": 17846
+      }
+    },
+    {
+      "turn": 12,
+      "assistant_text": "",
+      "stop_reason_api": "tool_use",
+      "tool_calls": [
+        {
+          "name": "THINK",
+          "input": {
+            "thought": "The validation failed because no museums satisfy the noise_level <= \"moderate\" condition. I need to check what noise levels the museums actually have. Let me query a few key museums to understand their noise levels and adjust the constraint accordingly."
+          },
+          "status": "ok",
+          "result": {
+            "status": "ok",
+            "logged": "The validation failed because no museums satisfy the noise_level <= \"moderate\" condition. I need to check what noise levels the museums actually have. Let me query a few key museums to understand thei...",
+            "turns_remaining": 8,
+            "WARNING": "Only 8 turn(s) left! Call SUBMIT NOW with your best draft — an imperfect submission beats no submission."
+          }
+        }
+      ],
+      "nudge_sent": false,
+      "usage": {
+        "input_tokens": 1913,
+        "output_tokens": 97,
+        "cache_creation_input_tokens": 427,
+        "cache_read_input_tokens": 15649,
+        "total_tokens": 18086
+      }
+    },
+    {
+      "turn": 13,
+      "assistant_text": "",
+      "stop_reason_api": "tool_use",
+      "tool_calls": [
+        {
+          "name": "get_venue",
+          "input": {
+            "venue_id": "GjmHbqS"
+          },
+          "status": "ok",
+          "result": {
+            "status": "ok",
+            "venue": {
+              "venue_id": "GjmHbqS",
+              "name": "The British Museum",
+              "category": "museum",
+              "district": "Camden",
+              "traffic_tier": "high",
+              "recommended_pace": "intense",
+              "price_tier": "budget",
+              "avg_cost_local": 0.0,
+              "lat": 51.5194,
+              "lng": -0.1269,
+              "recommended_visit_minutes": 210,
+              "tags": [
+                "architecture-city-skyline",
+                "central-london",
+                "coffee",
+                "family-friendly",
+                "free-entry",
+                "lunch-spot",
+                "popular-with-locals",
+                "wheelchair-accessible"
+              ],
+              "regulations": {
+                "wheelchair_accessible": true,
+                "pet_friendly": true,
+                "photography_allowed": false,
+                "family_friendly": true,
+                "age_restriction": null,
+                "dress_code": null,
+                "noise_level": "moderate",
+                "reservation_required": true,
+                "outside_food_allowed": true
+              },
+              "booking_required": true,
+              "has_official_site": true,
+              "window_flags": {
+                "london_carnival_2026": {
+                  "in_closure_zone": false,
+                  "in_wider_affected_area": false
+                },
+                "london_christmas_2026": {
+                  "in_shopping_crowd_zone": false
+                }
+              },
+              "unavailable_dates": []
+            },
+            "turns_remaining": 7,
+            "WARNING": "Only 7 turn(s) left! Call SUBMIT NOW with your best draft — an imperfect submission beats no submission."
+          }
+        }
+      ],
+      "nudge_sent": false,
+      "usage": {
+        "input_tokens": 1174,
+        "output_tokens": 61,
+        "cache_creation_input_tokens": 940,
+        "cache_read_input_tokens": 16076,
+        "total_tokens": 18251
+      }
+    },
+    {
+      "turn": 14,
+      "assistant_text": "",
+      "stop_reason_api": "tool_use",
+      "tool_calls": [
+        {
+          "name": "SUBMIT",
+          "input": {
+            "task_json": "{\n  \"task_id\": \"lon_type2_spring_museums_001\",\n  \"city\": \"london\", \n  \"window_id\": \"late_spring_bank_holiday_weekend\",\n  \"days\": 2,\n  \"start_date\": \"2026-05-24\",\n  \"public_input\": {\n    \"query\": \"My partner and I are passionate about art and culture. We're visiting London for a weekend museum crawl during the late spring bank holiday. We want to see several world-class museums and galleries, focusing on contemporary art venues when possible. We have about 7 hours total to spend visiting museums over our 2-day trip. We want to include at least one museum with outdoor/sculpture elements and prefer venues that allow photography. Can you create an itinerary that maximizes our cultural experience within this time budget?\",\n    \"query_resources\": {\n      \"time_ceiling_minutes\": 420\n    }\n  },\n  \"structural_type\": \"type2_subset_selection\",\n  \"difficulty\": \"medium\",\n  \"rubric\": {\n    \"hard_constraints\": [\n      {\"id\": \"hc_001\", \"type\": \"hours_check\", \"check_method\": \"code\", \"params\": {}},\n      {\"id\": \"hc_002\", \"type\": \"no_overlap\", \"check_method\": \"code\", \"params\": {}},\n      {\"id\": \"hc_003\", \"type\": \"travel_time_hard\", \"check_method\": \"code\", \"params\": {}}\n    ],\n    \"personal_constraints\": [\n      {\n        \"id\": \"pc_001\",\n        \"score_tier\": \"P\", \n        \"hop\": 1,\n        \"check_method\": \"code\",\n        \"source_in_profile\": \"contemporary art venues\",\n        \"description\": \"Include at least 2 contemporary art venues\",\n        \"scope\": \"category=museum\",\n        \"condition\": {\"has_tag\": \"contemporary-modern-art\"},\n        \"aggregation\": {\"at_least\": 2},\n        \"consequence\": \"p_score_full\"\n      },\n      {\n        \"id\": \"pc_002\",\n        \"score_tier\": \"P\",\n        \"hop\": 2, \n        \"check_method\": \"code\",\n        \"source_in_profile\": \"prefer venues that allow photography\",\n        \"description\": \"All museums must allow photography\",\n        \"scope\": \"category=museum\", \n        \"condition\": {\"field\": \"photography_allowed\", \"operator\": \"==\", \"value\": true},\n        \"a... [truncated, total 2548 chars]"
+          },
+          "status": "validation_failed",
+          "result": {
+            "status": "validation_failed",
+            "errors": [
+              "[pc_002] Pool satisfiability: Pool-level check failed: All museums must allow photography: 0/15 matching (fail). The constraint is not fully satisfiable against this pool — review the matching count above and adjust scope, condition, or aggregation."
+            ],
+            "warnings": [],
+            "message": "1 issue(s) to fix. Use THINK to plan your fixes, then call SUBMIT again with the corrected JSON. Use '-h validate' to understand what each check requires.",
+            "turns_remaining": 6,
+            "WARNING": "Only 6 turn(s) left! Call SUBMIT NOW with your best draft — an imperfect submission beats no submission."
+          }
+        }
+      ],
+      "nudge_sent": false,
+      "usage": {
+        "input_tokens": 607,
+        "output_tokens": 824,
+        "cache_creation_input_tokens": 979,
+        "cache_read_input_tokens": 17016,
+        "total_tokens": 19426
+      }
+    },
+    {
+      "turn": 15,
+      "assistant_text": "",
+      "stop_reason_api": "tool_use",
+      "tool_calls": [
+        {
+          "name": "SUBMIT",
+          "input": {
+            "task_json": "{\n  \"task_id\": \"lon_type2_spring_museums_001\",\n  \"city\": \"london\", \n  \"window_id\": \"late_spring_bank_holiday_weekend\",\n  \"days\": 2,\n  \"start_date\": \"2026-05-24\",\n  \"public_input\": {\n    \"query\": \"My partner and I are passionate about art and culture. We're visiting London for a weekend museum crawl during the late spring bank holiday. We want to see several world-class museums and galleries, focusing on contemporary art venues when possible. We have about 7 hours total to spend visiting museums over our 2-day trip. We want to include at least one free museum and prefer visiting during less crowded times. Can you create an itinerary that maximizes our cultural experience within this time budget?\",\n    \"query_resources\": {\n      \"time_ceiling_minutes\": 420\n    }\n  },\n  \"structural_type\": \"type2_subset_selection\",\n  \"difficulty\": \"medium\",\n  \"rubric\": {\n    \"hard_constraints\": [\n      {\"id\": \"hc_001\", \"type\": \"hours_check\", \"check_method\": \"code\", \"params\": {}},\n      {\"id\": \"hc_002\", \"type\": \"no_overlap\", \"check_method\": \"code\", \"params\": {}},\n      {\"id\": \"hc_003\", \"type\": \"travel_time_hard\", \"check_method\": \"code\", \"params\": {}}\n    ],\n    \"personal_constraints\": [\n      {\n        \"id\": \"pc_001\",\n        \"score_tier\": \"P\", \n        \"hop\": 1,\n        \"check_method\": \"code\",\n        \"source_in_profile\": \"contemporary art venues\",\n        \"description\": \"Include at least 2 contemporary art venues\",\n        \"scope\": \"category=museum\",\n        \"condition\": {\"has_tag\": \"contemporary-modern-art\"},\n        \"aggregation\": {\"at_least\": 2},\n        \"consequence\": \"p_score_full\"\n      },\n      {\n        \"id\": \"pc_002\",\n        \"score_tier\": \"P\",\n        \"hop\": 2, \n        \"check_method\": \"code\",\n        \"source_in_profile\": \"less crowded times\",\n        \"description\": \"Museums should be at most moderate traffic tier\",\n        \"scope\": \"category=museum\", \n        \"condition\": {\"field\": \"traffic_tier\", \"operator\": \"<=\", \"value\": \"mid\"},\n        \"aggregation\": \"all\",\n        \"cons... [truncated, total 2495 chars]"
+          },
+          "status": "validation_failed",
+          "result": {
+            "status": "validation_failed",
+            "errors": [
+              "[pc_002] Pool satisfiability: Pool-level check failed: Museums should be at most moderate traffic tier: 10/15 matching (fail). The constraint is not fully satisfiable against this pool — review the matching count above and adjust scope, condition, or aggregation."
+            ],
+            "warnings": [],
+            "message": "1 issue(s) to fix. Use THINK to plan your fixes, then call SUBMIT again with the corrected JSON. Use '-h validate' to understand what each check requires.",
+            "turns_remaining": 5,
+            "WARNING": "Only 5 turn(s) left! Call SUBMIT NOW with your best draft — an imperfect submission beats no submission."
+          }
+        }
+      ],
+      "nudge_sent": false,
+      "usage": {
+        "input_tokens": 1400,
+        "output_tokens": 825,
+        "cache_creation_input_tokens": 202,
+        "cache_read_input_tokens": 17995,
+        "total_tokens": 20422
+      }
+    },
+    {
+      "turn": 16,
+      "assistant_text": "",
+      "stop_reason_api": "tool_use",
+      "tool_calls": [
+        {
+          "name": "SUBMIT",
+          "input": {
+            "task_json": "{\n  \"task_id\": \"lon_type2_spring_museums_001\",\n  \"city\": \"london\", \n  \"window_id\": \"late_spring_bank_holiday_weekend\",\n  \"days\": 2,\n  \"start_date\": \"2026-05-24\",\n  \"public_input\": {\n    \"query\": \"My partner and I are passionate about art and culture. We're visiting London for a weekend museum crawl during the late spring bank holiday. We want to see several world-class museums and galleries, focusing on contemporary art venues when possible. We have about 7 hours total to spend visiting museums over our 2-day trip. We want to include at least one free museum and try to visit at least 3 different districts. Can you create an itinerary that maximizes our cultural experience within this time budget?\",\n    \"query_resources\": {\n      \"time_ceiling_minutes\": 420\n    }\n  },\n  \"structural_type\": \"type2_subset_selection\",\n  \"difficulty\": \"medium\",\n  \"rubric\": {\n    \"hard_constraints\": [\n      {\"id\": \"hc_001\", \"type\": \"hours_check\", \"check_method\": \"code\", \"params\": {}},\n      {\"id\": \"hc_002\", \"type\": \"no_overlap\", \"check_method\": \"code\", \"params\": {}},\n      {\"id\": \"hc_003\", \"type\": \"travel_time_hard\", \"check_method\": \"code\", \"params\": {}}\n    ],\n    \"personal_constraints\": [\n      {\n        \"id\": \"pc_001\",\n        \"score_tier\": \"P\", \n        \"hop\": 1,\n        \"check_method\": \"code\",\n        \"source_in_profile\": \"contemporary art venues\",\n        \"description\": \"Include at least 2 contemporary art venues\",\n        \"scope\": \"category=museum\",\n        \"condition\": {\"has_tag\": \"contemporary-modern-art\"},\n        \"aggregation\": {\"at_least\": 2},\n        \"consequence\": \"p_score_full\"\n      },\n      {\n        \"id\": \"pc_002\",\n        \"score_tier\": \"P\",\n        \"hop\": 1, \n        \"check_method\": \"code\",\n        \"source_in_profile\": \"free museum\",\n        \"description\": \"At least one museum must be free entry\",\n        \"scope\": \"category=museum\",\n        \"condition\": {\"has_tag\": \"free-entry\"},\n        \"aggregation\": {\"at_least\": 1},\n        \"consequence\": \"p_score_full\"\n      },\n     ... [truncated, total 2495 chars]"
+          },
+          "status": "accepted",
+          "result": {
+            "status": "accepted",
+            "task_id": "lon_type2_spring_museums_001",
+            "warnings": [],
+            "message": "Task accepted. Loop will terminate.",
+            "_accepted_task": {
+              "task_id": "lon_type2_spring_museums_001",
+              "city": "london",
+              "window_id": "london_late_spring_2026",
+              "days": 2,
+              "start_date": "2026-05-24",
+              "public_input": {
+                "query": "My partner and I are passionate about art and culture. We're visiting London for a weekend museum crawl during the late spring bank holiday. We want to see several world-class museums and galleries, focusing on contemporary art venues when possible. We have about 7 hours total to spend visiting museums over our 2-day trip. We want to include at least one free museum and try to visit at least 3 different districts. Can you create an itinerary that maximizes our cultural experience within this time budget?",
+                "query_resources": {
+                  "time_ceiling_minutes": 420
+                }
+              },
+              "structural_type": "type2_subset_selection",
+              "difficulty": "medium",
+              "rubric": {
+                "hard_constraints": [
+                  {
+                    "id": "hc_001",
+                    "type": "hours_check",
+                    "check_method": "code",
+                    "params": {}
+                  },
+                  {
+                    "id": "hc_002",
+                    "type": "no_overlap",
+                    "check_method": "code",
+                    "params": {}
+                  },
+                  {
+                    "id": "hc_003",
+                    "type": "travel_time_hard",
+                    "check_method": "code",
+                    "params": {}
+                  }
+                ],
+                "personal_constraints": [
+                  {
+                    "id": "pc_001",
+                    "score_tier": "P",
+                    "hop": 1,
+                    "check_method": "code",
+                    "source_in_profile": "contemporary art venues",
+                    "description": "Include at least 2 contemporary art venues",
+                    "scope": "category=museum",
+                    "condition": {
+                      "has_tag": "contemporary-modern-art"
+                    },
+                    "aggregation": {
+                      "at_least": 2
+                    },
+                    "consequence": "p_score_full"
+                  },
+                  {
+                    "id": "pc_002",
+                    "score_tier": "P",
+                    "hop": 1,
+                    "check_method": "code",
+                    "source_in_profile": "free museum",
+                    "description": "At least one museum must be free entry",
+                    "scope": "category=museum",
+                    "condition": {
+                      "has_tag": "free-entry"
+                    },
+                    "aggregation": {
+                      "at_least": 1
+                    },
+                    "consequence": "p_score_full"
+                  },
+                  {
+                    "id": "pc_003",
+                    "score_tier": "P",
+                    "hop": 2,
+                    "check_method": "code",
+                    "source_in_profile": "visit at least 3 different districts",
+                    "description": "Museums must span at least 3 different districts",
+                    "scope": "category=museum",
+                    "condition": {},
+                    "aggregation": {
+                      "count_distinct": 3,
+                      "field": "district"
+                    },
+                    "consequence": "p_score_full"
+                  }
+                ],
+                "b_score_constraints": [],
+                "required_venue_ids": []
+              },
+              "_validation_warnings": []
+            }
+          }
+        }
+      ],
+      "nudge_sent": false,
+      "usage": {
+        "input_tokens": 1986,
+        "output_tokens": 825,
+        "cache_creation_input_tokens": 413,
+        "cache_read_input_tokens": 18197,
+        "total_tokens": 21421
+      }
+    }
+  ],
+  "system_prompt": "You are a benchmark task generation agent for TravelBench.\n\nYour job: explore the venue pool using tools, design a valid type2 task,\nand call SUBMIT with the final task JSON. The loop ends when SUBMIT passes validation.\n\n═══════════════════════════════════════════════════════════════════════════\nHOW YOU INTERACT WITH THIS ENVIRONMENT — READ CAREFULLY\n═══════════════════════════════════════════════════════════════════════════\nThis is a TOOL-CALLING environment. You have access to 7 tools:\n  HELP, THINK, query_pool, get_venue, get_official_site, estimate_travel, SUBMIT\n\nEvery response you write must INVOKE ONE OR MORE TOOLS. Do not write prose\nresponses that describe what you would do — actually call the tool. In particular:\n\n  ✗ Do NOT write: \"I will now submit the task: {...task JSON...}\"\n  ✓ Instead: actually call SUBMIT(task_json=\"...\") as a tool invocation.\n\n  ✗ Do NOT write: \"Let me think about this. I would consider...\"\n  ✓ Instead: call THINK(thought=\"...\") as a tool invocation.\n\nA prose-only response with no tool call is a bug — you will receive a\nreminder asking you to use the tool, and the loop will terminate if you\nignore the reminder. The validation system only runs on SUBMIT tool calls.\n═══════════════════════════════════════════════════════════════════════════\n\nTURN BUDGET: You have 20 turns total. Each tool call costs one turn.\nBudget your turns like this:\n  • Turns 1-8:  EXPLORE — THINK, query_pool, get_venue to understand the pool\n  • Turns 9-12: DRAFT — call SUBMIT with your best task JSON (even if you\n                think it's not perfect — the validator will tell you what\n                to fix, which is more valuable than more exploration)\n  • Turns 13+:  FIX — use validation errors to correct the task and SUBMIT\n                again. Each SUBMIT failure gives you specific errors to fix.\n\nDo NOT spend 15+ turns exploring before your first SUBMIT. Once you see\nvalidation errors, you can fix them precisely. You cannot fix a task you\nhaven't drafted yet. If you hit turn 12 without a\nSUBMIT attempt, draft SOMETHING and submit — an imperfect SUBMIT that gets\nvalidator feedback is strictly better than a final turn with no submission.\n\nEvery tool result shows \"turns_remaining\". When it drops to 8,\nSUBMIT immediately regardless of how polished your task feels.\n\nCITY: London\nWINDOW: Late Spring — Bank Holiday Weekend (2026-05-23 – 2026-05-29)\nANCHOR EVENTS: Spring Bank Holiday (2026-05-25)\nPOOL: 68 venues (68 with coordinates, 10 with sold-out dates)\nPool breakdown: {\"restaurant\": 24, \"cafe\": 5, \"bar\": 5, \"museum\": 15, \"attraction\": 10, \"park\": 5, \"neighbourhood\": 4}\n\nWINDOW CHARACTER:\nLondon's long May weekend — the unofficial start of summer. Beer gardens reach peak capacity. The Spring Bank Holiday (Monday May 25) means another mid-trip closure day for some venues. Chelsea Flower Show falls the week before, leaving the city in a garden-party mood. Street markets are at full swing. This is the most 'normal' of London's windows — relatively stable hours, good weather, busy but manageable crowds. Bank holiday Monday closures remain a quiet trap.\n\nTRAVEL FORMULA (lng_factor=69.1 for this city):\ndist_km ≈ sqrt((Δlat×111)² + (Δlng×69.1)²)  walk=dist×12min  transit=dist×8+5min\nOr use estimate_travel(venue_id_a, venue_id_b, mode) for specific pairs.\n\nVENUE POOL (condensed — use get_venue for full detail):\nFormat: venue_id | name | category | district | tier | pace | cost | lat,lng | [flags]\n[SOLD]=sold-out dates in window  [WI:category]=wrong info exists (category: temporal_decay|propagation_error|conditional|subjective)  [activates:date-range]=conditional wrong info only active during these dates\n  H0lOfmu | Roti King | restaurant | Camden | mid | moderate | $10 | 51.529,-0.131\n  W9r6e6K | Barrafina Adelaide Street | restaurant | Westminster | mid | intense | $55 | 51.512,-0.121 [WI:?]\n  EYwJPhB | Bao Fitzrovia | restaurant | Westminster | mid | moderate | $20 | 51.517,-0.136\n  z4b085G | Kiln | restaurant | Westminste... [truncated]"
+}

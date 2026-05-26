@@ -1,0 +1,114 @@
+{
+  "city": "New_York",
+  "window_id": "new_york_july_4th_2026",
+  "days": 2,
+  "start_date": "2026-07-04",
+  "public_input": {
+    "query": "We are planning a 2-day trip to New York starting July 4th. My partner insists on the famous sites, but I prefer hidden gems off the tourist trail. I want to try as many different mid-priced cuisines as possible for our meals. Also, we must enjoy the summer weather outside every day.",
+    "query_resources": {
+      "currency": "USD"
+    }
+  },
+  "structural_type": "type3_competing_requirements",
+  "difficulty": "hard",
+  "rubric": {
+    "hard_constraints": [
+      {
+        "id": "hc_001",
+        "type": "hours_check",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_002",
+        "type": "no_overlap",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_003",
+        "type": "travel_time_hard",
+        "check_method": "code",
+        "params": {}
+      }
+    ],
+    "personal_constraints": [
+      {
+        "id": "pc_001",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "insists on the famous sites",
+        "description": "At least 4 high-traffic venues",
+        "scope": "all",
+        "condition": {
+          "field": "traffic_tier",
+          "operator": "==",
+          "value": "high"
+        },
+        "aggregation": {
+          "at_least": 4
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_002",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "hidden gems off the tourist trail",
+        "description": "At least 4 low-traffic venues",
+        "scope": "all",
+        "condition": {
+          "field": "traffic_tier",
+          "operator": "==",
+          "value": "low"
+        },
+        "aggregation": {
+          "at_least": 4
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_003",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "enjoy the summer weather outside",
+        "description": "At least 1 park per day",
+        "scope": "per_day",
+        "condition": {
+          "has_tag": "park"
+        },
+        "aggregation": {
+          "at_least": 1
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_004",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "try as many different mid-priced cuisines as possible",
+        "description": "At least 3 distinct cuisines at mid-priced venues",
+        "scope": "activity_type=meal",
+        "condition": {
+          "field": "price_tier",
+          "operator": "==",
+          "value": "mid"
+        },
+        "aggregation": {
+          "count_distinct": 3,
+          "field": "cuisine"
+        },
+        "consequence": "p_score_full"
+      }
+    ],
+    "b_score_constraints": [],
+    "required_venue_ids": []
+  },
+  "task_id": "gemini_3_1_pro_preview_new_york_type3_20260521_1779375659",
+  "_validation_warnings": [],
+  "_turns_used": 19
+}

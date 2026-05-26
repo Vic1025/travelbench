@@ -1,0 +1,817 @@
+{
+  "outcome": "success",
+  "model": "gemini-3-flash-preview",
+  "type_key": "type1",
+  "city": "london",
+  "window_id": "london_easter_2026",
+  "window_label": "Spring — Easter Week",
+  "max_turns": 20,
+  "stop_info": {
+    "turns_used": 15,
+    "max_turns": 20,
+    "stop_reason": "submitted",
+    "last_submit_errors": [
+      "[pc_001] Pool satisfiability: Pool-level check failed: At least 60% of activities must be at venues with traffic tier 'low'.: 22/68 matching (fail). The constraint is not fully satisfiable against this pool — review the matching count above and adjust scope, condition, or aggregation.",
+      "[pc_002] Pool satisfiability: Pool-level check failed: All activities must be at family-friendly venues.: 57/68 matching (fail). The constraint is not fully satisfiable against this pool — review the matching count above and adjust scope, condition, or aggregation.",
+      "Solvability: Universal upper bar: your constraints leave 34/34 site venues (100%) — need ≤75% (≤25 site venues). Add a constraint that filters site venues more aggressively. Use query_pool with site filters (traffic_tier, tag, district) and check the 'site' count in the response until it's ≤25."
+    ],
+    "usage_totals": {
+      "input_tokens": 171148,
+      "output_tokens": 6108,
+      "total_tokens": 177256
+    }
+  },
+  "initial_message": "\n        Generate a type1 benchmark task for london in the 'Spring — Easter Week' window.\n\n        BEFORE YOU START — read the handbook. It contains pool-specific data that\n        varies per city and is NOT in your system prompt:\n\n        HELP('-h tags')         — REQUIRED. All tags in this pool with counts.\n                                    You cannot use has_tag conditions without this.\n        HELP('-h regulations')  — REQUIRED. Regulation fields and their true/false\n                                    distributions. Constraints on regulations with\n                                    100% one-sided values are unsolvable.\n        HELP('-h pool_fields')  — REQUIRED. All filterable fields for query_pool.\n                                    Do not guess field names.\n        HELP('-h window')       — REQUIRED for type6. Anchor event details, dates,\n                                    and window character. Other types: optional but\n                                    useful for grounding.\n        HELP('-h validate')     — REQUIRED for understanding SUBMIT. Full validation\n                                    checklist and common failure modes.\n        HELP('-h venue_sample') — Optional. Shows what get_venue returns.\n        HELP('-h tools')        — Optional. Tool signatures (already in prompt).\n\n        You have 20 turns total — each tool call costs one turn.\n        Aim to call SUBMIT by turn 12 at the latest.\n        After reading the handbook, use THINK to plan your approach,\n        explore the pool with query_pool/get_venue, and call SUBMIT.\n        ",
+  "transcript": [
+    {
+      "turn": 1,
+      "assistant_text": "",
+      "tool_calls": [
+        {
+          "name": "HELP",
+          "input": {
+            "query": "-h tags"
+          },
+          "status": "ok",
+          "result": {
+            "status": "ok",
+            "content": "All tags in this city's pool (99 total):\n\n  afternoon-tea\n  architecture-city-skyline\n  art\n  barbecue\n  bombay-cafe\n  borough-market\n  brasserie\n  breakfast\n  british\n  brunch\n  budget-friendly\n  caribbean\n  cash-only\n  cashless\n  cask-ale\n  casual-dining\n  central-london\n  charcoal-grill\n  cheap-eats\n  cocktails\n  coffee\n  communal-seating\n  contemporary-modern-art\n  counter-deli\n  counter-dining\n  counter-seating\n  crown-jewels\n  dance-music\n  design\n  dinner\n  dog-friendly\n  european\n  experimental-music\n  family-friendly\n  fashion-vintage-shopping\n  fine-dining\n  fish-and-chips\n  free-entry\n  french\n  fresh-pasta\n  hidden-gem\n  history-royal-heritage\n  indian\n  instagrammable\n  italian\n  japanese\n  jewish\n  late-night\n  lively\n  lunch\n  lunch-spot\n  malaysian\n  medieval-fortress\n  mexican\n  michelin-star\n  middle-eastern\n  multicultural-food-markets\n  museum\n  music-nightlife\n  no-reservations\n  open-kitchen\n  outdoor\n  park\n  pasta\n  pet-friendly\n  photography-allowed\n  photography-friendly\n  picnic-spot\n  popcorn\n  popular-with-locals\n  pre-theatre\n  queue-only\n  quiet\n  reservation-required\n  romantic\n  rooftop\n  small-plates\n  soho\n  spanish\n  speciality-coffee\n  steak-frites\n  steakhouse\n  steamed-buns\n  street-food\n  sushi\n  taiwanese\n  tapas\n  thai\n  theatre-performing-arts\n  trendy\n  udon-noodles\n  upscale\n  vegetarian-options\n  vietnamese\n  views\n  wheelchair-accessible\n  whisky-bar\n  wine\n  wood-fired\n\nUse the 'tag' filter key in query_pool to filter by tag.\nA venue may have multiple tags.\nTags come from Yelp listings and source docs — not all venues have tags.",
+            "turns_remaining": 19
+          }
+        }
+      ],
+      "nudge_sent": false,
+      "usage": {
+        "input_tokens": 7538,
+        "output_tokens": 16,
+        "total_tokens": 7554
+      }
+    },
+    {
+      "turn": 2,
+      "assistant_text": "",
+      "tool_calls": [
+        {
+          "name": "HELP",
+          "input": {
+            "query": "-h regulations"
+          },
+          "status": "ok",
+          "result": {
+            "status": "ok",
+            "content": "Regulation fields (use the 'regulation' filter key in query_pool):\n\n  wheelchair_accessible  — venue is fully wheelchair accessible (bool)\n  pet_friendly           — pets allowed (bool)\n  photography_allowed    — photography permitted (bool)\n  family_friendly        — suitable for children (bool)\n  age_restriction        — minimum age in years (int or null — null means no restriction)\n  dress_code             — dress code description (string or null)\n  noise_level            — one of: quiet, moderate, lively, loud\n  reservation_required   — advance booking required (bool)\n  outside_food_allowed   — outside food permitted (bool)\n\nNote: the 'regulation' filter in query_pool matches venues where the regulation is TRUE\n(or non-null for string fields). For noise_level filtering, use get_venue to check\nthe exact value on specific venues.",
+            "turns_remaining": 18
+          }
+        }
+      ],
+      "nudge_sent": false,
+      "usage": {
+        "input_tokens": 8216,
+        "output_tokens": 16,
+        "total_tokens": 8232
+      }
+    },
+    {
+      "turn": 3,
+      "assistant_text": "",
+      "tool_calls": [
+        {
+          "name": "HELP",
+          "input": {
+            "query": "-h pool_fields"
+          },
+          "status": "ok",
+          "result": {
+            "status": "ok",
+            "content": "Filterable fields for query_pool:\n\n  category        — one of: attraction, bar, cafe, museum, neighbourhood, park, restaurant\n                    pool counts: {\"restaurant\": 24, \"cafe\": 5, \"bar\": 5, \"museum\": 15, \"attraction\": 10, \"park\": 5, \"neighbourhood\": 4}\n  tag             — any tag from the list in '-h tags'\n  regulation      — any regulation key from '-h regulations' (matches if true/non-null)\n  district        — one of: Bexley, Camden, City of London, Greenwich, Hackney, Haringey, Islington, Kensington And Chelsea, Lambeth, Lewisham, Richmond Upon Thames, Southwark, Tower Hamlets, Westminster\n  traffic_tier    — one of: high, mid, low\n  price_tier      — one of: free, budget, mid, upscale, luxury\n  booking_required — true or false\n\nAll filters are AND — all conditions must match.\nSingle-field calls are fine.\n\nExample: query_pool({\"category\": \"restaurant\", \"tag\": \"halal\", \"regulation\": \"wheelchair_accessible\"})\n→ returns restaurants that are halal AND wheelchair accessible\n\nExample: query_pool({\"traffic_tier\": \"low\"})\n→ returns all low-traffic (hidden gem) venues",
+            "turns_remaining": 17
+          }
+        }
+      ],
+      "nudge_sent": false,
+      "usage": {
+        "input_tokens": 8467,
+        "output_tokens": 18,
+        "total_tokens": 8485
+      }
+    },
+    {
+      "turn": 4,
+      "assistant_text": "",
+      "tool_calls": [
+        {
+          "name": "HELP",
+          "input": {
+            "query": "-h window"
+          },
+          "status": "ok",
+          "result": {
+            "status": "ok",
+            "content": "Current window context:\n\n  Window: Spring — Easter Week\n  Dates:  2026-04-02 – 2026-04-08\n  Anchor events: Good Friday (2026-04-03), Easter Sunday (2026-04-05), Easter Monday (2026-04-06)\n  Anchor dates: 2026-04-03, 2026-04-05, 2026-04-06\n\nCharacter:\nLondon's first real outdoor weekend of the year. Good Friday (Apr 3) and Easter Monday (Apr 6) are bank holidays — most venues run reduced hours or close entirely on those two days, with Saturday and Sunday at peak busyness. Borough Market and Portobello Road heave with weekend crowds. Parks fill with families. Popular restaurants run fixed Easter menus requiring advance booking. The contrast between the two bank-holiday closures and the busy market days in between is the defining planning challenge.\n\nConditional wrong info hints:\n[\n  {\n    \"type\": \"hours_trap\",\n    \"description\": \"A Yelp listing or blog written in June shows normal Monday hours; the venue is actually closed Easter Monday. The source has no awareness of bank holiday closures.\"\n  },\n  {\n    \"type\": \"access_trap\",\n    \"description\": \"A source says 'walk-ins always welcome' for a restaurant that runs a fixed Easter menu requiring booking 3+ weeks ahead.\"\n  },\n  {\n    \"type\": \"character_trap\",\n    \"description\": \"A source describes a normally quiet neighbourhood pub as 'a relaxed local spot' when it is packed wall-to-wall for the Easter bank holiday weekend with no table service.\"\n  }\n]",
+            "turns_remaining": 16
+          }
+        }
+      ],
+      "nudge_sent": false,
+      "usage": {
+        "input_tokens": 8827,
+        "output_tokens": 16,
+        "total_tokens": 8843
+      }
+    },
+    {
+      "turn": 5,
+      "assistant_text": "",
+      "tool_calls": [
+        {
+          "name": "query_pool",
+          "input": {
+            "filters": {
+              "tag": "outdoor"
+            }
+          },
+          "status": "ok",
+          "result": {
+            "status": "ok",
+            "count": 11,
+            "food_count": 0,
+            "site_count": 11,
+            "venues": [
+              {
+                "venue_id": "zNWcaw5",
+                "name": "Hyde Park"
+              },
+              {
+                "venue_id": "fU3ubDm",
+                "name": "Greenwich Park & Royal Observatory"
+              },
+              {
+                "venue_id": "XGdUaZK",
+                "name": "Shakespeare's Globe Theatre"
+              },
+              {
+                "venue_id": "uq8lok1",
+                "name": "Covent Garden Piazza"
+              },
+              {
+                "venue_id": "CxvnSaC",
+                "name": "Brick Lane"
+              },
+              {
+                "venue_id": "Ug9sDHW",
+                "name": "Hampstead Heath"
+              },
+              {
+                "venue_id": "MavHE20",
+                "name": "Firepower Royal Artillery Museum"
+              },
+              {
+                "venue_id": "Ulj02u3",
+                "name": "Columbia Road Flower Market"
+              },
+              {
+                "venue_id": "WxTLSVq",
+                "name": "Horniman Museum and Gardens"
+              },
+              {
+                "venue_id": "ORPlAsN",
+                "name": "Sutton House"
+              },
+              {
+                "venue_id": "egL9G0a",
+                "name": "St Dunstan in the East Garden"
+              }
+            ],
+            "note": "Breakdown: food=0/34 (0%), site=11/34 (32%). Upper-bar targets (this task type): need ≤75% food AND ≤75% site surviving (i.e. ≤25 food, ≤25 site). Use get_venue(venue_id) for full detail on any venue.",
+            "turns_remaining": 15
+          }
+        }
+      ],
+      "nudge_sent": false,
+      "usage": {
+        "input_tokens": 9288,
+        "output_tokens": 18,
+        "total_tokens": 9306
+      }
+    },
+    {
+      "turn": 6,
+      "assistant_text": "",
+      "tool_calls": [
+        {
+          "name": "query_pool",
+          "input": {
+            "filters": {
+              "tag": "vegetarian-options"
+            }
+          },
+          "status": "ok",
+          "result": {
+            "status": "ok",
+            "count": 9,
+            "food_count": 5,
+            "site_count": 4,
+            "venues": [
+              {
+                "venue_id": "EZN4wAu",
+                "name": "Dishoom King's Cross"
+              },
+              {
+                "venue_id": "QFYcgIF",
+                "name": "Ottolenghi Islington"
+              },
+              {
+                "venue_id": "Dd5AmE5",
+                "name": "Yildiz Palace Turkish Restaurant"
+              },
+              {
+                "venue_id": "RWyxo4B",
+                "name": "Café OTO"
+              },
+              {
+                "venue_id": "nsWMFtc",
+                "name": "The Dusty Knuckle Bakery"
+              },
+              {
+                "venue_id": "heHfpkV",
+                "name": "Borough Market"
+              },
+              {
+                "venue_id": "v6dDsQL",
+                "name": "The Barbican Centre"
+              },
+              {
+                "venue_id": "HgfGDed",
+                "name": "Brixton Market & Electric Avenue"
+              },
+              {
+                "venue_id": "MEhA91d",
+                "name": "The Spread Eagle"
+              }
+            ],
+            "note": "Breakdown: food=5/34 (14%), site=4/34 (11%). Upper-bar targets (this task type): need ≤75% food AND ≤75% site surviving (i.e. ≤25 food, ≤25 site). Use get_venue(venue_id) for full detail on any venue.",
+            "turns_remaining": 14
+          }
+        }
+      ],
+      "nudge_sent": false,
+      "usage": {
+        "input_tokens": 9675,
+        "output_tokens": 20,
+        "total_tokens": 9695
+      }
+    },
+    {
+      "turn": 7,
+      "assistant_text": "",
+      "tool_calls": [
+        {
+          "name": "get_venue",
+          "input": {
+            "venue_id": "MEhA91d"
+          },
+          "status": "ok",
+          "result": {
+            "status": "ok",
+            "venue": {
+              "venue_id": "MEhA91d",
+              "name": "The Spread Eagle",
+              "category": "attraction",
+              "district": "Hackney",
+              "traffic_tier": "low",
+              "recommended_pace": "moderate",
+              "price_tier": "mid",
+              "avg_cost_local": 18.0,
+              "lat": 51.5405,
+              "lng": -0.0572,
+              "recommended_visit_minutes": 90,
+              "tags": [
+                "cask-ale",
+                "casual-dining",
+                "dinner",
+                "dog-friendly",
+                "family-friendly",
+                "french",
+                "lunch",
+                "popular-with-locals",
+                "quiet",
+                "vegetarian-options",
+                "wine"
+              ],
+              "regulations": {
+                "wheelchair_accessible": true,
+                "pet_friendly": true,
+                "photography_allowed": false,
+                "family_friendly": true,
+                "age_restriction": null,
+                "dress_code": null,
+                "noise_level": "moderate",
+                "reservation_required": false,
+                "outside_food_allowed": true
+              },
+              "booking_required": true,
+              "has_official_site": true,
+              "window_flags": {
+                "london_carnival_2026": {
+                  "in_closure_zone": false,
+                  "in_wider_affected_area": false
+                },
+                "london_christmas_2026": {
+                  "in_shopping_crowd_zone": false
+                }
+              },
+              "unavailable_dates": [
+                "2026-04-03"
+              ]
+            },
+            "turns_remaining": 13
+          }
+        }
+      ],
+      "nudge_sent": false,
+      "usage": {
+        "input_tokens": 10020,
+        "output_tokens": 23,
+        "total_tokens": 10043
+      }
+    },
+    {
+      "turn": 8,
+      "assistant_text": "",
+      "tool_calls": [
+        {
+          "name": "get_venue",
+          "input": {
+            "venue_id": "EZN4wAu"
+          },
+          "status": "ok",
+          "result": {
+            "status": "ok",
+            "venue": {
+              "venue_id": "EZN4wAu",
+              "name": "Dishoom King's Cross",
+              "category": "restaurant",
+              "district": "Islington",
+              "traffic_tier": "mid",
+              "recommended_pace": "moderate",
+              "price_tier": "mid",
+              "avg_cost_local": 20.0,
+              "lat": 51.5368,
+              "lng": -0.1253,
+              "recommended_visit_minutes": 75,
+              "tags": [
+                "bombay-cafe",
+                "breakfast",
+                "cocktails",
+                "family-friendly",
+                "indian",
+                "reservation-required",
+                "vegetarian-options",
+                "wheelchair-accessible"
+              ],
+              "regulations": {
+                "wheelchair_accessible": true,
+                "pet_friendly": false,
+                "photography_allowed": true,
+                "family_friendly": true,
+                "age_restriction": null,
+                "dress_code": null,
+                "noise_level": "moderate",
+                "reservation_required": false,
+                "outside_food_allowed": false
+              },
+              "booking_required": false,
+              "has_official_site": true,
+              "window_flags": {
+                "london_carnival_2026": {
+                  "in_closure_zone": false,
+                  "in_wider_affected_area": false
+                },
+                "london_christmas_2026": {
+                  "in_shopping_crowd_zone": false
+                }
+              },
+              "unavailable_dates": []
+            },
+            "turns_remaining": 12
+          }
+        }
+      ],
+      "nudge_sent": false,
+      "usage": {
+        "input_tokens": 10393,
+        "output_tokens": 22,
+        "total_tokens": 10415
+      }
+    },
+    {
+      "turn": 9,
+      "assistant_text": "",
+      "tool_calls": [
+        {
+          "name": "SUBMIT",
+          "input": {
+            "task_json": "{\n  \"task_id\": \"london_easter_type1_01\",\n  \"city\": \"London\",\n  \"window_id\": \"spring_easter_2026\",\n  \"days\": 3,\n  \"start_date\": \"2026-04-03\",\n  \"public_input\": {\n    \"query\": \"My family and I are visiting London for the long Easter weekend (Friday to Sunday, April 3rd to 5th). As we are traveling with a young toddler, we need to ensure every place we visit is family-friendly. I'm also quite strict about my vegetarian diet, so I'd like at least half of our meals to be at venues with clear vegetarian options on the menu. Since we want to make the most of the spring weather, we're hoping to spend a good portion of our time at outdoor spots. Also, my husband is a big fan of quiet, relaxing environments, so we'd prefer to dine at places that aren't too noisy.\"\n  },\n  \"structural_type\": \"type1\",\n  \"difficulty\": \"3\",\n  \"rubric\": {\n    \"hard_constraints\": [\n      {\"id\": \"hc_001\", \"type\": \"hours_check\", \"check_method\": \"code\", \"params\": {}},\n      {\"id\": \"hc_002\", \"type\": \"no_overlap\", \"check_method\": \"code\", \"params\": {}},\n      {\"id\": \"hc_003\", \"type\": \"travel_time_hard\", \"check_method\": \"code\", \"params\": {}}\n    ],\n    \"personal_constraints\": [\n      {\n        \"id\": \"pc_001\",\n        \"score_tier\": \"P\",\n        \"hop\": 1,\n        \"check_method\": \"code\",\n        \"source_in_profile\": \"ensure every place we visit is family-friendly\",\n        \"description\": \"All activities must be at family-friendly venues.\",\n        \"scope\": \"all\",\n        \"condition\": {\"field\": \"family_friendly\", \"operator\": \"==\", \"value\": true},\n        \"aggregation\": \"all\",\n        \"consequence\": \"p_score_full\"\n      },\n      {\n        \"id\": \"pc_002\",\n        \"score_tier\": \"P\",\n        \"hop\": 1,\n        \"check_method\": \"code\",\n        \"source_in_profile\": \"at least half of our meals to be at venues with clear vegetarian options\",\n        \"description\": \"At least 50% of meals at venues with vegetarian-options tag.\",\n        \"scope\": \"activity_type=meal\",\n        \"condition\": {\"has_tag\": \"vegetarian-options\"},... [truncated, total 3069 chars]"
+          },
+          "status": "validation_failed",
+          "result": {
+            "status": "validation_failed",
+            "errors": [
+              "difficulty must be one of ['easy', 'hard', 'medium'], got '3'. Pick easy, medium, or hard."
+            ],
+            "warnings": [],
+            "message": "Fix difficulty and SUBMIT again.",
+            "turns_remaining": 11
+          }
+        }
+      ],
+      "nudge_sent": false,
+      "usage": {
+        "input_tokens": 10745,
+        "output_tokens": 982,
+        "total_tokens": 11727
+      }
+    },
+    {
+      "turn": 10,
+      "assistant_text": "",
+      "tool_calls": [
+        {
+          "name": "SUBMIT",
+          "input": {
+            "task_json": "{\n  \"task_id\": \"london_easter_type1_01\",\n  \"city\": \"London\",\n  \"window_id\": \"spring_easter_2026\",\n  \"days\": 3,\n  \"start_date\": \"2026-04-03\",\n  \"public_input\": {\n    \"query\": \"My family and I are visiting London for the long Easter weekend (Friday to Sunday, April 3rd to 5th). As we are traveling with a young toddler, we need to ensure every place we visit is family-friendly. I'm also quite strict about my vegetarian diet, so I'd like at least half of our meals to be at venues with clear vegetarian options on the menu. Since we want to make the most of the spring weather, we're hoping to spend a good portion of our time at outdoor spots. Also, my husband is a big fan of quiet, relaxing environments, so we'd prefer to dine at places that aren't too noisy.\"\n  },\n  \"structural_type\": \"type1\",\n  \"difficulty\": \"medium\",\n  \"rubric\": {\n    \"hard_constraints\": [\n      {\"id\": \"hc_001\", \"type\": \"hours_check\", \"check_method\": \"code\", \"params\": {}},\n      {\"id\": \"hc_002\", \"type\": \"no_overlap\", \"check_method\": \"code\", \"params\": {}},\n      {\"id\": \"hc_003\", \"type\": \"travel_time_hard\", \"check_method\": \"code\", \"params\": {}}\n    ],\n    \"personal_constraints\": [\n      {\n        \"id\": \"pc_001\",\n        \"score_tier\": \"P\",\n        \"hop\": 1,\n        \"check_method\": \"code\",\n        \"source_in_profile\": \"ensure every place we visit is family-friendly\",\n        \"description\": \"All activities must be at family-friendly venues.\",\n        \"scope\": \"all\",\n        \"condition\": {\"field\": \"family_friendly\", \"operator\": \"==\", \"value\": true},\n        \"aggregation\": \"all\",\n        \"consequence\": \"p_score_full\"\n      },\n      {\n        \"id\": \"pc_002\",\n        \"score_tier\": \"P\",\n        \"hop\": 1,\n        \"check_method\": \"code\",\n        \"source_in_profile\": \"at least half of our meals to be at venues with clear vegetarian options\",\n        \"description\": \"At least 50% of meals at venues with vegetarian-options tag.\",\n        \"scope\": \"activity_type=meal\",\n        \"condition\": {\"has_tag\": \"vegetarian-optio... [truncated, total 3074 chars]"
+          },
+          "status": "validation_failed",
+          "result": {
+            "status": "validation_failed",
+            "errors": [
+              "structural_type must be one of: type1_cascading_requirements, type2_subset_selection, type3_competing_requirements, type4_precision_allocation, type5_hard_feasibility_reduction, type6_context_window_tension. Got 'type1'."
+            ],
+            "warnings": [],
+            "message": "Fix structural_type and SUBMIT again.",
+            "turns_remaining": 10
+          }
+        }
+      ],
+      "nudge_sent": false,
+      "usage": {
+        "input_tokens": 11801,
+        "output_tokens": 982,
+        "total_tokens": 12783
+      }
+    },
+    {
+      "turn": 11,
+      "assistant_text": "",
+      "tool_calls": [
+        {
+          "name": "SUBMIT",
+          "input": {
+            "task_json": "{\n  \"task_id\": \"london_easter_type1_01\",\n  \"city\": \"London\",\n  \"window_id\": \"spring_easter_2026\",\n  \"days\": 3,\n  \"start_date\": \"2026-04-03\",\n  \"public_input\": {\n    \"query\": \"My family and I are visiting London for the long Easter weekend (Friday to Sunday, April 3rd to 5th). As we are traveling with a young toddler, we need to ensure every place we visit is family-friendly. I'm also quite strict about my vegetarian diet, so I'd like at least half of our meals to be at venues with clear vegetarian options on the menu. Since we want to make the most of the spring weather, we're hoping to spend a good portion of our time at outdoor spots. Also, my husband is a big fan of quiet, relaxing environments, so we'd prefer to dine at places that aren't too noisy.\"\n  },\n  \"structural_type\": \"type1_cascading_requirements\",\n  \"difficulty\": \"medium\",\n  \"rubric\": {\n    \"hard_constraints\": [\n      {\"id\": \"hc_001\", \"type\": \"hours_check\", \"check_method\": \"code\", \"params\": {}},\n      {\"id\": \"hc_002\", \"type\": \"no_overlap\", \"check_method\": \"code\", \"params\": {}},\n      {\"id\": \"hc_003\", \"type\": \"travel_time_hard\", \"check_method\": \"code\", \"params\": {}}\n    ],\n    \"personal_constraints\": [\n      {\n        \"id\": \"pc_001\",\n        \"score_tier\": \"P\",\n        \"hop\": 1,\n        \"check_method\": \"code\",\n        \"source_in_profile\": \"ensure every place we visit is family-friendly\",\n        \"description\": \"All activities must be at family-friendly venues.\",\n        \"scope\": \"all\",\n        \"condition\": {\"field\": \"family_friendly\", \"operator\": \"==\", \"value\": true},\n        \"aggregation\": \"all\",\n        \"consequence\": \"p_score_full\"\n      },\n      {\n        \"id\": \"pc_002\",\n        \"score_tier\": \"P\",\n        \"hop\": 1,\n        \"check_method\": \"code\",\n        \"source_in_profile\": \"at least half of our meals to be at venues with clear vegetarian options\",\n        \"description\": \"At least 50% of meals at venues with vegetarian-options tag.\",\n        \"scope\": \"activity_type=meal\",\n        \"condition\": {\"has_... [truncated, total 3097 chars]"
+          },
+          "status": "validation_failed",
+          "result": {
+            "status": "validation_failed",
+            "errors": [
+              "All P-constraints use scope 'all' or 'activity_type=meal' — too uniform. At least one must use a more specific scope: per_day, time_window=*, category=*, venue_id=*, has_tag=*, or a compound [list] scope.",
+              "[pc_001] Pool satisfiability: Pool-level check failed: All activities must be at family-friendly venues.: 57/68 matching (fail). The constraint is not fully satisfiable against this pool — review the matching count above and adjust scope, condition, or aggregation.",
+              "[pc_002] Pool satisfiability: Pool-level check failed: At least 50% of meals at venues with vegetarian-options tag.: 5/34 matching (fail). The constraint is not fully satisfiable against this pool — review the matching count above and adjust scope, condition, or aggregation.",
+              "[pc_003] Pool satisfiability: Pool-level check failed: At least 40% of all activities at outdoor venues.: 11/68 matching (fail). The constraint is not fully satisfiable against this pool — review the matching count above and adjust scope, condition, or aggregation.",
+              "[pc_004] Pool satisfiability: Pool-level check failed: Meals must be at venues with noise level 'quiet' or 'moderate'.: 28/34 matching (fail). The constraint is not fully satisfiable against this pool — review the matching count above and adjust scope, condition, or aggregation.",
+              "Solvability: Universal upper bar: your constraints leave 34/34 site venues (100%) — need ≤75% (≤25 site venues). Add a constraint that filters site venues more aggressively. Use query_pool with site filters (traffic_tier, tag, district) and check the 'site' count in the response until it's ≤25."
+            ],
+            "warnings": [],
+            "message": "6 issue(s) to fix. Use THINK to plan your fixes, then call SUBMIT again with the corrected JSON. Use '-h validate' to understand what each check requires.",
+            "turns_remaining": 9
+          }
+        }
+      ],
+      "nudge_sent": false,
+      "usage": {
+        "input_tokens": 12897,
+        "output_tokens": 988,
+        "total_tokens": 13885
+      }
+    },
+    {
+      "turn": 12,
+      "assistant_text": "",
+      "tool_calls": [
+        {
+          "name": "query_pool",
+          "input": {
+            "filters": {
+              "traffic_tier": "low"
+            }
+          },
+          "status": "ok",
+          "result": {
+            "status": "ok",
+            "count": 22,
+            "food_count": 13,
+            "site_count": 9,
+            "venues": [
+              {
+                "venue_id": "ZBMFQfW",
+                "name": "Neon Palms"
+              },
+              {
+                "venue_id": "EsS0y6l",
+                "name": "The Grotto Wine Bar"
+              },
+              {
+                "venue_id": "kMv0KUT",
+                "name": "The Ravenswood Tap"
+              },
+              {
+                "venue_id": "Dd5AmE5",
+                "name": "Yildiz Palace Turkish Restaurant"
+              },
+              {
+                "venue_id": "RWyxo4B",
+                "name": "Café OTO"
+              },
+              {
+                "venue_id": "nsWMFtc",
+                "name": "The Dusty Knuckle Bakery"
+              },
+              {
+                "venue_id": "EIBl5SN",
+                "name": "Pham Sushi"
+              },
+              {
+                "venue_id": "Pzj0QXo",
+                "name": "The Golden Chippy"
+              },
+              {
+                "venue_id": "It9Cq87",
+                "name": "Volcano Coffee Works"
+              },
+              {
+                "venue_id": "ncF5wXo",
+                "name": "Mangal 2"
+              },
+              {
+                "venue_id": "llCcZmW",
+                "name": "Salvation in Noodles"
+              },
+              {
+                "venue_id": "HKyuzE5",
+                "name": "Faulkner's Fish & Chips"
+              },
+              {
+                "venue_id": "MGn9tpR",
+                "name": "Taqueria"
+              },
+              {
+                "venue_id": "rdKg9bt",
+                "name": "Two Temple Place"
+              },
+              {
+                "venue_id": "MavHE20",
+                "name": "Firepower Royal Artillery Museum"
+              },
+              {
+                "venue_id": "jK1FHpi",
+                "name": "Geffrye Museum of the Home"
+              },
+              {
+                "venue_id": "WxTLSVq",
+                "name": "Horniman Museum and Gardens"
+              },
+              {
+                "venue_id": "ORPlAsN",
+                "name": "Sutton House"
+              },
+              {
+                "venue_id": "y8JOqtl",
+                "name": "Crossness Pumping Station"
+              },
+              {
+                "venue_id": "gMtSNc1",
+                "name": "Brunel Museum"
+              },
+              {
+                "venue_id": "MEhA91d",
+                "name": "The Spread Eagle"
+              },
+              {
+                "venue_id": "egL9G0a",
+                "name": "St Dunstan in the East Garden"
+              }
+            ],
+            "note": "Breakdown: food=13/34 (38%), site=9/34 (26%). Upper-bar targets (this task type): need ≤75% food AND ≤75% site surviving (i.e. ≤25 food, ≤25 site). Use get_venue(venue_id) for full detail on any venue.",
+            "turns_remaining": 8,
+            "WARNING": "Only 8 turn(s) left! Call SUBMIT NOW with your best draft — an imperfect submission beats no submission."
+          }
+        }
+      ],
+      "nudge_sent": false,
+      "usage": {
+        "input_tokens": 14367,
+        "output_tokens": 20,
+        "total_tokens": 14387
+      }
+    },
+    {
+      "turn": 13,
+      "assistant_text": "",
+      "tool_calls": [
+        {
+          "name": "SUBMIT",
+          "input": {
+            "task_json": "{\n  \"task_id\": \"london_easter_type1_01\",\n  \"city\": \"London\",\n  \"window_id\": \"spring_easter_2026\",\n  \"days\": 3,\n  \"start_date\": \"2026-04-03\",\n  \"public_input\": {\n    \"query\": \"My family and I are visiting London for the long Easter weekend (Friday to Sunday, April 3rd to 5th). We're specifically looking for hidden gems, so we want to avoid all the high-traffic tourist areas and only visit low-traffic venues. We're traveling with a young toddler, so every venue we visit must be family-friendly. I also need to ensure at least one of our visits each day is to a park where the little one can run around. For dining, we'd like to try at least 3 distinct cuisines across our meals to keep things interesting.\"\n  },\n  \"structural_type\": \"type1_cascading_requirements\",\n  \"difficulty\": \"hard\",\n  \"rubric\": {\n    \"hard_constraints\": [\n      {\"id\": \"hc_001\", \"type\": \"hours_check\", \"check_method\": \"code\", \"params\": {}},\n      {\"id\": \"hc_002\", \"type\": \"no_overlap\", \"check_method\": \"code\", \"params\": {}},\n      {\"id\": \"hc_003\", \"type\": \"travel_time_hard\", \"check_method\": \"code\", \"params\": {}}\n    ],\n    \"personal_constraints\": [\n      {\n        \"id\": \"pc_001\",\n        \"score_tier\": \"P\",\n        \"hop\": 1,\n        \"check_method\": \"code\",\n        \"source_in_profile\": \"only visit low-traffic venues\",\n        \"description\": \"All activities must be at venues with traffic tier 'low'.\",\n        \"scope\": \"all\",\n        \"condition\": {\"field\": \"traffic_tier\", \"operator\": \"==\", \"value\": \"low\"},\n        \"aggregation\": \"all\",\n        \"consequence\": \"p_score_full\"\n      },\n      {\n        \"id\": \"pc_002\",\n        \"score_tier\": \"P\",\n        \"hop\": 1,\n        \"check_method\": \"code\",\n        \"source_in_profile\": \"every venue we visit must be family-friendly\",\n        \"description\": \"All activities must be at family-friendly venues.\",\n        \"scope\": \"all\",\n        \"condition\": {\"field\": \"family_friendly\", \"operator\": \"==\", \"value\": true},\n        \"aggregation\": \"all\",\n        \"consequence\": \"p_score_ful... [truncated, total 3005 chars]"
+          },
+          "status": "validation_failed",
+          "result": {
+            "status": "validation_failed",
+            "errors": [
+              "[pc_004] condition is empty with trivial scope='activity_type=meal' — add has_tag, not_tag, or a field comparison to make the constraint meaningful. (Empty condition with scope='category=X' or 'venue_id=X' is fine — the scope itself is the filter.)",
+              "[pc_001] Pool satisfiability: Pool-level check failed: All activities must be at venues with traffic tier 'low'.: 22/68 matching (fail). The constraint is not fully satisfiable against this pool — review the matching count above and adjust scope, condition, or aggregation.",
+              "[pc_002] Pool satisfiability: Pool-level check failed: All activities must be at family-friendly venues.: 57/68 matching (fail). The constraint is not fully satisfiable against this pool — review the matching count above and adjust scope, condition, or aggregation."
+            ],
+            "warnings": [],
+            "message": "3 issue(s) to fix. Use THINK to plan your fixes, then call SUBMIT again with the corrected JSON. Use '-h validate' to understand what each check requires.",
+            "turns_remaining": 7,
+            "WARNING": "Only 7 turn(s) left! Call SUBMIT NOW with your best draft — an imperfect submission beats no submission."
+          }
+        }
+      ],
+      "nudge_sent": false,
+      "usage": {
+        "input_tokens": 15023,
+        "output_tokens": 959,
+        "total_tokens": 15982
+      }
+    },
+    {
+      "turn": 14,
+      "assistant_text": "",
+      "tool_calls": [
+        {
+          "name": "SUBMIT",
+          "input": {
+            "task_json": "{\n  \"task_id\": \"london_easter_type1_01\",\n  \"city\": \"London\",\n  \"window_id\": \"spring_easter_2026\",\n  \"days\": 3,\n  \"start_date\": \"2026-04-03\",\n  \"public_input\": {\n    \"query\": \"My family and I are visiting London for the long Easter weekend (Friday to Sunday, April 3rd to 5th). We're specifically looking for hidden gems, so we'd like at least 60% of our activities to be at low-traffic venues. We're traveling with a young toddler, so every venue we visit must be family-friendly. I also need to ensure at least one of our visits each day is to a park where the little one can run around. For dining, we'd like to try at least 3 distinct cuisines across our meals to keep things interesting.\"\n  },\n  \"structural_type\": \"type1_cascading_requirements\",\n  \"difficulty\": \"medium\",\n  \"rubric\": {\n    \"hard_constraints\": [\n      {\"id\": \"hc_001\", \"type\": \"hours_check\", \"check_method\": \"code\", \"params\": {}},\n      {\"id\": \"hc_002\", \"type\": \"no_overlap\", \"check_method\": \"code\", \"params\": {}},\n      {\"id\": \"hc_003\", \"type\": \"travel_time_hard\", \"check_method\": \"code\", \"params\": {}}\n    ],\n    \"personal_constraints\": [\n      {\n        \"id\": \"pc_001\",\n        \"score_tier\": \"P\",\n        \"hop\": 1,\n        \"check_method\": \"code\",\n        \"source_in_profile\": \"at least 60% of our activities to be at low-traffic venues\",\n        \"description\": \"At least 60% of activities must be at venues with traffic tier 'low'.\",\n        \"scope\": \"all\",\n        \"condition\": {\"field\": \"traffic_tier\", \"operator\": \"==\", \"value\": \"low\"},\n        \"aggregation\": {\"ratio\": 0.6},\n        \"consequence\": \"p_score_full\"\n      },\n      {\n        \"id\": \"pc_002\",\n        \"score_tier\": \"P\",\n        \"hop\": 1,\n        \"check_method\": \"code\",\n        \"source_in_profile\": \"every venue we visit must be family-friendly\",\n        \"description\": \"All activities must be at family-friendly venues.\",\n        \"scope\": \"all\",\n        \"condition\": {\"field\": \"family_friendly\", \"operator\": \"==\", \"value\": true},\n        \"aggregation\": \"all\",\n... [truncated, total 3098 chars]"
+          },
+          "status": "validation_failed",
+          "result": {
+            "status": "validation_failed",
+            "errors": [
+              "[pc_001] Pool satisfiability: Pool-level check failed: At least 60% of activities must be at venues with traffic tier 'low'.: 22/68 matching (fail). The constraint is not fully satisfiable against this pool — review the matching count above and adjust scope, condition, or aggregation.",
+              "[pc_002] Pool satisfiability: Pool-level check failed: All activities must be at family-friendly venues.: 57/68 matching (fail). The constraint is not fully satisfiable against this pool — review the matching count above and adjust scope, condition, or aggregation.",
+              "Solvability: Universal upper bar: your constraints leave 34/34 site venues (100%) — need ≤75% (≤25 site venues). Add a constraint that filters site venues more aggressively. Use query_pool with site filters (traffic_tier, tag, district) and check the 'site' count in the response until it's ≤25."
+            ],
+            "warnings": [],
+            "message": "3 issue(s) to fix. Use THINK to plan your fixes, then call SUBMIT again with the corrected JSON. Use '-h validate' to understand what each check requires.",
+            "turns_remaining": 6,
+            "WARNING": "Only 6 turn(s) left! Call SUBMIT NOW with your best draft — an imperfect submission beats no submission."
+          }
+        }
+      ],
+      "nudge_sent": false,
+      "usage": {
+        "input_tokens": 16284,
+        "output_tokens": 1002,
+        "total_tokens": 17286
+      }
+    },
+    {
+      "turn": 15,
+      "assistant_text": "",
+      "tool_calls": [
+        {
+          "name": "SUBMIT",
+          "input": {
+            "task_json": "{\n  \"task_id\": \"london_easter_type1_01\",\n  \"city\": \"London\",\n  \"window_id\": \"spring_easter_2026\",\n  \"days\": 3,\n  \"start_date\": \"2026-04-03\",\n  \"public_input\": {\n    \"query\": \"My family and I are visiting London for the long Easter weekend (Friday to Sunday, April 3rd to 5th). We're specifically looking for hidden gems, so we'd like at least 2 of our daily activities to be at low-traffic venues. We're traveling with a young toddler, so at least 70% of the venues we visit must be family-friendly. I also need to ensure at least one of our visits each day is to a park where the little one can run around. For dining, we'd like to try at least 3 distinct cuisines across our meals to keep things interesting.\"\n  },\n  \"structural_type\": \"type1_cascading_requirements\",\n  \"difficulty\": \"medium\",\n  \"rubric\": {\n    \"hard_constraints\": [\n      {\"id\": \"hc_001\", \"type\": \"hours_check\", \"check_method\": \"code\", \"params\": {}},\n      {\"id\": \"hc_002\", \"type\": \"no_overlap\", \"check_method\": \"code\", \"params\": {}},\n      {\"id\": \"hc_003\", \"type\": \"travel_time_hard\", \"check_method\": \"code\", \"params\": {}}\n    ],\n    \"personal_constraints\": [\n      {\n        \"id\": \"pc_001\",\n        \"score_tier\": \"P\",\n        \"hop\": 1,\n        \"check_method\": \"code\",\n        \"source_in_profile\": \"at least 2 of our daily activities to be at low-traffic venues\",\n        \"description\": \"At least 2 activities per day must be at venues with traffic tier 'low'.\",\n        \"scope\": \"per_day\",\n        \"condition\": {\"field\": \"traffic_tier\", \"operator\": \"==\", \"value\": \"low\"},\n        \"aggregation\": {\"at_least\": 2},\n        \"consequence\": \"p_score_full\"\n      },\n      {\n        \"id\": \"pc_002\",\n        \"score_tier\": \"P\",\n        \"hop\": 1,\n        \"check_method\": \"code\",\n        \"source_in_profile\": \"at least 70% of the venues we visit must be family-friendly\",\n        \"description\": \"At least 70% of activities must be at family-friendly venues.\",\n        \"scope\": \"all\",\n        \"condition\": {\"field\": \"family_friendly\", \"opera... [truncated, total 3165 chars]"
+          },
+          "status": "accepted",
+          "result": {
+            "status": "accepted",
+            "task_id": "london_easter_type1_01",
+            "warnings": [],
+            "message": "Task accepted. Loop will terminate.",
+            "_accepted_task": {
+              "task_id": "london_easter_type1_01",
+              "city": "London",
+              "window_id": "london_easter_2026",
+              "days": 3,
+              "start_date": "2026-04-03",
+              "public_input": {
+                "query": "My family and I are visiting London for the long Easter weekend (Friday to Sunday, April 3rd to 5th). We're specifically looking for hidden gems, so we'd like at least 2 of our daily activities to be at low-traffic venues. We're traveling with a young toddler, so at least 70% of the venues we visit must be family-friendly. I also need to ensure at least one of our visits each day is to a park where the little one can run around. For dining, we'd like to try at least 3 distinct cuisines across our meals to keep things interesting."
+              },
+              "structural_type": "type1_cascading_requirements",
+              "difficulty": "medium",
+              "rubric": {
+                "hard_constraints": [
+                  {
+                    "id": "hc_001",
+                    "type": "hours_check",
+                    "check_method": "code",
+                    "params": {}
+                  },
+                  {
+                    "id": "hc_002",
+                    "type": "no_overlap",
+                    "check_method": "code",
+                    "params": {}
+                  },
+                  {
+                    "id": "hc_003",
+                    "type": "travel_time_hard",
+                    "check_method": "code",
+                    "params": {}
+                  }
+                ],
+                "personal_constraints": [
+                  {
+                    "id": "pc_001",
+                    "score_tier": "P",
+                    "hop": 1,
+                    "check_method": "code",
+                    "source_in_profile": "at least 2 of our daily activities to be at low-traffic venues",
+                    "description": "At least 2 activities per day must be at venues with traffic tier 'low'.",
+                    "scope": "per_day",
+                    "condition": {
+                      "field": "traffic_tier",
+                      "operator": "==",
+                      "value": "low"
+                    },
+                    "aggregation": {
+                      "at_least": 2
+                    },
+                    "consequence": "p_score_full"
+                  },
+                  {
+                    "id": "pc_002",
+                    "score_tier": "P",
+                    "hop": 1,
+                    "check_method": "code",
+                    "source_in_profile": "at least 70% of the venues we visit must be family-friendly",
+                    "description": "At least 70% of activities must be at family-friendly venues.",
+                    "scope": "all",
+                    "condition": {
+                      "field": "family_friendly",
+                      "operator": "==",
+                      "value": true
+                    },
+                    "aggregation": {
+                      "ratio": 0.7
+                    },
+                    "consequence": "p_score_full"
+                  },
+                  {
+                    "id": "pc_003",
+                    "score_tier": "P",
+                    "hop": 2,
+                    "check_method": "code",
+                    "source_in_profile": "at least one of our visits each day is to a park",
+                    "description": "At least one activity per day must be at a park-category venue.",
+                    "scope": "per_day",
+                    "condition": {
+                      "field": "category",
+                      "operator": "==",
+                      "value": "park"
+                    },
+                    "aggregation": {
+                      "at_least": 1
+                    },
+                    "consequence": "p_score_full"
+                  },
+                  {
+                    "id": "pc_004",
+                    "score_tier": "P",
+                    "hop": 1,
+                    "check_method": "code",
+                    "source_in_profile": "try at least 3 distinct cuisines across our meals",
+                    "description": "At least 3 distinct cuisine types across meals.",
+                    "scope": "activity_type=meal",
+                    "condition": {
+                      "field": "cuisine_label",
+                      "operator": "!=",
+                      "value": "N/A"
+                    },
+                    "aggregation": {
+                      "count_distinct": 3,
+                      "field": "cuisine_label"
+                    },
+                    "consequence": "p_score_full"
+                  }
+                ],
+                "b_score_constraints": [],
+                "required_venue_ids": []
+              },
+              "_validation_warnings": []
+            }
+          }
+        }
+      ],
+      "nudge_sent": false,
+      "usage": {
+        "input_tokens": 17607,
+        "output_tokens": 1026,
+        "total_tokens": 18633
+      }
+    }
+  ],
+  "system_prompt": "You are a benchmark task generation agent for TravelBench.\n\nYour job: explore the venue pool using tools, design a valid type1 task,\nand call SUBMIT with the final task JSON. The loop ends when SUBMIT passes validation.\n\n═══════════════════════════════════════════════════════════════════════════\nHOW YOU INTERACT WITH THIS ENVIRONMENT — READ CAREFULLY\n═══════════════════════════════════════════════════════════════════════════\nThis is a TOOL-CALLING environment. You have access to 7 tools:\n  HELP, THINK, query_pool, get_venue, get_official_site, estimate_travel, SUBMIT\n\nEvery response you write must INVOKE ONE OR MORE TOOLS. Do not write prose\nresponses that describe what you would do — actually call the tool. In particular:\n\n  ✗ Do NOT write: \"I will now submit the task: {...task JSON...}\"\n  ✓ Instead: actually call SUBMIT(task_json=\"...\") as a tool invocation.\n\n  ✗ Do NOT write: \"Let me think about this. I would consider...\"\n  ✓ Instead: call THINK(thought=\"...\") as a tool invocation.\n\nA prose-only response with no tool call is a bug — you will receive a\nreminder asking you to use the tool, and the loop will terminate if you\nignore the reminder. The validation system only runs on SUBMIT tool calls.\n═══════════════════════════════════════════════════════════════════════════\n\nTURN BUDGET: You have 20 turns total. Each tool call costs one turn.\nBudget your turns like this:\n  • Turns 1-8:  EXPLORE — THINK, query_pool, get_venue to understand the pool\n  • Turns 9-12: DRAFT — call SUBMIT with your best task JSON (even if you\n                think it's not perfect — the validator will tell you what\n                to fix, which is more valuable than more exploration)\n  • Turns 13+:  FIX — use validation errors to correct the task and SUBMIT\n                again. Each SUBMIT failure gives you specific errors to fix.\n\nDo NOT spend 15+ turns exploring before your first SUBMIT. Once you see\nvalidation errors, you can fix them precisely. You cannot fix a task you\nhaven't drafted yet. If you hit turn 12 without a\nSUBMIT attempt, draft SOMETHING and submit — an imperfect SUBMIT that gets\nvalidator feedback is strictly better than a final turn with no submission.\n\nEvery tool result shows \"turns_remaining\". When it drops to 8,\nSUBMIT immediately regardless of how polished your task feels.\n\nCITY: London\nWINDOW: Spring — Easter Week (2026-04-02 – 2026-04-08)\nANCHOR EVENTS: Good Friday (2026-04-03), Easter Sunday (2026-04-05), Easter Monday (2026-04-06)\nPOOL: 68 venues (68 with coordinates, 14 with sold-out dates)\nPool breakdown: {\"restaurant\": 24, \"cafe\": 5, \"bar\": 5, \"museum\": 15, \"attraction\": 10, \"park\": 5, \"neighbourhood\": 4}\n\nWINDOW CHARACTER:\nLondon's first real outdoor weekend of the year. Good Friday (Apr 3) and Easter Monday (Apr 6) are bank holidays — most venues run reduced hours or close entirely on those two days, with Saturday and Sunday at peak busyness. Borough Market and Portobello Road heave with weekend crowds. Parks fill with families. Popular restaurants run fixed Easter menus requiring advance booking. The contrast between the two bank-holiday closures and the busy market days in between is the defining planning challenge.\n\nTRAVEL FORMULA (lng_factor=69.1 for this city):\ndist_km ≈ sqrt((Δlat×111)² + (Δlng×69.1)²)  walk=dist×12min  transit=dist×8+5min\nOr use estimate_travel(venue_id_a, venue_id_b, mode) for specific pairs.\n\nVENUE POOL (condensed — use get_venue for full detail):\nFormat: venue_id | name | category | district | tier | pace | cost | lat,lng | [flags]\n[SOLD]=sold-out dates in window  [WI:category]=wrong info exists (category: temporal_decay|propagation_error|conditional|subjective)  [activates:date-range]=conditional wrong info only active during these dates\n  H0lOfmu | Roti King | restaurant | Camden | mid | moderate | $10 | 51.529,-0.131\n  W9r6e6K | Barrafina Adelaide Street | restaurant | Westminster | mid | intense | $55 | 51.512,-0.121 [WI:?]\n  EYwJPhB | Bao Fitzrovia | restaurant | Westminster | mid | mo... [truncated]"
+}

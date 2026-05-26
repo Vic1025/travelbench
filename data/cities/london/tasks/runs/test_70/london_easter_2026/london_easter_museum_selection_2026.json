@@ -1,0 +1,119 @@
+{
+  "task_id": "london_easter_museum_selection_2026",
+  "city": "London",
+  "window_id": "london_easter_2026",
+  "days": 1,
+  "start_date": "2026-04-04",
+  "public_input": {
+    "query": "I am planning a museum day in London on Saturday, April 4th, during Easter Week. I am looking for a selection of museums that are free to enter and fully wheelchair accessible. I have a strict time budget of 280 minutes for these visits, including the travel time between them. I want to visit at least three museums in total. Also, I really value a peaceful environment, so at least 50% of the museums I visit must have a 'quiet' noise level. To see more of the city, I want to visit museums across at least three different districts.",
+    "query_resources": {
+      "time_ceiling_minutes": 280
+    }
+  },
+  "structural_type": "type2_subset_selection",
+  "difficulty": "medium",
+  "rubric": {
+    "hard_constraints": [
+      {
+        "id": "hc_001",
+        "type": "hours_check",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_002",
+        "type": "no_overlap",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_003",
+        "type": "travel_time_hard",
+        "check_method": "code",
+        "params": {}
+      }
+    ],
+    "personal_constraints": [
+      {
+        "id": "pc_001",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "free to enter",
+        "description": "All museums must be free to enter.",
+        "scope": "category=museum",
+        "condition": {
+          "has_tag": "free-entry"
+        },
+        "aggregation": "all",
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_002",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "fully wheelchair accessible",
+        "description": "All museums must be fully wheelchair accessible.",
+        "scope": "category=museum",
+        "condition": {
+          "field": "wheelchair_accessible",
+          "operator": "==",
+          "value": true
+        },
+        "aggregation": "all",
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_003",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "at least three museums in total",
+        "description": "Visit at least three museums.",
+        "scope": "category=museum",
+        "condition": {},
+        "aggregation": {
+          "at_least": 3
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_004",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "at least 50% of the museums I visit must have a 'quiet' noise level",
+        "description": "At least 50% of the museums visited must have a quiet noise level.",
+        "scope": "category=museum",
+        "condition": {
+          "field": "noise_level",
+          "operator": "==",
+          "value": "quiet"
+        },
+        "aggregation": {
+          "ratio": 0.5
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_005",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "across at least three different districts",
+        "description": "Museums must be located in at least three different districts.",
+        "scope": "category=museum",
+        "condition": {},
+        "aggregation": {
+          "at_least_distinct": 3,
+          "field": "district"
+        },
+        "consequence": "p_score_full"
+      }
+    ],
+    "b_score_constraints": [],
+    "required_venue_ids": []
+  },
+  "_validation_warnings": []
+}

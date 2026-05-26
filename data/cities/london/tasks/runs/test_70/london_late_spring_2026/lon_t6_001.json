@@ -1,0 +1,103 @@
+{
+  "task_id": "lon_t6_001",
+  "city": "London",
+  "window_id": "london_late_spring_2026",
+  "days": 4,
+  "start_date": "2026-05-23",
+  "public_input": {
+    "query": "My partner and I are celebrating our 10th wedding anniversary during the Spring Bank Holiday weekend in London. We'd love to have a romantic dinner at Sketch \u2013 The Gallery since it's been on our bucket list forever, and want to include other upscale romantic dining experiences throughout the long weekend. We're also interested in exploring some art galleries and museums during the day. Looking for a nice balance of cultural activities and intimate dining for this special celebration."
+  },
+  "structural_type": "type6_context_window_tension",
+  "difficulty": "medium",
+  "rubric": {
+    "hard_constraints": [
+      {
+        "id": "hc_001",
+        "type": "hours_check",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_002",
+        "type": "no_overlap",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_003",
+        "type": "travel_time_hard",
+        "check_method": "code",
+        "params": {}
+      }
+    ],
+    "personal_constraints": [
+      {
+        "id": "pc_001",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "dinner at Sketch \u2013 The Gallery",
+        "description": "Must include Sketch \u2013 The Gallery for the anniversary dinner",
+        "scope": "venue_id=U4UtHGm",
+        "condition": {},
+        "aggregation": {
+          "at_least": 1
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_002",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "upscale romantic dining experiences",
+        "description": "All meal venues must be upscale or above",
+        "scope": "activity_type=meal",
+        "condition": {
+          "field": "price_tier",
+          "operator": ">=",
+          "value": "upscale"
+        },
+        "aggregation": "all",
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_003",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "romantic dining experiences",
+        "description": "At least 2 meals at romantic venues",
+        "scope": "activity_type=meal",
+        "condition": {
+          "has_tag": "romantic"
+        },
+        "aggregation": {
+          "at_least": 2
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_004",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "art galleries",
+        "description": "Include at least 2 art venues",
+        "scope": "all",
+        "condition": {
+          "has_tag": "art"
+        },
+        "aggregation": {
+          "at_least": 2
+        },
+        "consequence": "p_score_full"
+      }
+    ],
+    "b_score_constraints": [],
+    "required_venue_ids": [
+      "U4UtHGm"
+    ]
+  },
+  "_validation_warnings": []
+}

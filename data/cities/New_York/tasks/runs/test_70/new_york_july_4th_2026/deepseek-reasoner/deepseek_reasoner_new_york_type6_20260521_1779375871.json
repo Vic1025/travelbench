@@ -1,0 +1,108 @@
+{
+  "city": "new_york",
+  "window_id": "new_york_july_4th_2026",
+  "days": 4,
+  "start_date": "2026-07-02",
+  "public_input": {
+    "query": "We're taking our family to NYC for the July 4th holiday weekend! We'll be there from July 2nd through July 5th. The kids absolutely have to see the Empire State Building and the Statue of Liberty \u2014 these are non-negotiable must-sees for them. We want to keep things relaxed and not be running around too much each day. We're looking for good food spots that are family-friendly and not too fancy.",
+    "additional_context": {
+      "group_type": "family",
+      "budget_constraint": "mid-range"
+    },
+    "query_resources": {
+      "currency": "USD"
+    }
+  },
+  "structural_type": "type6_context_window_tension",
+  "difficulty": "medium",
+  "rubric": {
+    "hard_constraints": [
+      {
+        "id": "hc_001",
+        "type": "hours_check",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_002",
+        "type": "no_overlap",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_003",
+        "type": "travel_time_hard",
+        "check_method": "code",
+        "params": {}
+      }
+    ],
+    "personal_constraints": [
+      {
+        "id": "pc_001",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "family-friendly",
+        "description": "All venues must be family-friendly, suitable for children",
+        "scope": "all",
+        "condition": {
+          "field": "family_friendly",
+          "operator": "==",
+          "value": true
+        },
+        "aggregation": "all",
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_002",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "Empire State Building",
+        "description": "Must visit the Empire State Building",
+        "scope": "venue_id=oROvMoN",
+        "condition": {},
+        "aggregation": {
+          "at_least": 1
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_003",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "Statue of Liberty",
+        "description": "Must visit the Statue of Liberty",
+        "scope": "venue_id=cg4JJlN",
+        "condition": {},
+        "aggregation": {
+          "at_least": 1
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_004",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "keep things relaxed",
+        "description": "At most 3 activities per day to keep a relaxed pace",
+        "scope": "per_day",
+        "condition": {},
+        "aggregation": {
+          "at_most": 3
+        },
+        "consequence": "p_score_full"
+      }
+    ],
+    "b_score_constraints": [],
+    "required_venue_ids": [
+      "oROvMoN",
+      "cg4JJlN"
+    ]
+  },
+  "task_id": "deepseek_reasoner_new_york_type6_20260521_1779375871",
+  "_validation_warnings": [],
+  "_turns_used": 10
+}

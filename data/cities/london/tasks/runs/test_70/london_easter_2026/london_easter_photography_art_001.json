@@ -1,0 +1,115 @@
+{
+  "task_id": "london_easter_photography_art_001",
+  "city": "London",
+  "window_id": "london_easter_2026",
+  "days": 3,
+  "start_date": "2026-04-04",
+  "public_input": {
+    "query": "Elena and Marcus are visiting London for a romantic 3-day Easter weekend (Saturday April 4th to Monday April 6th). As a couple who loves art and photography, they want to spend their time exploring museums and capturing the city's beauty. Elena is a vegetarian, so they need to ensure their meals have meat-free options. They're also not fans of the busiest crowds and would much prefer to avoid the most high-traffic tourist hotspots, opting for the city's quieter gems instead. Can you plan an itinerary that includes at least two museum visits and makes sure they can find great photo opportunities every day? They also want a special meal on Easter Sunday."
+  },
+  "structural_type": "type1_cascading_requirements",
+  "difficulty": "medium",
+  "rubric": {
+    "hard_constraints": [
+      {
+        "id": "hc_001",
+        "type": "hours_check",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_002",
+        "type": "no_overlap",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_003",
+        "type": "travel_time_hard",
+        "check_method": "code",
+        "params": {}
+      }
+    ],
+    "personal_constraints": [
+      {
+        "id": "pc_001",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "Elena is a vegetarian",
+        "description": "At least 60% of meals must be at venues with vegetarian-options tag.",
+        "scope": "activity_type=meal",
+        "condition": {
+          "has_tag": "vegetarian-options"
+        },
+        "aggregation": {
+          "ratio": 0.6
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_002",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "avoid the most high-traffic tourist hotspots",
+        "description": "No more than 25% of activities in the plan should be at high-traffic venues.",
+        "scope": "all",
+        "condition": {
+          "field": "traffic_tier",
+          "operator": "==",
+          "value": "high"
+        },
+        "aggregation": {
+          "at_most": 2
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_003",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "exploring museums",
+        "description": "The plan must include at least two visits to museum-category venues.",
+        "scope": "category=museum",
+        "condition": {},
+        "aggregation": {
+          "at_least": 2
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_004",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "capturing the city's beauty",
+        "description": "At least one activity per day must be at a venue with an 'instagrammable' or 'architecture-city-skyline' or 'views' tag.",
+        "scope": "per_day",
+        "condition": {
+          "any": [
+            {
+              "has_tag": "instagrammable"
+            },
+            {
+              "has_tag": "architecture-city-skyline"
+            },
+            {
+              "has_tag": "views"
+            }
+          ]
+        },
+        "aggregation": {
+          "at_least": 1
+        },
+        "consequence": "p_score_full"
+      }
+    ],
+    "b_score_constraints": [],
+    "required_venue_ids": []
+  },
+  "_validation_warnings": [
+    "~ query is long (> 600 chars) \u2014 real users write shorter messages"
+  ]
+}

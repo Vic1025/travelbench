@@ -1,0 +1,88 @@
+{
+  "task_id": "london_xmas_museums_type2",
+  "city": "London",
+  "window_id": "london_christmas_2026",
+  "days": 1,
+  "start_date": "2026-12-24",
+  "public_input": {
+    "query": "I'm visiting London on Christmas Eve and want to see several art museums but only have about 4.5 hours available. I particularly enjoy contemporary art and want my visits to be in different areas of the city. Can you plan a route that includes at least 3 museums within my 270-minute time budget?",
+    "query_resources": {
+      "time_ceiling_minutes": 270
+    }
+  },
+  "structural_type": "type2_subset_selection",
+  "difficulty": "medium",
+  "rubric": {
+    "hard_constraints": [
+      {
+        "id": "hc_001",
+        "type": "hours_check",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_002",
+        "type": "no_overlap",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_003",
+        "type": "travel_time_hard",
+        "check_method": "code",
+        "params": {}
+      }
+    ],
+    "personal_constraints": [
+      {
+        "id": "pc_001",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "at least 3 museums",
+        "description": "Must include at least 3 museum visits",
+        "scope": "category=museum",
+        "condition": {},
+        "aggregation": {
+          "at_least": 3
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_002",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "contemporary art",
+        "description": "At least one museum must focus on contemporary/modern art",
+        "scope": "category=museum",
+        "condition": {
+          "has_tag": "contemporary-modern-art"
+        },
+        "aggregation": {
+          "at_least": 1
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_003",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "different areas of the city",
+        "description": "Museums should be in at least 2 different districts",
+        "scope": "category=museum",
+        "condition": {},
+        "aggregation": {
+          "count_distinct": 2,
+          "field": "district"
+        },
+        "consequence": "p_score_full"
+      }
+    ],
+    "b_score_constraints": [],
+    "required_venue_ids": []
+  },
+  "_validation_warnings": [],
+  "_turns_used": 19
+}

@@ -1,0 +1,93 @@
+{
+  "city": "new_york",
+  "window_id": "new_york_july_4th_2026",
+  "start_date": "2026-07-02",
+  "days": 4,
+  "structural_type": "type4_precision_allocation",
+  "difficulty": "medium",
+  "public_input": {
+    "query": "I'm a budget-conscious solo traveler visiting NYC for the July 4th holiday weekend. I have a tight daily budget of $39 to spend on food and activities. I want to sample diverse cuisines \u2014 at least 3 different types \u2014 and avoid overpriced tourist traps. Since money is tight, I'm relying on free-entry attractions and parks for sightseeing while still eating well at affordable local spots.",
+    "query_resources": {
+      "budget_per_day": 28,
+      "currency": "USD"
+    }
+  },
+  "rubric": {
+    "hard_constraints": [
+      {
+        "id": "hc_001",
+        "type": "hours_check",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_002",
+        "type": "no_overlap",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_003",
+        "type": "travel_time_hard",
+        "check_method": "code",
+        "params": {}
+      }
+    ],
+    "personal_constraints": [
+      {
+        "id": "pc_001",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "daily budget of $39",
+        "description": "Total daily spending on venues must not exceed $28",
+        "scope": "per_day",
+        "condition": {},
+        "aggregation": {
+          "sum": "estimated_cost_local",
+          "operator": "<=",
+          "value": 28
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_002",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "at least 3 different types",
+        "description": "At least 3 distinct cuisine types across mid-range or cheaper meal venues",
+        "scope": "activity_type=meal",
+        "condition": {
+          "field": "price_tier",
+          "operator": "<=",
+          "value": "mid"
+        },
+        "aggregation": {
+          "count_distinct": 3,
+          "field": "cuisine"
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_003",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "avoid overpriced tourist traps",
+        "description": "No tourist-trap venues in the plan",
+        "scope": "all",
+        "condition": {
+          "has_tag": "tourist-trap"
+        },
+        "aggregation": "none",
+        "consequence": "p_score_full"
+      }
+    ],
+    "b_score_constraints": [],
+    "required_venue_ids": []
+  },
+  "task_id": "deepseek_reasoner_new_york_type4_20260521_1779375704",
+  "_validation_warnings": [],
+  "_turns_used": 11
+}

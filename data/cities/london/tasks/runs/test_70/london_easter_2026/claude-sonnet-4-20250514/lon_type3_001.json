@@ -1,0 +1,92 @@
+{
+  "task_id": "lon_type3_001",
+  "city": "London",
+  "window_id": "london_easter_2026",
+  "days": 3,
+  "start_date": "2026-04-04",
+  "public_input": {
+    "query": "My partner and I are visiting London for Easter weekend (April 4-6, 2026). She wants to see iconic landmarks. I love contemporary art galleries. Can you help us balance famous tourist sights with modern art venues?"
+  },
+  "structural_type": "type3_competing_requirements",
+  "difficulty": "medium",
+  "rubric": {
+    "hard_constraints": [
+      {
+        "id": "hc_001",
+        "type": "hours_check",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_002",
+        "type": "no_overlap",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_003",
+        "type": "travel_time_hard",
+        "check_method": "code",
+        "params": {}
+      }
+    ],
+    "personal_constraints": [
+      {
+        "id": "pc_001",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "iconic landmarks",
+        "description": "Include at least 4 high-traffic iconic London attractions",
+        "scope": "all",
+        "condition": {
+          "field": "traffic_tier",
+          "operator": "==",
+          "value": "high"
+        },
+        "aggregation": {
+          "at_least": 4
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_002",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "contemporary art galleries",
+        "description": "Include at least 2 contemporary modern art venues",
+        "scope": "all",
+        "condition": {
+          "has_tag": "contemporary-modern-art"
+        },
+        "aggregation": {
+          "at_least": 2
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_003",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "Easter weekend",
+        "description": "At most one museum per day to balance art and sightseeing",
+        "scope": "per_day",
+        "condition": {
+          "field": "category",
+          "operator": "==",
+          "value": "museum"
+        },
+        "aggregation": {
+          "at_most": 1
+        },
+        "consequence": "p_score_full"
+      }
+    ],
+    "b_score_constraints": [],
+    "required_venue_ids": []
+  },
+  "_validation_warnings": [],
+  "_turns_used": 20
+}

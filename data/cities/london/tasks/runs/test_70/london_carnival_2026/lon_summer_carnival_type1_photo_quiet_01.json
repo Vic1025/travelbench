@@ -1,0 +1,115 @@
+{
+  "task_id": "lon_summer_carnival_type1_photo_quiet_01",
+  "city": "London",
+  "window_id": "london_carnival_2026",
+  "days": 3,
+  "start_date": "2026-08-21",
+  "public_input": {
+    "query": "My partner and I are in London right after wrapping a documentary project, and we will be there during Carnival weekend but honestly want to stay away from the biggest crowds. We would love a three-day plan with quieter places where we can sketch, edit photos, and reset a bit. We both love contemporary art and photogenic interiors, and we'd like one celebratory dinner somewhere that feels a little special after finishing the project. We also don't want to zigzag across London and waste the trip commuting."
+  },
+  "structural_type": "type1_cascading_requirements",
+  "difficulty": "medium",
+  "rubric": {
+    "hard_constraints": [
+      {
+        "id": "hc_001",
+        "type": "hours_check",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_002",
+        "type": "no_overlap",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_003",
+        "type": "travel_time_hard",
+        "check_method": "code",
+        "params": {}
+      }
+    ],
+    "personal_constraints": [
+      {
+        "id": "pc_001",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "stay away from the biggest crowds",
+        "description": "Avoid lively venues across the plan",
+        "scope": "all",
+        "condition": {
+          "has_tag": "lively"
+        },
+        "aggregation": "none",
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_002",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "stay away from the biggest crowds",
+        "description": "Avoid Soho-tagged hotspots across the plan",
+        "scope": "all",
+        "condition": {
+          "has_tag": "soho"
+        },
+        "aggregation": "none",
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_003",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "stay away from the biggest crowds",
+        "description": "Avoid reservation-required places across the plan",
+        "scope": "all",
+        "condition": {
+          "field": "reservation_required",
+          "operator": "==",
+          "value": true
+        },
+        "aggregation": "none",
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_004",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "love contemporary art",
+        "description": "Include at least two art-focused visit activities",
+        "scope": "activity_type=visit",
+        "condition": {
+          "has_tag": "art"
+        },
+        "aggregation": {
+          "at_least": 2
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_005",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "photogenic interiors",
+        "description": "Include at least two photogenic or instagrammable activities",
+        "scope": "all",
+        "condition": {
+          "has_tag": "instagrammable"
+        },
+        "aggregation": {
+          "at_least": 2
+        },
+        "consequence": "p_score_full"
+      }
+    ],
+    "b_score_constraints": [],
+    "required_venue_ids": []
+  },
+  "_validation_warnings": []
+}

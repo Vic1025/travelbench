@@ -1,0 +1,86 @@
+{
+  "task_id": "lon_spring_easter_type2_hidden_gems_92m",
+  "city": "London",
+  "window_id": "london_easter_2026",
+  "days": 1,
+  "start_date": "2026-04-07",
+  "public_input": {
+    "query": "I'm in London for one day during Easter week and only want a compact hidden-gem plan that fits within 92 minutes total. Please build me a low-key day with hidden-gem places, a couple of cultural stops, and a coffee break, all within that 92-minute limit.",
+    "query_resources": {
+      "time_ceiling_minutes": 92
+    }
+  },
+  "structural_type": "type2_subset_selection",
+  "difficulty": "medium",
+  "rubric": {
+    "hard_constraints": [
+      {
+        "id": "hc_001",
+        "type": "hours_check",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_002",
+        "type": "no_overlap",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_003",
+        "type": "travel_time_hard",
+        "check_method": "code",
+        "params": {}
+      }
+    ],
+    "personal_constraints": [
+      {
+        "id": "pc_001",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "hidden-gem places",
+        "description": "All activities should be at low-traffic hidden-gem venues",
+        "scope": "all",
+        "condition": {
+          "field": "traffic_tier",
+          "operator": "==",
+          "value": "low"
+        },
+        "aggregation": "all",
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_002",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "a couple of cultural stops",
+        "description": "Include at least two museum visits",
+        "scope": "category=museum",
+        "condition": {},
+        "aggregation": {
+          "at_least": 2
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_003",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "a coffee break",
+        "description": "Include at least one cafe stop",
+        "scope": "category=cafe",
+        "condition": {},
+        "aggregation": {
+          "at_least": 1
+        },
+        "consequence": "p_score_full"
+      }
+    ],
+    "b_score_constraints": [],
+    "required_venue_ids": []
+  },
+  "_validation_warnings": []
+}

@@ -1,0 +1,104 @@
+{
+  "city": "New_York",
+  "window_id": "new_york_july_4th_2026",
+  "days": 2,
+  "start_date": "2026-07-03",
+  "public_input": {
+    "query": "I'm doing a 2-day New York trip over Independence Day weekend on a strict budget of $24 per day. I want to keep admission costs near zero by using free-entry sights, I want to avoid tourist traps, and I only want budget-priced meals.",
+    "query_resources": {
+      "budget_per_day": 24,
+      "currency": "USD"
+    }
+  },
+  "structural_type": "type4_precision_allocation",
+  "difficulty": "medium",
+  "rubric": {
+    "hard_constraints": [
+      {
+        "id": "hc_001",
+        "type": "hours_check",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_002",
+        "type": "no_overlap",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_003",
+        "type": "travel_time_hard",
+        "check_method": "code",
+        "params": {}
+      }
+    ],
+    "personal_constraints": [
+      {
+        "id": "pc_001",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "strict budget of $24 per day",
+        "description": "Total estimated cost per day must stay within the $24 budget",
+        "scope": "per_day",
+        "condition": {},
+        "aggregation": {
+          "sum": "estimated_cost_local",
+          "operator": "<=",
+          "value": 24
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_002",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "free-entry sights",
+        "description": "All visit activities must be at free-entry venues",
+        "scope": "activity_type=visit",
+        "condition": {
+          "has_tag": "free-entry"
+        },
+        "aggregation": "all",
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_003",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "avoid tourist traps",
+        "description": "No venue in the plan may be tagged as a tourist trap",
+        "scope": "all",
+        "condition": {
+          "has_tag": "tourist-trap"
+        },
+        "aggregation": "none",
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_004",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "only want budget-priced meals",
+        "description": "All meal activities must be at budget-priced venues",
+        "scope": "activity_type=meal",
+        "condition": {
+          "field": "price_tier",
+          "operator": "<=",
+          "value": "budget"
+        },
+        "aggregation": "all",
+        "consequence": "p_score_full"
+      }
+    ],
+    "b_score_constraints": [],
+    "required_venue_ids": []
+  },
+  "task_id": "gpt_5_4_new_york_type4_20260521_1779375371",
+  "_validation_warnings": [],
+  "_turns_used": 8
+}

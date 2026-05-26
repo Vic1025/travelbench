@@ -1,0 +1,97 @@
+{
+  "task_id": "claude_sonnet_4_5_new_york_type3_20260521_1779375614",
+  "city": "new_york",
+  "window_id": "new_york_july_4th_2026",
+  "days": 3,
+  "start_date": "2026-07-04",
+  "structural_type": "type3_competing_requirements",
+  "difficulty": "medium",
+  "public_input": {
+    "query": "My partner and I are visiting NYC for the July 4th weekend (July 4-6). She insists on hitting the major tourist attractions\u2014the places everyone goes to see. I prefer discovering off-the-beaten-path spots where the crowds are lighter. We want to balance both our styles. Can you help us plan 3 days?",
+    "query_resources": {
+      "currency": "USD"
+    }
+  },
+  "rubric": {
+    "hard_constraints": [
+      {
+        "id": "hc_001",
+        "type": "hours_check",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_002",
+        "type": "no_overlap",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_003",
+        "type": "travel_time_hard",
+        "check_method": "code",
+        "params": {}
+      }
+    ],
+    "personal_constraints": [
+      {
+        "id": "pc_001",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "major tourist attractions\u2014the places everyone goes to see",
+        "description": "Include at least 5 high-traffic tourist venues to satisfy partner",
+        "scope": "all",
+        "condition": {
+          "field": "traffic_tier",
+          "operator": "==",
+          "value": "high"
+        },
+        "aggregation": {
+          "at_least": 5
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_002",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "off-the-beaten-path spots where the crowds are lighter",
+        "description": "Include at least 5 low-traffic hidden venues for quieter experiences",
+        "scope": "all",
+        "condition": {
+          "field": "traffic_tier",
+          "operator": "==",
+          "value": "low"
+        },
+        "aggregation": {
+          "at_least": 5
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_003",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "balance both our styles",
+        "description": "No more than one intense-pace activity per day to maintain balance",
+        "scope": "per_day",
+        "condition": {
+          "field": "recommended_pace",
+          "operator": "==",
+          "value": "intense"
+        },
+        "aggregation": {
+          "at_most": 1
+        },
+        "consequence": "p_score_full"
+      }
+    ],
+    "b_score_constraints": [],
+    "required_venue_ids": []
+  },
+  "_validation_warnings": [],
+  "_turns_used": 16
+}

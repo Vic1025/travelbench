@@ -1,0 +1,84 @@
+{
+  "task_id": "london_christmas_week_type3_004",
+  "city": "London",
+  "window_id": "london_christmas_2026",
+  "days": 2,
+  "start_date": "2026-12-27",
+  "public_input": {
+    "query": "My partner and I are doing a 2-day London Christmas weekend trip (Dec 27-28). I'm a complete foodie - I want to eat like a local and try authentic British cuisine at every meal, really dive into London's food scene. My partner is a total culture vulture who wants to spend most of our time exploring world-class museums and soaking up all the art and history London has to offer. We only have 2 days so we're debating how to balance amazing food experiences with serious museum time."
+  },
+  "structural_type": "type3_competing_requirements",
+  "difficulty": "medium",
+  "rubric": {
+    "hard_constraints": [
+      {
+        "id": "hc_001",
+        "type": "hours_check",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_002",
+        "type": "no_overlap",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_003",
+        "type": "travel_time_hard",
+        "check_method": "code",
+        "params": {}
+      }
+    ],
+    "personal_constraints": [
+      {
+        "id": "pc_001",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "try authentic British cuisine at every meal",
+        "description": "At least 3 meals must feature British cuisine",
+        "scope": "activity_type=meal",
+        "condition": {
+          "has_tag": "british"
+        },
+        "aggregation": {
+          "at_least": 3
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_002",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "exploring world-class museums",
+        "description": "Include at least 4 museum visits",
+        "scope": "category=museum",
+        "condition": {},
+        "aggregation": {
+          "at_least": 4
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_003",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "We only have 2 days",
+        "description": "Visit at most 2 different districts per day to save travel time",
+        "scope": "per_day",
+        "condition": {},
+        "aggregation": {
+          "at_most_distinct": 2,
+          "field": "district"
+        },
+        "consequence": "p_score_full"
+      }
+    ],
+    "b_score_constraints": [],
+    "required_venue_ids": []
+  },
+  "_validation_warnings": []
+}

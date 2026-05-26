@@ -1,0 +1,108 @@
+{
+  "task_id": "lon_winter_christmasweek_type1_central_gallery_getaway",
+  "city": "London",
+  "window_id": "london_christmas_2026",
+  "days": 2,
+  "start_date": "2026-12-27",
+  "public_input": {
+    "query": "My partner and I are doing a two-day post-Christmas getaway in London before heading home. We're staying near Covent Garden and really don't want long Tube rides through the Boxing Day sales crowds, so we'd like everything to stay central and easy to reach on foot. One of us studied art history, so we'd love to sneak in at least one art museum. We also want one celebratory dinner that feels special for the trip, but otherwise we don't want to spend the whole day inside museums."
+  },
+  "structural_type": "type1_cascading_requirements",
+  "difficulty": "medium",
+  "rubric": {
+    "hard_constraints": [
+      {
+        "id": "hc_001",
+        "type": "hours_check",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_002",
+        "type": "no_overlap",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_003",
+        "type": "travel_time_hard",
+        "check_method": "code",
+        "params": {}
+      }
+    ],
+    "personal_constraints": [
+      {
+        "id": "pc_001",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "staying near Covent Garden and really don't want long Tube rides through the Boxing Day sales crowds, so we'd like everything to stay central and easy to reach on foot",
+        "description": "All venues should be in Westminster to keep the itinerary central and walkable",
+        "scope": "all",
+        "condition": {
+          "field": "district",
+          "operator": "==",
+          "value": "Westminster"
+        },
+        "aggregation": "all",
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_002",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "one celebratory dinner that feels special for the trip",
+        "description": "Evening meal venues should be upscale or above for a special dinner feel",
+        "scope": [
+          "activity_type=meal",
+          "time_window=18:00-23:59"
+        ],
+        "condition": {
+          "field": "price_tier",
+          "operator": ">=",
+          "value": "upscale"
+        },
+        "aggregation": "all",
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_003",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "studied art history, so we'd love to sneak in at least one art museum",
+        "description": "Include at least one museum visit at a venue tagged for art",
+        "scope": "category=museum",
+        "condition": {
+          "has_tag": "art"
+        },
+        "aggregation": {
+          "at_least": 1
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_004",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "we don't want to spend the whole day inside museums",
+        "description": "No more than one museum visit per day",
+        "scope": "per_day",
+        "condition": {
+          "field": "category",
+          "operator": "==",
+          "value": "museum"
+        },
+        "aggregation": {
+          "at_most": 1
+        },
+        "consequence": "p_score_full"
+      }
+    ],
+    "b_score_constraints": [],
+    "required_venue_ids": []
+  },
+  "_validation_warnings": []
+}

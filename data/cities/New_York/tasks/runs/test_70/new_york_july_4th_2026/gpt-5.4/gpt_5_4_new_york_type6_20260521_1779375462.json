@@ -1,0 +1,124 @@
+{
+  "city": "New_York",
+  "window_id": "new_york_july_4th_2026",
+  "days": 2,
+  "start_date": "2026-07-03",
+  "public_input": {
+    "query": "I'm visiting New York over July 4 and want a calm holiday plan. On the fireworks night I do not want to get trapped in the East River waterfront crush or pay for a rooftop scene, and I don't want to spend the whole day commuting. Please build me a low-key two-day trip with mostly relaxed places and one nice evening meal.",
+    "query_resources": {
+      "currency": "USD"
+    }
+  },
+  "structural_type": "type6_context_window_tension",
+  "difficulty": "medium",
+  "rubric": {
+    "hard_constraints": [
+      {
+        "id": "hc_001",
+        "type": "hours_check",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_002",
+        "type": "no_overlap",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_003",
+        "type": "travel_time_hard",
+        "check_method": "code",
+        "params": {}
+      }
+    ],
+    "personal_constraints": [
+      {
+        "id": "pc_001",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "calm holiday plan",
+        "description": "All activities should use low-traffic venues to keep the trip calm during the holiday surge",
+        "scope": "all",
+        "condition": {
+          "field": "traffic_tier",
+          "operator": "==",
+          "value": "low"
+        },
+        "aggregation": "all",
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_002",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "do not want to get trapped in the East River waterfront crush",
+        "description": "Avoid waterfront venues on fireworks night because they are heavily affected by July 4 crowding",
+        "scope": "time_window=18:00-23:59",
+        "condition": {
+          "has_tag": "waterfront"
+        },
+        "aggregation": "none",
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_003",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "pay for a rooftop scene",
+        "description": "Do not include rooftop venues",
+        "scope": "all",
+        "condition": {
+          "has_tag": "rooftop"
+        },
+        "aggregation": "none",
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_004",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "don't want to spend the whole day commuting",
+        "description": "Keep total travel time per day to 60 minutes or less",
+        "scope": "per_day",
+        "condition": {},
+        "aggregation": {
+          "sum": "travel_minutes",
+          "operator": "<=",
+          "value": 60
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_005",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "one nice evening meal",
+        "description": "Include at least one mid-price or above evening meal",
+        "scope": [
+          "activity_type=meal",
+          "time_window=18:00-23:59"
+        ],
+        "condition": {
+          "field": "price_tier",
+          "operator": ">=",
+          "value": "mid"
+        },
+        "aggregation": {
+          "at_least": 1
+        },
+        "consequence": "p_score_full"
+      }
+    ],
+    "b_score_constraints": [],
+    "required_venue_ids": []
+  },
+  "task_id": "gpt_5_4_new_york_type6_20260521_1779375462",
+  "_validation_warnings": [],
+  "_turns_used": 13
+}

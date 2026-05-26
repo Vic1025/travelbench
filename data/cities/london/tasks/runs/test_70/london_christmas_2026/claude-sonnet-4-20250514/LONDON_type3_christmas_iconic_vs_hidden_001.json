@@ -1,0 +1,88 @@
+{
+  "task_id": "LONDON_type3_christmas_iconic_vs_hidden_001",
+  "city": "London",
+  "window_id": "london_christmas_2026",
+  "days": 3,
+  "start_date": "2026-12-27",
+  "public_input": {
+    "query": "My partner and I are visiting London for 3 days during Christmas week, staying near central London. She absolutely loves visiting the famous landmarks and iconic attractions that everyone talks about - the Tower of London, British Museum, all the classic tourist spots. I prefer discovering hidden gems and authentic local places that most visitors never find. We also love museums and want to spend quality time exploring London's amazing cultural scene. Can you help us plan an itinerary that includes must-see famous sites for her but also some off-the-beaten-path discoveries for me?"
+  },
+  "structural_type": "type3_competing_requirements",
+  "difficulty": "medium",
+  "rubric": {
+    "hard_constraints": [
+      {
+        "id": "hc_001",
+        "type": "hours_check",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_002",
+        "type": "no_overlap",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_003",
+        "type": "travel_time_hard",
+        "check_method": "code",
+        "params": {}
+      }
+    ],
+    "personal_constraints": [
+      {
+        "id": "pc_001",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "famous landmarks and iconic attractions",
+        "description": "Include at least 5 high-traffic iconic attractions/sites",
+        "scope": "all",
+        "condition": {
+          "field": "traffic_tier",
+          "operator": "==",
+          "value": "high"
+        },
+        "aggregation": {
+          "at_least": 5
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_002",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "hidden gems and authentic local places that most visitors never find",
+        "description": "Include at least 5 low-traffic hidden gem venues",
+        "scope": "all",
+        "condition": {
+          "field": "traffic_tier",
+          "operator": "==",
+          "value": "low"
+        },
+        "aggregation": {
+          "at_least": 5
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_003",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "love museums",
+        "description": "Visit at least 3 museums during the trip",
+        "scope": "category=museum",
+        "condition": {},
+        "aggregation": "all",
+        "consequence": "p_score_full"
+      }
+    ],
+    "b_score_constraints": [],
+    "required_venue_ids": []
+  },
+  "_validation_warnings": [],
+  "_turns_used": 18
+}

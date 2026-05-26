@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TravelBench — Results Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #141720;
+    --surface2: #1c2030;
+    --border: #252a3a;
+    --accent: #4f8ef7;
+    --accent2: #e8634a;
+    --accent3: #4ec994;
+    --gold: #f0b429;
+    --text: #e2e8f0;
+    --muted: #6b7a99;
+    --mono: 'Space Mono', monospace;
+    --sans: 'DM Sans', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 14px;
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .logo-icon {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, var(--accent), #7c5ff7);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+
+  h1 {
+    font-family: var(--mono);
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+  }
+
+  .header-meta {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .badge {
+    background: rgba(79,142,247,0.15);
+    border: 1px solid rgba(79,142,247,0.3);
+    color: var(--accent);
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+  }
+
+  /* ── LAYOUT ── */
+  main {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 32px;
+  }
+
+  /* ── OVERVIEW CARDS ── */
+  .overview-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--card-accent, var(--accent));
+  }
+
+  .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    font-family: var(--mono);
+  }
+
+  .stat-value {
+    font-family: var(--mono);
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--card-accent, var(--accent));
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .stat-sub {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  /* ── TIER LEGEND ── */
+  .tier-legend {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 24px;
+    display: flex;
+    gap: 32px;
+    align-items: center;
+  }
+
+  .tier-legend h3 {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-family: var(--mono);
+    white-space: nowrap;
+  }
+
+  .tier-items {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+
+  .tier-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+  }
+
+  .tier-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .tier-name {
+    font-family: var(--mono);
+    font-weight: 700;
+    font-size: 12px;
+  }
+
+  /* ── RESULTS TABLE ── */
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  .section-title {
+    font-family: var(--mono);
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    color: var(--text);
+  }
+
+  .filter-row {
+    display: flex;
+    gap: 8px;
+  }
+
+  .filter-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 5px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.5px;
+  }
+
+  .filter-btn:hover, .filter-btn.active {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(79,142,247,0.1);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--surface);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    margin-bottom: 24px;
+  }
+
+  thead tr {
+    background: var(--surface2);
+  }
+
+  th {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+
+  td {
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(37,42,58,0.5);
+    vertical-align: middle;
+  }
+
+  tr:last-child td { border-bottom: none; }
+
+  tr:hover td { background: rgba(79,142,247,0.04); }
+
+  .task-id {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent);
+  }
+
+  .model-name {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text);
+  }
+
+  /* ── DIFFICULTY BADGES ── */
+  .diff {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+  }
+  .diff-easy   { background: rgba(78,201,148,0.15); color: var(--accent3); border: 1px solid rgba(78,201,148,0.3); }
+  .diff-medium { background: rgba(240,180,41,0.15);  color: var(--gold);    border: 1px solid rgba(240,180,41,0.3); }
+  .diff-hard   { background: rgba(232,99,74,0.15);   color: var(--accent2); border: 1px solid rgba(232,99,74,0.3); }
+
+  /* ── SCORE BARS ── */
+  .score-cell {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 110px;
+  }
+
+  .score-bar-bg {
+    flex: 1;
+    height: 6px;
+    background: var(--surface2);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .score-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .score-num {
+    font-family: var(--mono);
+    font-size: 12px;
+    width: 38px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  /* Pass/fail indicator */
+  .pass { color: var(--accent3); }
+  .fail { color: var(--accent2); }
+  .skip { color: var(--muted); }
+
+  /* ── DETAIL PANEL ── */
+  .detail-row td {
+    padding: 0;
+    background: rgba(20, 23, 32, 0.95);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .detail-panel {
+    padding: 20px 24px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+  }
+
+  .detail-section h4 {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+
+  .constraint-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 6px;
+    line-height: 1.5;
+  }
+
+  .constraint-icon { flex-shrink: 0; margin-top: 1px; }
+
+  .error-item {
+    font-size: 11px;
+    font-family: var(--mono);
+    color: var(--accent2);
+    background: rgba(232,99,74,0.08);
+    border: 1px solid rgba(232,99,74,0.2);
+    border-radius: 4px;
+    padding: 6px 8px;
+    margin-bottom: 4px;
+    line-height: 1.4;
+  }
+
+  .expand-btn {
+    background: none;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 16px;
+    padding: 0 4px;
+    transition: color 0.15s;
+  }
+  .expand-btn:hover { color: var(--accent); }
+
+  /* ── SUMMARY AVERAGES ── */
+  .avg-row td {
+    background: rgba(79,142,247,0.05);
+    font-weight: 600;
+    border-top: 1px solid var(--border);
+  }
+
+  /* ── TOOL CALL CHART ── */
+  .charts-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .chart-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+  }
+
+  .chart-card h3 {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .bar-chart { display: flex; flex-direction: column; gap: 8px; }
+
+  .bar-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .bar-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    width: 160px;
+    flex-shrink: 0;
+    color: var(--muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .bar-outer {
+    flex: 1;
+    background: var(--surface2);
+    border-radius: 4px;
+    height: 8px;
+    overflow: hidden;
+  }
+
+  .bar-inner {
+    height: 100%;
+    border-radius: 4px;
+  }
+
+  .bar-val {
+    font-family: var(--mono);
+    font-size: 11px;
+    width: 38px;
+    text-align: right;
+    color: var(--text);
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .overview-grid { grid-template-columns: repeat(2, 1fr); }
+    .charts-row { grid-template-columns: 1fr; }
+    .detail-panel { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">✈</div>
+    <div>
+      <h1>TravelBench</h1>
+      <div class="header-meta">Multi-source travel planning evaluation framework</div>
+    </div>
+  </div>
+  <div style="display:flex;gap:8px;align-items:center">
+    <span class="badge">v1.0</span>
+    <span id="last-updated" class="header-meta"></span>
+  </div>
+</header>
+
+<main>
+
+  <!-- Overview stats -->
+  <div class="overview-grid" id="overview-cards">
+    <div class="stat-card" style="--card-accent:#4f8ef7">
+      <div class="stat-label">Total Runs</div>
+      <div class="stat-value" id="stat-runs">—</div>
+      <div class="stat-sub">benchmark evaluations</div>
+    </div>
+    <div class="stat-card" style="--card-accent:#4ec994">
+      <div class="stat-label">Avg C-Score</div>
+      <div class="stat-value" id="stat-c">—</div>
+      <div class="stat-sub">completion rate</div>
+    </div>
+    <div class="stat-card" style="--card-accent:#f0b429">
+      <div class="stat-label">Avg F-Score</div>
+      <div class="stat-value" id="stat-f">—</div>
+      <div class="stat-sub">feasibility rate</div>
+    </div>
+    <div class="stat-card" style="--card-accent:#e8634a">
+      <div class="stat-label">Avg P-Score</div>
+      <div class="stat-value" id="stat-p">—</div>
+      <div class="stat-sub">personalization rate</div>
+    </div>
+  </div>
+
+  <!-- Tier legend -->
+  <div class="tier-legend">
+    <h3>Scoring Tiers</h3>
+    <div class="tier-items">
+      <div class="tier-item">
+        <div class="tier-dot" style="background:#4ec994"></div>
+        <div>
+          <span class="tier-name" style="color:#4ec994">C-Score</span>
+          <span style="color:var(--muted)"> — Did the agent produce a valid itinerary? (Format check)</span>
+        </div>
+      </div>
+      <div class="tier-item">
+        <div class="tier-dot" style="background:#f0b429"></div>
+        <div>
+          <span class="tier-name" style="color:#f0b429">F-Score</span>
+          <span style="color:var(--muted)"> — Is it operationally feasible? (Hours, travel time, no overlap)</span>
+        </div>
+      </div>
+      <div class="tier-item">
+        <div class="tier-dot" style="background:#e8634a"></div>
+        <div>
+          <span class="tier-name" style="color:#e8634a">P-Score</span>
+          <span style="color:var(--muted)"> — Does it satisfy personal preferences? (Code + LLM judge)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts row -->
+  <div class="charts-row">
+    <div class="chart-card">
+      <h3>Score by Model</h3>
+      <div class="bar-chart" id="model-chart"></div>
+    </div>
+    <div class="chart-card">
+      <h3>Score by Difficulty</h3>
+      <div class="bar-chart" id="diff-chart"></div>
+    </div>
+  </div>
+
+  <!-- Results table -->
+  <div class="section-header">
+    <span class="section-title">// EVALUATION RESULTS</span>
+    <div class="filter-row">
+      <button class="filter-btn active" data-filter="all">ALL</button>
+      <button class="filter-btn" data-filter="easy">EASY</button>
+      <button class="filter-btn" data-filter="medium">MEDIUM</button>
+      <button class="filter-btn" data-filter="hard">HARD</button>
+    </div>
+  </div>
+
+  <table id="results-table">
+    <thead>
+      <tr>
+        <th></th>
+        <th>Task</th>
+        <th>Model</th>
+        <th>Difficulty</th>
+        <th>C-Score</th>
+        <th>F-Score</th>
+        <th>P-Score</th>
+        <th>Composite</th>
+        <th>Tools Used</th>
+      </tr>
+    </thead>
+    <tbody id="results-body"></tbody>
+  </table>
+
+</main>
+
+<script>
+// ── EMBEDDED DATA (replace with fetch() when serving from disk) ──────────────
+const EVAL_DATA = [
+  {
+    task_id: "par_easy_001",
+    model: "simulated_agent_good",
+    difficulty: "easy",
+    scores: { c_score: 1.0, f_score: 0.67, p_score: null, composite: 0.47 },
+    tool_call_count: 15,
+    tier1_completion: { passed: true, activity_count: 3, issues: [] },
+    tier2_feasibility: {
+      passed: false,
+      errors: [],
+      checks: [
+        { type: "hours_check", day: 1, passed: true },
+        { type: "no_overlap", day: 1, passed: true, errors: [] },
+        { type: "travel_time_check", day: 1, passed: false, errors: ["Travel too short: Musée de l'Imaginaire → Brasserie Voltaire needs 25min but only 30min gap"] }
+      ]
+    },
+    tier3_personalization: {
+      n_passed: 0, n_checked: 0,
+      constraint_results: [
+        { id: "pc_001", description: "Must include sit-down restaurant or cafe", method: "code", passed: true, detail: "OK" },
+        { id: "pc_002", description: "At least one contemporary art venue", method: "llm", passed: null, detail: "LLM check skipped (no API key)" }
+      ]
+    }
+  },
+  {
+    task_id: "par_easy_001",
+    model: "simulated_agent_bad",
+    difficulty: "easy",
+    scores: { c_score: 1.0, f_score: 0.67, p_score: null, composite: 0.47 },
+    tool_call_count: 5,
+    tier1_completion: { passed: true, activity_count: 3, issues: [] },
+    tier2_feasibility: {
+      passed: false,
+      errors: ["[Day 1 travel] Travel too short: Musée de l'Imaginaire → Brasserie Voltaire needs 25min but only 10min gap"],
+      checks: [
+        { type: "hours_check", day: 1, passed: true },
+        { type: "no_overlap", day: 1, passed: true, errors: [] },
+        { type: "travel_time_check", day: 1, passed: false, errors: ["Travel too short: 10min gap, needs 25min"] }
+      ]
+    },
+    tier3_personalization: {
+      n_passed: 0, n_checked: 0,
+      constraint_results: [
+        { id: "pc_001", description: "Must include sit-down restaurant", method: "code", passed: true, detail: "OK" },
+        { id: "pc_002", description: "Contemporary art venue", method: "llm", passed: null, detail: "LLM check skipped" }
+      ]
+    }
+  },
+  {
+    task_id: "par_medium_001",
+    model: "simulated_agent_good",
+    difficulty: "medium",
+    scores: { c_score: 1.0, f_score: 0.83, p_score: 1.0, composite: 0.93 },
+    tool_call_count: 22,
+    tier1_completion: { passed: true, activity_count: 6, issues: [] },
+    tier2_feasibility: {
+      passed: false,
+      errors: ["[Day 2 travel] Travel between Galerie du Temps → Brasserie Voltaire needs verification"],
+      checks: [
+        { type: "hours_check", day: 1, passed: true },
+        { type: "no_overlap", day: 1, passed: true, errors: [] },
+        { type: "travel_time_check", day: 1, passed: true, errors: [] },
+        { type: "hours_check", day: 2, passed: true },
+        { type: "no_overlap", day: 2, passed: true, errors: [] },
+        { type: "travel_time_check", day: 2, passed: false, errors: ["Marginal gap: Galerie du Temps → Brasserie Voltaire"] }
+      ]
+    },
+    tier3_personalization: {
+      n_passed: 3, n_checked: 3,
+      constraint_results: [
+        { id: "pc_001", description: "No meals before noon", method: "code", passed: true, detail: "OK" },
+        { id: "pc_002", description: "All food venues offer vegetarian", method: "code", passed: true, detail: "OK" },
+        { id: "pc_003", description: "Food budget ≤$60/day", method: "code", passed: true, detail: "$22/day OK" },
+        { id: "pc_004", description: "Local/hidden gem preference", method: "llm", passed: null, detail: "LLM check skipped (no API key)" }
+      ]
+    }
+  }
+];
+
+// ── RENDER ───────────────────────────────────────────────────────────────────
+function pct(v) {
+  if (v === null || v === undefined) return '—';
+  return Math.round(v * 100) + '%';
+}
+
+function scoreColor(v) {
+  if (v === null) return 'var(--muted)';
+  if (v >= 0.8) return '#4ec994';
+  if (v >= 0.5) return '#f0b429';
+  return '#e8634a';
+}
+
+function scoreBar(v, color) {
+  const pctVal = v === null ? 0 : Math.round(v * 100);
+  return `
+    <div class="score-cell">
+      <div class="score-bar-bg">
+        <div class="score-bar-fill" style="width:${pctVal}%;background:${color}"></div>
+      </div>
+      <span class="score-num" style="color:${color}">${pct(v)}</span>
+    </div>`;
+}
+
+function renderDetail(ev) {
+  const t2errors = ev.tier2_feasibility.errors || [];
+  const t3constraints = ev.tier3_personalization.constraint_results || [];
+
+  const errHtml = t2errors.length
+    ? t2errors.map(e => `<div class="error-item">${e}</div>`).join('')
+    : '<div style="color:var(--accent3);font-size:12px">✓ No feasibility errors</div>';
+
+  const t3Html = t3constraints.map(c => {
+    const icon = c.passed === true ? '✓' : c.passed === false ? '✗' : '○';
+    const col = c.passed === true ? 'var(--accent3)' : c.passed === false ? 'var(--accent2)' : 'var(--muted)';
+    return `<div class="constraint-item">
+      <span class="constraint-icon" style="color:${col}">${icon}</span>
+      <span><strong style="color:var(--text)">${c.id}</strong> [${c.method}] — ${c.description}
+        <br><span style="font-size:11px;color:var(--muted)">${c.detail}</span>
+      </span>
+    </div>`;
+  }).join('');
+
+  const t1Html = ev.tier1_completion.issues.length
+    ? ev.tier1_completion.issues.map(i => `<div class="error-item">${i}</div>`).join('')
+    : `<div style="color:var(--accent3);font-size:12px">✓ Valid plan with ${ev.tier1_completion.activity_count} activities</div>`;
+
+  return `<div class="detail-panel">
+    <div class="detail-section">
+      <h4>Tier 1 — Completion</h4>
+      ${t1Html}
+    </div>
+    <div class="detail-section">
+      <h4>Tier 2 — Feasibility Errors</h4>
+      ${errHtml}
+    </div>
+    <div class="detail-section">
+      <h4>Tier 3 — Constraint Checks</h4>
+      ${t3Html || '<span style="color:var(--muted);font-size:12px">No constraints defined</span>'}
+    </div>
+  </div>`;
+}
+
+function renderTable(data) {
+  const tbody = document.getElementById('results-body');
+  tbody.innerHTML = '';
+
+  data.forEach((ev, i) => {
+    const { scores, difficulty, model, task_id, tool_call_count } = ev;
+
+    const row = document.createElement('tr');
+    row.className = 'data-row';
+    row.dataset.difficulty = difficulty;
+    row.innerHTML = `
+      <td><button class="expand-btn" data-idx="${i}">▶</button></td>
+      <td><span class="task-id">${task_id}</span></td>
+      <td><span class="model-name">${model}</span></td>
+      <td><span class="diff diff-${difficulty}">${difficulty}</span></td>
+      <td>${scoreBar(scores.c_score, '#4ec994')}</td>
+      <td>${scoreBar(scores.f_score, '#f0b429')}</td>
+      <td>${scores.p_score !== null ? scoreBar(scores.p_score, '#e8634a') : '<span style="color:var(--muted);font-family:var(--mono);font-size:12px">N/A</span>'}</td>
+      <td>${scoreBar(scores.composite, scoreColor(scores.composite))}</td>
+      <td><span style="font-family:var(--mono);font-size:12px;color:var(--muted)">${tool_call_count}</span></td>
+    `;
+    tbody.appendChild(row);
+
+    // Detail row (hidden by default)
+    const detailRow = document.createElement('tr');
+    detailRow.className = 'detail-row';
+    detailRow.style.display = 'none';
+    detailRow.dataset.for = i;
+    const td = document.createElement('td');
+    td.colSpan = 9;
+    td.innerHTML = renderDetail(ev);
+    detailRow.appendChild(td);
+    tbody.appendChild(detailRow);
+  });
+
+  // Expand/collapse
+  tbody.querySelectorAll('.expand-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const idx = btn.dataset.idx;
+      const detailRow = tbody.querySelector(`.detail-row[data-for="${idx}"]`);
+      const visible = detailRow.style.display !== 'none';
+      detailRow.style.display = visible ? 'none' : 'table-row';
+      btn.textContent = visible ? '▶' : '▼';
+    });
+  });
+}
+
+function renderOverview(data) {
+  document.getElementById('stat-runs').textContent = data.length;
+  const avgC = data.reduce((s,e) => s + e.scores.c_score, 0) / data.length;
+  const avgF = data.reduce((s,e) => s + e.scores.f_score, 0) / data.length;
+  const pData = data.filter(e => e.scores.p_score !== null);
+  const avgP = pData.length ? pData.reduce((s,e) => s + e.scores.p_score, 0) / pData.length : null;
+  document.getElementById('stat-c').textContent = pct(avgC);
+  document.getElementById('stat-f').textContent = pct(avgF);
+  document.getElementById('stat-p').textContent = avgP !== null ? pct(avgP) : 'N/A';
+  document.getElementById('last-updated').textContent = 'Updated ' + new Date().toLocaleDateString();
+}
+
+function renderCharts(data) {
+  // By model
+  const byModel = {};
+  data.forEach(e => {
+    if (!byModel[e.model]) byModel[e.model] = [];
+    byModel[e.model].push(e.scores.composite);
+  });
+  const modelChart = document.getElementById('model-chart');
+  modelChart.innerHTML = Object.entries(byModel).map(([m, scores]) => {
+    const avg = scores.reduce((a,b) => a+b, 0) / scores.length;
+    const label = m.replace('simulated_agent_', '');
+    return `<div class="bar-row">
+      <div class="bar-label">${label}</div>
+      <div class="bar-outer"><div class="bar-inner" style="width:${Math.round(avg*100)}%;background:${scoreColor(avg)}"></div></div>
+      <div class="bar-val">${pct(avg)}</div>
+    </div>`;
+  }).join('');
+
+  // By difficulty
+  const byDiff = { easy: [], medium: [], hard: [] };
+  data.forEach(e => { if (byDiff[e.difficulty]) byDiff[e.difficulty].push(e.scores.composite); });
+  const diffChart = document.getElementById('diff-chart');
+  diffChart.innerHTML = Object.entries(byDiff).filter(([_,s]) => s.length > 0).map(([d, scores]) => {
+    const avg = scores.reduce((a,b) => a+b, 0) / scores.length;
+    const colors = { easy: '#4ec994', medium: '#f0b429', hard: '#e8634a' };
+    return `<div class="bar-row">
+      <div class="bar-label">${d} (${scores.length} task${scores.length>1?'s':''})</div>
+      <div class="bar-outer"><div class="bar-inner" style="width:${Math.round(avg*100)}%;background:${colors[d]}"></div></div>
+      <div class="bar-val">${pct(avg)}</div>
+    </div>`;
+  }).join('');
+}
+
+// ── FILTER BUTTONS ───────────────────────────────────────────────────────────
+let currentFilter = 'all';
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentFilter = btn.dataset.filter;
+    const filtered = currentFilter === 'all' ? EVAL_DATA : EVAL_DATA.filter(e => e.difficulty === currentFilter);
+    renderTable(filtered);
+  });
+});
+
+// ── INIT ─────────────────────────────────────────────────────────────────────
+renderOverview(EVAL_DATA);
+renderCharts(EVAL_DATA);
+renderTable(EVAL_DATA);
+</script>
+</body>
+</html>

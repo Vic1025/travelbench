@@ -1,0 +1,96 @@
+{
+  "task_id": "lon_type4_easter_budget_celebration_003",
+  "city": "London",
+  "window_id": "london_easter_2026",
+  "days": 2,
+  "start_date": "2026-04-04",
+  "public_input": {
+    "query": "We're spending 2 days in London over Easter weekend and want to keep each day to about \u00a331 total. We want at least one museum each day, but this is also a special occasion dinner trip, so make sure the evening meal is upscale and then save money elsewhere to stay on budget.",
+    "query_resources": {
+      "budget_per_day": 31,
+      "currency": "GBP"
+    }
+  },
+  "structural_type": "type4_precision_allocation",
+  "difficulty": "medium",
+  "rubric": {
+    "hard_constraints": [
+      {
+        "id": "hc_001",
+        "type": "hours_check",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_002",
+        "type": "no_overlap",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_003",
+        "type": "travel_time_hard",
+        "check_method": "code",
+        "params": {}
+      }
+    ],
+    "personal_constraints": [
+      {
+        "id": "pc_001",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "keep each day to about \u00a331 total",
+        "description": "Total estimated venue spend per day must stay within the stated daily budget",
+        "scope": "per_day",
+        "condition": {},
+        "aggregation": {
+          "sum": "estimated_cost_local",
+          "operator": "<=",
+          "value": 31
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_002",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "at least one museum each day",
+        "description": "Include at least one museum visit each day",
+        "scope": "per_day",
+        "condition": {
+          "field": "category",
+          "operator": "==",
+          "value": "museum"
+        },
+        "aggregation": {
+          "at_least": 1
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_003",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "special occasion dinner trip",
+        "description": "Evening meal venues should be upscale or above for the celebration",
+        "scope": [
+          "activity_type=meal",
+          "time_window=18:00-23:59"
+        ],
+        "condition": {
+          "field": "price_tier",
+          "operator": ">=",
+          "value": "upscale"
+        },
+        "aggregation": "all",
+        "consequence": "p_score_full"
+      }
+    ],
+    "b_score_constraints": [],
+    "required_venue_ids": []
+  },
+  "_validation_warnings": []
+}

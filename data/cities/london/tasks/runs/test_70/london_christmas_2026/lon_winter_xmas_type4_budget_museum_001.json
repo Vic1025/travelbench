@@ -1,0 +1,89 @@
+{
+  "task_id": "lon_winter_xmas_type4_budget_museum_001",
+  "city": "London",
+  "window_id": "london_christmas_2026",
+  "days": 2,
+  "start_date": "2026-12-27",
+  "public_input": {
+    "query": "I'm planning a 2-day London trip right after Christmas for a celebratory getaway. Please keep my budget to \u00a330 per day, include at least 2 museum visits across the trip, and I don't want to spend the whole day commuting between places.",
+    "query_resources": {
+      "budget_per_day": 30,
+      "currency": "GBP"
+    }
+  },
+  "structural_type": "type4_precision_allocation",
+  "difficulty": "medium",
+  "rubric": {
+    "hard_constraints": [
+      {
+        "id": "hc_001",
+        "type": "hours_check",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_002",
+        "type": "no_overlap",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_003",
+        "type": "travel_time_hard",
+        "check_method": "code",
+        "params": {}
+      }
+    ],
+    "personal_constraints": [
+      {
+        "id": "pc_001",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "\u00a330 per day",
+        "description": "Total estimated venue spend must stay within \u00a330 per day",
+        "scope": "per_day",
+        "condition": {},
+        "aggregation": {
+          "sum": "estimated_cost_local",
+          "operator": "<=",
+          "value": 30
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_002",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "include at least 2 museum visits across the trip",
+        "description": "Include at least 2 museum visits across the trip",
+        "scope": "category=museum",
+        "condition": {},
+        "aggregation": {
+          "at_least": 2
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_003",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "don't want to spend the whole day commuting between places",
+        "description": "Total travel time per day should stay within 45 minutes",
+        "scope": "per_day",
+        "condition": {},
+        "aggregation": {
+          "sum": "travel_minutes",
+          "operator": "<=",
+          "value": 45
+        },
+        "consequence": "p_score_full"
+      }
+    ],
+    "b_score_constraints": [],
+    "required_venue_ids": []
+  },
+  "_validation_warnings": []
+}

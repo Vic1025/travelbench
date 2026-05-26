@@ -1,0 +1,122 @@
+{
+  "task_id": "london_easter_blogger_t1",
+  "city": "london",
+  "window_id": "london_easter_2026",
+  "days": 3,
+  "start_date": "2026-04-04",
+  "public_input": {
+    "query": "I'm a food blogger visiting from Edinburgh with my elderly parent to celebrate Easter weekend in London. We're excited about the spring weather and want to experience authentic British cuisine while exploring some outdoor attractions. My parent uses a wheelchair, so accessibility is important. Since this is a special Easter celebration, we'd like our evening meals to be somewhere upscale and memorable. We prefer to avoid the most touristy crowds and discover some authentic local spots."
+  },
+  "structural_type": "type1_cascading_requirements",
+  "difficulty": "medium",
+  "rubric": {
+    "hard_constraints": [
+      {
+        "id": "hc_001",
+        "type": "hours_check",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_002",
+        "type": "no_overlap",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_003",
+        "type": "travel_time_hard",
+        "check_method": "code",
+        "params": {}
+      }
+    ],
+    "personal_constraints": [
+      {
+        "id": "pc_001",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "elderly parent uses a wheelchair",
+        "description": "All venues must be wheelchair accessible",
+        "scope": "all",
+        "condition": {
+          "field": "wheelchair_accessible",
+          "operator": "==",
+          "value": true
+        },
+        "aggregation": "all",
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_002",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "avoid the most touristy crowds authentic local spots",
+        "description": "All venues must be mid-traffic tier or lower",
+        "scope": "all",
+        "condition": {
+          "field": "traffic_tier",
+          "operator": "<=",
+          "value": "mid"
+        },
+        "aggregation": "all",
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_003",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "authentic British cuisine",
+        "description": "At least 2 meals must feature British cuisine",
+        "scope": "activity_type=meal",
+        "condition": {
+          "has_tag": "british"
+        },
+        "aggregation": {
+          "at_least": 2
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_004",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "spring weather exploring outdoor attractions",
+        "description": "Must include at least 1 outdoor venue",
+        "scope": "activity_type=visit",
+        "condition": {
+          "has_tag": "outdoor"
+        },
+        "aggregation": {
+          "at_least": 1
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_005",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "special Easter celebration evening meals upscale memorable",
+        "description": "Evening meals must be upscale or above",
+        "scope": [
+          "activity_type=meal",
+          "time_window=18:00-23:59"
+        ],
+        "condition": {
+          "field": "price_tier",
+          "operator": ">=",
+          "value": "upscale"
+        },
+        "aggregation": "all",
+        "consequence": "p_score_full"
+      }
+    ],
+    "b_score_constraints": [],
+    "required_venue_ids": []
+  },
+  "_validation_warnings": []
+}

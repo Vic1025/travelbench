@@ -1,0 +1,109 @@
+{
+  "task_id": "lon_type4_001",
+  "city": "London",
+  "window_id": "london_late_spring_2026",
+  "days": 3,
+  "start_date": "2026-05-26",
+  "public_input": {
+    "query": "Planning a 3-day anniversary weekend in London with my partner! We want to celebrate with one special upscale dinner during our stay, but we're on a tight budget of \u00a332 per day total. Looking for a mix of cultural sites like museums and some authentic local food experiences. We love exploring different neighborhoods and want to experience both the traditional and modern sides of London.",
+    "query_resources": {
+      "budget_per_day": 32
+    }
+  },
+  "structural_type": "type4_precision_allocation",
+  "difficulty": "medium",
+  "rubric": {
+    "hard_constraints": [
+      {
+        "id": "hc_001",
+        "type": "hours_check",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_002",
+        "type": "no_overlap",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_003",
+        "type": "travel_time_hard",
+        "check_method": "code",
+        "params": {}
+      }
+    ],
+    "personal_constraints": [
+      {
+        "id": "pc_001",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "tight budget of \u00a332 per day total",
+        "description": "Daily spending must not exceed \u00a332",
+        "scope": "per_day",
+        "condition": {},
+        "aggregation": {
+          "sum": "estimated_cost_local",
+          "operator": "<=",
+          "value": 32
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_002",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "one special upscale dinner",
+        "description": "At least one dinner must be upscale for the anniversary celebration",
+        "scope": [
+          "activity_type=meal",
+          "time_window=18:00-23:59"
+        ],
+        "condition": {
+          "field": "price_tier",
+          "operator": ">=",
+          "value": "upscale"
+        },
+        "aggregation": {
+          "at_least": 1
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_003",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "cultural sites like museums",
+        "description": "Include at least 2 museum visits",
+        "scope": "category=museum",
+        "condition": {},
+        "aggregation": {
+          "at_least": 2
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_004",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "authentic local food experiences",
+        "description": "At least 60% of meals should be at venues popular with locals",
+        "scope": "activity_type=meal",
+        "condition": {
+          "has_tag": "popular-with-locals"
+        },
+        "aggregation": {
+          "ratio": 0.6
+        },
+        "consequence": "p_score_full"
+      }
+    ],
+    "b_score_constraints": [],
+    "required_venue_ids": []
+  },
+  "_validation_warnings": []
+}

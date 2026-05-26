@@ -1,0 +1,93 @@
+{
+  "task_id": "london_carnival_2026_food_blogger_anniversary",
+  "city": "London",
+  "window_id": "london_carnival_2026",
+  "days": 3,
+  "start_date": "2026-08-22",
+  "public_input": {
+    "query": "My partner and I are food bloggers visiting London during Carnival weekend to write about authentic multicultural dining experiences. We're celebrating our 5th wedding anniversary, so we want some romantic upscale dinner spots. We'd love to explore diverse cuisines, try at least one Indian restaurant, and have at least 60% of our meals showcase international cuisines since we want to focus on London's multicultural food scene."
+  },
+  "structural_type": "type1_cascading_requirements",
+  "difficulty": "medium",
+  "rubric": {
+    "hard_constraints": [
+      {
+        "id": "hc_001",
+        "type": "hours_check",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_002",
+        "type": "no_overlap",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_003",
+        "type": "travel_time_hard",
+        "check_method": "code",
+        "params": {}
+      }
+    ],
+    "personal_constraints": [
+      {
+        "id": "pc_001",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "60% of our meals showcase international cuisines",
+        "description": "At least 60% of meals must be non-British international cuisine",
+        "scope": "activity_type=meal",
+        "condition": {
+          "not_tag": "british"
+        },
+        "aggregation": {
+          "ratio": 0.6
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_002",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "5th wedding anniversary",
+        "description": "At least one upscale dinner for romantic anniversary dining",
+        "scope": [
+          "activity_type=meal",
+          "time_window=18:00-23:59"
+        ],
+        "condition": {
+          "field": "price_tier",
+          "operator": ">=",
+          "value": "upscale"
+        },
+        "aggregation": {
+          "at_least": 1
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_003",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "try at least one Indian restaurant",
+        "description": "Must include at least one Indian cuisine restaurant",
+        "scope": "activity_type=meal",
+        "condition": {
+          "has_tag": "indian"
+        },
+        "aggregation": {
+          "at_least": 1
+        },
+        "consequence": "p_score_full"
+      }
+    ],
+    "b_score_constraints": [],
+    "required_venue_ids": []
+  },
+  "_validation_warnings": [],
+  "_turns_used": 20
+}

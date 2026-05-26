@@ -1,0 +1,108 @@
+{
+  "task_id": "london_xmas_cultural_dining",
+  "city": "London",
+  "window_id": "london_christmas_2026",
+  "days": 1,
+  "start_date": "2026-12-27",
+  "public_input": {
+    "query": "I'm visiting London on December 27th for a cultural Christmas week experience. I want to visit some museums and galleries to see art, and enjoy fine dining at restaurants with great atmosphere. I have exactly 160 minutes available and need to fit at least 3 venues into my schedule. I prefer upscale experiences and want to stay in central Westminster area. I'm particularly interested in contemporary art and modern cuisine.",
+    "query_resources": {
+      "time_ceiling_minutes": 160
+    }
+  },
+  "structural_type": "type2_subset_selection",
+  "difficulty": "medium",
+  "rubric": {
+    "hard_constraints": [
+      {
+        "id": "hc_001",
+        "type": "hours_check",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_002",
+        "type": "no_overlap",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_003",
+        "type": "travel_time_hard",
+        "check_method": "code",
+        "params": {}
+      }
+    ],
+    "personal_constraints": [
+      {
+        "id": "pc_001",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "at least 3 venues",
+        "description": "Must include at least 3 venues total",
+        "scope": "all",
+        "condition": {
+          "field": "recommended_visit_minutes",
+          "operator": ">=",
+          "value": 30
+        },
+        "aggregation": {
+          "at_least": 3
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_002",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "upscale experiences",
+        "description": "All venues must be mid-tier or above",
+        "scope": "all",
+        "condition": {
+          "field": "price_tier",
+          "operator": ">=",
+          "value": "mid"
+        },
+        "aggregation": "all",
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_003",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "contemporary art",
+        "description": "Must include at least 1 museum with contemporary art",
+        "scope": "category=museum",
+        "condition": {
+          "has_tag": "contemporary-modern-art"
+        },
+        "aggregation": {
+          "at_least": 1
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_004",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "central Westminster area",
+        "description": "All venues must be in Westminster district",
+        "scope": "all",
+        "condition": {
+          "field": "district",
+          "operator": "==",
+          "value": "Westminster"
+        },
+        "aggregation": "all",
+        "consequence": "p_score_full"
+      }
+    ],
+    "b_score_constraints": [],
+    "required_venue_ids": []
+  },
+  "_validation_warnings": []
+}

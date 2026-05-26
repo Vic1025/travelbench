@@ -1,0 +1,111 @@
+{
+  "task_id": "lon_type6_bankholiday_monday_museum_coffee",
+  "city": "London",
+  "window_id": "london_late_spring_2026",
+  "days": 1,
+  "start_date": "2026-05-25",
+  "public_input": {
+    "query": "I'm in London on Bank Holiday Monday and want a simple museum-and-coffee day that won't get derailed by holiday closures. I want free-entry museums if possible, a quiet atmosphere, and I don't want to spend the whole day commuting."
+  },
+  "structural_type": "type6_context_window_tension",
+  "difficulty": "medium",
+  "rubric": {
+    "hard_constraints": [
+      {
+        "id": "hc_001",
+        "type": "hours_check",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_002",
+        "type": "no_overlap",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_003",
+        "type": "travel_time_hard",
+        "check_method": "code",
+        "params": {}
+      }
+    ],
+    "personal_constraints": [
+      {
+        "id": "pc_001",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "free-entry museums if possible",
+        "description": "Include at least one free-entry art museum",
+        "scope": "category=museum",
+        "condition": {
+          "all": [
+            {
+              "has_tag": "free-entry"
+            },
+            {
+              "has_tag": "art"
+            }
+          ]
+        },
+        "aggregation": {
+          "at_least": 1
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_002",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "a quiet atmosphere",
+        "description": "All visit venues should carry a quiet tag",
+        "scope": "activity_type=visit",
+        "condition": {
+          "has_tag": "quiet"
+        },
+        "aggregation": "all",
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_003",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "don't want to spend the whole day commuting",
+        "description": "Total travel time for the day should stay under 60 minutes",
+        "scope": "per_day",
+        "condition": {},
+        "aggregation": {
+          "sum": "travel_minutes",
+          "operator": "<=",
+          "value": 60
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_004",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "simple museum-and-coffee day",
+        "description": "During the late-morning Bank Holiday window, include at least one museum venue that also has a coffee option",
+        "scope": [
+          "category=museum",
+          "time_window=10:00-14:00"
+        ],
+        "condition": {
+          "has_tag": "coffee"
+        },
+        "aggregation": {
+          "at_least": 1
+        },
+        "consequence": "p_score_full"
+      }
+    ],
+    "b_score_constraints": [],
+    "required_venue_ids": []
+  },
+  "_validation_warnings": []
+}

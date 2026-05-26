@@ -1,0 +1,138 @@
+{
+  "task_id": "london_spring_bank_holiday_wheelchair_culture_301",
+  "city": "London",
+  "window_id": "london_late_spring_2026",
+  "days": 3,
+  "start_date": "2026-05-23",
+  "public_input": {
+    "query": "I am visiting London for the long Spring Bank Holiday weekend (May 23-25) with my husband, who uses a wheelchair. We want a 3-day itinerary where every single activity is at a venue that is fully wheelchair accessible. We're interested in soaking up the city's culture, so please include at least three different museums. For our meals, we'd like to experience variety, so please ensure we visit at least three different districts for our dining. Also, we want to stay within a reasonable budget, so the average cost per venue should not exceed $100. We prefer to avoid the busiest areas, so please only include venues with mid or low traffic levels. Since it's a holiday weekend, please ensure we don't spend more than 90 minutes traveling between places each day."
+  },
+  "structural_type": "type1_cascading_requirements",
+  "difficulty": "medium",
+  "rubric": {
+    "hard_constraints": [
+      {
+        "id": "hc_001",
+        "type": "hours_check",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_002",
+        "type": "no_overlap",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_003",
+        "type": "travel_time_hard",
+        "check_method": "code",
+        "params": {}
+      }
+    ],
+    "personal_constraints": [
+      {
+        "id": "pc_001",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "every single activity is at a venue that is fully wheelchair accessible",
+        "description": "All venues must be wheelchair accessible",
+        "scope": "all",
+        "condition": {
+          "field": "wheelchair_accessible",
+          "operator": "==",
+          "value": true
+        },
+        "aggregation": "all",
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_002",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "include at least three different museums",
+        "description": "Visit at least 3 distinct museums",
+        "scope": "category=museum",
+        "condition": {},
+        "aggregation": {
+          "at_least": 3
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_003",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "visit at least three different districts for our dining",
+        "description": "At least 3 distinct districts across meals",
+        "scope": "activity_type=meal",
+        "condition": {
+          "field": "district",
+          "operator": "!=",
+          "value": "N/A"
+        },
+        "aggregation": {
+          "count_distinct": 3,
+          "field": "district"
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_004",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "average cost per venue should not exceed $100",
+        "description": "Each venue's average cost must be \u2264 $100",
+        "scope": "all",
+        "condition": {
+          "field": "avg_cost_local",
+          "operator": "<=",
+          "value": 100
+        },
+        "aggregation": "all",
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_005",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "only include venues with mid or low traffic levels",
+        "description": "All venues must have mid or low traffic",
+        "scope": "all",
+        "condition": {
+          "field": "traffic_tier",
+          "operator": "!=",
+          "value": "high"
+        },
+        "aggregation": "all",
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_006",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "don't spend more than 90 minutes traveling between places each day",
+        "description": "Daily travel time must not exceed 90 minutes",
+        "scope": "per_day",
+        "condition": {},
+        "aggregation": {
+          "sum": "travel_minutes",
+          "operator": "<=",
+          "value": 90
+        },
+        "consequence": "p_score_full"
+      }
+    ],
+    "b_score_constraints": [],
+    "required_venue_ids": []
+  },
+  "_validation_warnings": [
+    "~ query is long (> 600 chars) \u2014 real users write shorter messages"
+  ]
+}

@@ -1,0 +1,87 @@
+{
+  "task_id": "lon_type6_christmas_innovative_dining",
+  "city": "london",
+  "window_id": "london_christmas_2026",
+  "days": 4,
+  "start_date": "2026-12-24",
+  "structural_type": "type6_context_window_tension",
+  "difficulty": "hard",
+  "public_input": {
+    "query": "I'm a food enthusiast visiting London for the Christmas holidays (Dec 24-27). I want to experience London's most innovative restaurants - especially places that are trendy or have unique concepts. I'm particularly interested in Gymkhana for their acclaimed Indian fine dining. I want variety in my dining experiences and prefer reservation-required places for special occasions."
+  },
+  "rubric": {
+    "hard_constraints": [
+      {
+        "id": "hc_001",
+        "type": "hours_check",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_002",
+        "type": "no_overlap",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_003",
+        "type": "travel_time_hard",
+        "check_method": "code",
+        "params": {}
+      }
+    ],
+    "personal_constraints": [
+      {
+        "id": "pc_001",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "Gymkhana for their acclaimed Indian fine dining",
+        "description": "Must include Gymkhana restaurant visit",
+        "scope": "venue_id=wRvzwmq",
+        "condition": {},
+        "aggregation": {
+          "at_least": 1
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_002",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "reservation-required places for special occasions",
+        "description": "At least 60% of restaurant meals must require reservations",
+        "scope": "activity_type=meal",
+        "condition": {
+          "has_tag": "reservation-required"
+        },
+        "aggregation": {
+          "ratio": 0.6
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_003",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "trendy or have unique concepts",
+        "description": "At least 1 restaurant meal must be at trendy venues",
+        "scope": "activity_type=meal",
+        "condition": {
+          "has_tag": "trendy"
+        },
+        "aggregation": {
+          "at_least": 1
+        },
+        "consequence": "p_score_full"
+      }
+    ],
+    "b_score_constraints": [],
+    "required_venue_ids": [
+      "wRvzwmq"
+    ]
+  },
+  "_validation_warnings": []
+}

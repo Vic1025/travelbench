@@ -1,0 +1,107 @@
+{
+  "city": "new_york",
+  "window_id": "new_york_july_4th_2026",
+  "days": 2,
+  "start_date": "2026-07-05",
+  "structural_type": "type2_subset_selection",
+  "difficulty": "medium",
+  "public_input": {
+    "query": "I'm visiting NYC July 5-6 and want to explore local food spots and neighborhoods. I have about 4.5 hours total for activities across both days. I want to eat like a local, try different neighborhoods across the city, and avoid the typical tourist spots. Would love to visit at least one neighborhood walk to really get a feel for the area.",
+    "query_resources": {
+      "time_ceiling_minutes": 270,
+      "ceiling_mode": "spread",
+      "ceiling_scope": "total",
+      "currency": "USD"
+    }
+  },
+  "rubric": {
+    "hard_constraints": [
+      {
+        "id": "hc_001",
+        "type": "hours_check",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_002",
+        "type": "no_overlap",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_003",
+        "type": "travel_time_hard",
+        "check_method": "code",
+        "params": {}
+      }
+    ],
+    "personal_constraints": [
+      {
+        "id": "pc_001",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "eat like a local",
+        "description": "At least 3 meal activities at venues with popular-with-locals tag",
+        "scope": "activity_type=meal",
+        "condition": {
+          "has_tag": "popular-with-locals"
+        },
+        "aggregation": {
+          "at_least": 3
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_002",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "avoid the typical tourist spots",
+        "description": "No venues tagged as tourist traps",
+        "scope": "all",
+        "condition": {
+          "has_tag": "tourist-trap"
+        },
+        "aggregation": "none",
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_003",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "try different neighborhoods across the city",
+        "description": "Visit activities span at least 3 distinct districts with local character",
+        "scope": "all",
+        "condition": {
+          "has_tag": "popular-with-locals"
+        },
+        "aggregation": {
+          "count_distinct": 3,
+          "field": "district"
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_004",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "visit at least one neighborhood walk",
+        "description": "Include at least 1 neighbourhood-category venue",
+        "scope": "category=neighbourhood",
+        "condition": {},
+        "aggregation": {
+          "at_least": 1
+        },
+        "consequence": "p_score_full"
+      }
+    ],
+    "b_score_constraints": [],
+    "required_venue_ids": []
+  },
+  "task_id": "claude_sonnet_4_5_new_york_type2_20260521_1779375498",
+  "_validation_warnings": [],
+  "_turns_used": 14
+}

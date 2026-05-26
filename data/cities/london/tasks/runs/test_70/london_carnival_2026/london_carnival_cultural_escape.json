@@ -1,0 +1,90 @@
+{
+  "task_id": "london_carnival_cultural_escape",
+  "city": "London",
+  "window_id": "london_carnival_2026",
+  "days": 1,
+  "start_date": "2026-08-25",
+  "public_input": {
+    "query": "I'm visiting London during the Notting Hill Carnival but want a peaceful cultural day away from the crowds. I use a wheelchair and would like to visit art museums and galleries within a 3-hour window. I'm on a budget so please include some free venues.",
+    "query_resources": {
+      "time_ceiling_minutes": 190
+    }
+  },
+  "structural_type": "type2_subset_selection",
+  "difficulty": "medium",
+  "rubric": {
+    "hard_constraints": [
+      {
+        "id": "hc_001",
+        "type": "hours_check",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_002",
+        "type": "no_overlap",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_003",
+        "type": "travel_time_hard",
+        "check_method": "code",
+        "params": {}
+      }
+    ],
+    "personal_constraints": [
+      {
+        "id": "pc_001",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "use a wheelchair",
+        "description": "All venues must be wheelchair accessible",
+        "scope": "all",
+        "condition": {
+          "field": "wheelchair_accessible",
+          "operator": "==",
+          "value": true
+        },
+        "aggregation": "all",
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_002",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "art museums and galleries",
+        "description": "Include at least 2 museum visits",
+        "scope": "category=museum",
+        "condition": {},
+        "aggregation": {
+          "at_least": 2
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_003",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "on a budget",
+        "description": "Include at least one free venue",
+        "scope": "all",
+        "condition": {
+          "field": "price_tier",
+          "operator": "==",
+          "value": "budget"
+        },
+        "aggregation": {
+          "at_least": 1
+        },
+        "consequence": "p_score_full"
+      }
+    ],
+    "b_score_constraints": [],
+    "required_venue_ids": []
+  },
+  "_validation_warnings": []
+}

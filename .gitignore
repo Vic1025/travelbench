@@ -1,0 +1,79 @@
+# ── Python ──────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.hypothesis/
+
+# ── OS / editor ─────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+
+# ── Secrets ─────────────────────────────────────────────────────────────────
+.env
+.env.*
+!.env.example
+secrets.json
+*.key
+*.pem
+
+# ── Claude Code workspace ───────────────────────────────────────────────────
+# Local agent config / plans / memory
+.claude/
+
+# ── SQLite scratch files ────────────────────────────────────────────────────
+# WAL / shared-memory artifacts that sit next to a .db when an active
+# connection is open. Safe to ignore — they're regenerated.
+*.db-shm
+*.db-wal
+*.db-journal
+
+# ── Generated benchmark artifacts ───────────────────────────────────────────
+# Test runs of venue / task generation. Reference runs (test_70) are
+# committed; future runs (test_30, test_100, etc.) are not.
+data/cities/*/runs/test_30/
+data/cities/*/runs/test_50/
+data/cities/*/runs/test_100/
+# Catch additional run names a developer may create:
+data/cities/*/runs/draft_*/
+data/cities/*/runs/scratch_*/
+data/cities/*/runs/dev_*/
+
+# Per-venue agent logs (large, regenerated each run)
+data/cities/*/runs/*/logs/
+data/cities/*/runs/logs/
+
+# Legacy pre-per-run-structure task gen logs (London only; ~8MB of noise from
+# before tasks/runs/<run_name>/<window>/agent_logs/ became the convention)
+data/cities/*/tasks/agent_logs/
+
+# DB backup files from migrations
+*.bak
+*.bak.*
+
+# Top-level travelbench.db (stub created by `python -c "from db import init_db"`).
+# Per-city DBs under data/cities/<city>/ are the authoritative source.
+data/travelbench.db
+
+# Empty placeholder dirs that auto-recreate
+logs/
+
+# ── Results / scratch ───────────────────────────────────────────────────────
+results/Archive.zip
+results/scratch/
+*.zip

@@ -1,0 +1,110 @@
+{
+  "task_id": "type3_london_easter_outdoor_museum",
+  "city": "london",
+  "window_id": "london_easter_2026",
+  "days": 2,
+  "start_date": "2026-04-03",
+  "public_input": {
+    "query": "I'm visiting London for the Easter weekend (April 3rd and 4th). I'm an avid photographer and love being outdoors, so I want at least 4 outdoor locations. My partner insists we see at least 4 museums. Also, we're trying to eat less meat, so at least 60% of our meals must be at places with vegetarian options. We're on a tight budget, so please make sure every single activity we do is at a venue that is budget-friendly or free."
+  },
+  "structural_type": "type3_competing_requirements",
+  "difficulty": "hard",
+  "rubric": {
+    "hard_constraints": [
+      {
+        "id": "hc_001",
+        "type": "hours_check",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_002",
+        "type": "no_overlap",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_003",
+        "type": "travel_time_hard",
+        "check_method": "code",
+        "params": {}
+      }
+    ],
+    "personal_constraints": [
+      {
+        "id": "pc_001",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "want at least 4 outdoor locations",
+        "description": "Visit at least 4 outdoor venues",
+        "scope": "all",
+        "condition": {
+          "has_tag": "outdoor"
+        },
+        "aggregation": {
+          "at_least": 4
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_002",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "insists we see at least 4 museums",
+        "description": "Visit at least 4 museums",
+        "scope": "category=museum",
+        "condition": {},
+        "aggregation": {
+          "at_least": 4
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_003",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "at least 60% of our meals must be at places with vegetarian options",
+        "description": "At least 60% of meals at venues with vegetarian options",
+        "scope": "activity_type=meal",
+        "condition": {
+          "has_tag": "vegetarian-options"
+        },
+        "aggregation": {
+          "ratio": 0.6
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_004",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "on a tight budget",
+        "description": "All activities must be budget-friendly or free",
+        "scope": "all",
+        "condition": {
+          "any": [
+            {
+              "field": "price_tier",
+              "operator": "==",
+              "value": "budget"
+            },
+            {
+              "field": "price_tier",
+              "operator": "==",
+              "value": "free"
+            }
+          ]
+        },
+        "aggregation": "all",
+        "consequence": "p_score_full"
+      }
+    ],
+    "b_score_constraints": [],
+    "required_venue_ids": []
+  },
+  "_validation_warnings": []
+}

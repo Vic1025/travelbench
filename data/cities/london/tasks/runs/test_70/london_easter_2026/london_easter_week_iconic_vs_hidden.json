@@ -1,0 +1,75 @@
+{
+  "task_id": "london_easter_week_iconic_vs_hidden",
+  "city": "London",
+  "window_id": "london_easter_2026",
+  "days": 3,
+  "start_date": "2026-04-04",
+  "public_input": {
+    "query": "Planning our first Easter weekend in London! My partner is obsessed with hitting all the famous London landmarks and iconic tourist spots - she wants the classic London experience with all the must-see places everyone talks about. But I'm more interested in discovering hidden gems and authentic local spots that most tourists never find. We want to experience both the iconic London that's in all the guidebooks and the real London that locals know about. Can you help us balance both in a 3-day Easter weekend plan?"
+  },
+  "structural_type": "type3_competing_requirements",
+  "difficulty": "medium",
+  "rubric": {
+    "hard_constraints": [
+      {
+        "id": "hc_001",
+        "type": "hours_check",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_002",
+        "type": "no_overlap",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_003",
+        "type": "travel_time_hard",
+        "check_method": "code",
+        "params": {}
+      }
+    ],
+    "personal_constraints": [
+      {
+        "id": "pc_001",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "hitting all the famous London landmarks and iconic tourist spots",
+        "description": "Include at least 5 high-traffic iconic venues",
+        "scope": "all",
+        "condition": {
+          "field": "traffic_tier",
+          "operator": "==",
+          "value": "high"
+        },
+        "aggregation": {
+          "at_least": 5
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_002",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "discovering hidden gems and authentic local spots that most tourists never find",
+        "description": "Include at least 5 low-traffic hidden gem venues",
+        "scope": "all",
+        "condition": {
+          "field": "traffic_tier",
+          "operator": "==",
+          "value": "low"
+        },
+        "aggregation": {
+          "at_least": 5
+        },
+        "consequence": "p_score_full"
+      }
+    ],
+    "b_score_constraints": [],
+    "required_venue_ids": []
+  },
+  "_validation_warnings": []
+}

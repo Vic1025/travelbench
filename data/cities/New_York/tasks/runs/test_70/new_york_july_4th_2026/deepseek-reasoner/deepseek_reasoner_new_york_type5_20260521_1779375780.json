@@ -1,0 +1,120 @@
+{
+  "city": "new_york",
+  "window_id": "new_york_july_4th_2026",
+  "days": 3,
+  "start_date": "2026-07-03",
+  "public_input": {
+    "query": "Celebrating our anniversary during 4th of July weekend in NYC. We only want upscale experiences \u2014 premium views and craft cocktails. We love history and want to avoid tourist traps. We'd like to explore different neighborhoods each day.",
+    "query_resources": {
+      "currency": "USD"
+    }
+  },
+  "structural_type": "type5_hard_feasibility",
+  "difficulty": "hard",
+  "rubric": {
+    "hard_constraints": [
+      {
+        "id": "hc_001",
+        "type": "hours_check",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_002",
+        "type": "no_overlap",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_003",
+        "type": "travel_time_hard",
+        "check_method": "code",
+        "params": {}
+      }
+    ],
+    "personal_constraints": [
+      {
+        "id": "pc_001",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "upscale experiences",
+        "description": "All venues must be upscale or luxury tier",
+        "scope": "all",
+        "condition": {
+          "field": "price_tier",
+          "operator": ">=",
+          "value": "upscale"
+        },
+        "aggregation": "all",
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_002",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "avoid tourist traps",
+        "description": "No tourist-trap venues in the plan",
+        "scope": "all",
+        "condition": {
+          "has_tag": "tourist-trap"
+        },
+        "aggregation": "none",
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_003",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "premium views",
+        "description": "At least one venue with views tag",
+        "scope": "all",
+        "condition": {
+          "has_tag": "views"
+        },
+        "aggregation": {
+          "at_least": 1
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_004",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "love history",
+        "description": "At least one venue with history tag",
+        "scope": "all",
+        "condition": {
+          "has_tag": "history"
+        },
+        "aggregation": {
+          "at_least": 1
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_005",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "explore different neighborhoods each day",
+        "description": "At most 1 distinct district per day",
+        "scope": "per_day",
+        "condition": {},
+        "aggregation": {
+          "at_most_distinct": 1,
+          "field": "district"
+        },
+        "consequence": "p_score_full"
+      }
+    ],
+    "b_score_constraints": [],
+    "required_venue_ids": []
+  },
+  "task_id": "deepseek_reasoner_new_york_type5_20260521_1779375780",
+  "_validation_warnings": [],
+  "_turns_used": 9
+}

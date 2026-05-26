@@ -1,0 +1,87 @@
+{
+  "task_id": "lon_type2_midprice_1day",
+  "city": "London",
+  "window_id": "london_late_spring_2026",
+  "days": 1,
+  "start_date": "2026-05-23",
+  "structural_type": "type2_subset_selection",
+  "difficulty": "hard",
+  "public_input": {
+    "query": "I'll be in London on Saturday for a short trip. We are on a strict middle-class budget, so only consider moderately priced places. We want to visit at least 4 places per day. We want all our restaurants to be in a single district to avoid long commutes. We only have 290 minutes of total free time for this.",
+    "query_resources": {
+      "time_ceiling_minutes": 290
+    }
+  },
+  "rubric": {
+    "hard_constraints": [
+      {
+        "id": "hc_001",
+        "type": "hours_check",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_002",
+        "type": "no_overlap",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_003",
+        "type": "travel_time_hard",
+        "check_method": "code",
+        "params": {}
+      }
+    ],
+    "personal_constraints": [
+      {
+        "id": "pc_001",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "moderately priced places",
+        "description": "All venues must be mid price tier",
+        "scope": "all",
+        "condition": {
+          "field": "price_tier",
+          "operator": "==",
+          "value": "mid"
+        },
+        "aggregation": "all",
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_002",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "visit at least 4 places per day",
+        "description": "At least 4 activities per day",
+        "scope": "per_day",
+        "condition": {},
+        "aggregation": {
+          "at_least": 4
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_003",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "restaurants to be in a single district",
+        "description": "All restaurants must be in the same district",
+        "scope": "category=restaurant",
+        "condition": {},
+        "aggregation": {
+          "at_most_distinct": 1,
+          "field": "district"
+        },
+        "consequence": "p_score_full"
+      }
+    ],
+    "b_score_constraints": [],
+    "required_venue_ids": []
+  },
+  "_validation_warnings": []
+}

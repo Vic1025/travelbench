@@ -1,0 +1,99 @@
+{
+  "task_id": "lond_win_t1_001",
+  "city": "London",
+  "window_id": "london_christmas_2026",
+  "days": 3,
+  "start_date": "2026-12-27",
+  "public_input": {
+    "query": "I'm Sarah, a food photographer from New York visiting London with my elderly father during Christmas week. I'm working on a travel magazine feature about festive London dining experiences that capture the authentic local spirit. My father uses a wheelchair, so we need accessible venues where I can take photos for my professional work. We want to experience London like locals do and want at least one museum visit for cultural content."
+  },
+  "structural_type": "type1_cascading_requirements",
+  "difficulty": "medium",
+  "rubric": {
+    "hard_constraints": [
+      {
+        "id": "hc_001",
+        "type": "hours_check",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_002",
+        "type": "no_overlap",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_003",
+        "type": "travel_time_hard",
+        "check_method": "code",
+        "params": {}
+      }
+    ],
+    "personal_constraints": [
+      {
+        "id": "pc_001",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "father uses a wheelchair",
+        "description": "All venues must be wheelchair accessible",
+        "scope": "all",
+        "condition": {
+          "field": "wheelchair_accessible",
+          "operator": "==",
+          "value": true
+        },
+        "aggregation": "all",
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_002",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "experience London like locals do",
+        "description": "All venues must be popular with locals",
+        "scope": "all",
+        "condition": {
+          "has_tag": "popular-with-locals"
+        },
+        "aggregation": "all",
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_003",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "take photos for my professional work",
+        "description": "All meal venues must allow photography",
+        "scope": "activity_type=meal",
+        "condition": {
+          "field": "photography_allowed",
+          "operator": "==",
+          "value": true
+        },
+        "aggregation": "all",
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_004",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "at least one museum visit for cultural content",
+        "description": "At least one museum visit",
+        "scope": "category=museum",
+        "condition": {},
+        "aggregation": {
+          "at_least": 1
+        },
+        "consequence": "p_score_full"
+      }
+    ],
+    "b_score_constraints": [],
+    "required_venue_ids": []
+  },
+  "_validation_warnings": []
+}

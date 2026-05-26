@@ -1,0 +1,77 @@
+{
+  "city": "new_york",
+  "window_id": "new_york_july_4th_2026",
+  "days": 2,
+  "start_date": "2026-07-03",
+  "public_input": {
+    "query": "My partner and I are visiting NYC for July 4th weekend. I love discovering hidden gem places that feel authentically New York, like off-the-beaten-path bars and local eateries. My partner is a history buff who insists we visit iconic landmarks \u2014 the famous sites that define the city's skyline. We need an itinerary that balances both.",
+    "query_resources": {
+      "currency": "USD"
+    }
+  },
+  "task_id": "deepseek_reasoner_new_york_type3_20260521_1779375607",
+  "structural_type": "type3_competing_requirements",
+  "difficulty": "hard",
+  "rubric": {
+    "hard_constraints": [
+      {
+        "id": "hc_001",
+        "type": "hours_check",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_002",
+        "type": "no_overlap",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_003",
+        "type": "travel_time_hard",
+        "check_method": "code",
+        "params": {}
+      }
+    ],
+    "personal_constraints": [
+      {
+        "id": "pc_001",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "iconic landmarks",
+        "description": "At least 4 iconic (high-traffic) venues must be included in the plan",
+        "scope": "all",
+        "condition": {
+          "field": "traffic_tier",
+          "operator": "==",
+          "value": "high"
+        },
+        "aggregation": {
+          "at_least": 4
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_002",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "hidden gem places",
+        "description": "At least 4 hidden-gem venues must be included in the plan",
+        "scope": "all",
+        "condition": {
+          "has_tag": "hidden-gem"
+        },
+        "aggregation": {
+          "at_least": 4
+        },
+        "consequence": "p_score_full"
+      }
+    ],
+    "b_score_constraints": [],
+    "required_venue_ids": []
+  },
+  "_validation_warnings": [],
+  "_turns_used": 11
+}

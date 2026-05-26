@@ -1,0 +1,141 @@
+{
+  "task_id": "london_t4_may_weekend",
+  "city": "London",
+  "window_id": "london_late_spring_2026",
+  "days": 2,
+  "start_date": "2026-05-23",
+  "public_input": {
+    "query": "My partner and I are visiting London for the May Bank Holiday weekend (Saturday May 23rd and Sunday May 24th, 2026). As I use a wheelchair, it's essential that every place we visit is fully accessible. We also want to stay in mid-traffic areas to avoid the biggest crowds. We're on a budget of \u00a355 per person per day. We'd like to visit at least one museum each day. Since it's our first time in the UK, we want to try the local British cuisine for at least two of our meals. Also, we want to stay central, so at least half of our activities over the weekend should be in the Westminster district.",
+    "query_resources": {
+      "budget_per_day": 55
+    }
+  },
+  "structural_type": "type4_precision_allocation",
+  "difficulty": "medium",
+  "rubric": {
+    "hard_constraints": [
+      {
+        "id": "hc_001",
+        "type": "hours_check",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_002",
+        "type": "no_overlap",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_003",
+        "type": "travel_time_hard",
+        "check_method": "code",
+        "params": {}
+      }
+    ],
+    "personal_constraints": [
+      {
+        "id": "pc_001",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "budget of \u00a355 per person per day",
+        "description": "Total daily cost must not exceed \u00a355 per person",
+        "scope": "per_day",
+        "condition": {},
+        "aggregation": {
+          "sum": "estimated_cost_local",
+          "operator": "<=",
+          "value": 55
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_002",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "every place we visit is fully accessible",
+        "description": "All venues must be wheelchair accessible",
+        "scope": "all",
+        "condition": {
+          "field": "wheelchair_accessible",
+          "operator": "==",
+          "value": true
+        },
+        "aggregation": "all",
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_003",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "stay in mid-traffic areas",
+        "description": "All venues must have mid-tier traffic",
+        "scope": "all",
+        "condition": {
+          "field": "traffic_tier",
+          "operator": "==",
+          "value": "mid"
+        },
+        "aggregation": "all",
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_004",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "visit at least one museum each day",
+        "description": "At least one museum visit per day",
+        "scope": "per_day",
+        "condition": {
+          "field": "category",
+          "operator": "==",
+          "value": "museum"
+        },
+        "aggregation": {
+          "at_least": 1
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_005",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "try the local British cuisine",
+        "description": "At least two meals at British cuisine venues",
+        "scope": "activity_type=meal",
+        "condition": {
+          "has_tag": "british"
+        },
+        "aggregation": {
+          "at_least": 2
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_006",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "stay central",
+        "description": "At least 50% of activities in the Westminster district",
+        "scope": "all",
+        "condition": {
+          "field": "district",
+          "operator": "==",
+          "value": "Westminster"
+        },
+        "aggregation": {
+          "ratio": 0.5
+        },
+        "consequence": "p_score_full"
+      }
+    ],
+    "required_venue_ids": []
+  },
+  "_validation_warnings": []
+}

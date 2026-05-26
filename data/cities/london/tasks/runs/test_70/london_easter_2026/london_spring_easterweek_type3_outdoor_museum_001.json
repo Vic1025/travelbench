@@ -1,0 +1,85 @@
+{
+  "task_id": "london_spring_easterweek_type3_outdoor_museum_001",
+  "city": "London",
+  "window_id": "london_easter_2026",
+  "days": 2,
+  "start_date": "2026-04-04",
+  "public_input": {
+    "query": "We're visiting London for a special Easter weekend getaway and want to make the most of the first real outdoor weekend of the year. I want to spend as much time outside as possible, but my partner also wants to fit in several museums. We'd also like to keep each day fairly compact rather than zigzagging all over the city."
+  },
+  "structural_type": "type3_competing_requirements",
+  "difficulty": "medium",
+  "rubric": {
+    "hard_constraints": [
+      {
+        "id": "hc_001",
+        "type": "hours_check",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_002",
+        "type": "no_overlap",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_003",
+        "type": "travel_time_hard",
+        "check_method": "code",
+        "params": {}
+      }
+    ],
+    "personal_constraints": [
+      {
+        "id": "pc_001",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "spend as much time outside as possible",
+        "description": "Include at least 4 outdoor activities across the trip",
+        "scope": "all",
+        "condition": {
+          "has_tag": "outdoor"
+        },
+        "aggregation": {
+          "at_least": 4
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_002",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "fit in several museums",
+        "description": "Include at least 3 museum visits across the trip",
+        "scope": "category=museum",
+        "condition": {},
+        "aggregation": {
+          "at_least": 3
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_003",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "keep each day fairly compact rather than zigzagging all over the city",
+        "description": "Keep total travel time per day to 60 minutes or less",
+        "scope": "per_day",
+        "condition": {},
+        "aggregation": {
+          "sum": "travel_minutes",
+          "operator": "<=",
+          "value": 60
+        },
+        "consequence": "p_score_full"
+      }
+    ],
+    "b_score_constraints": [],
+    "required_venue_ids": []
+  },
+  "_validation_warnings": []
+}

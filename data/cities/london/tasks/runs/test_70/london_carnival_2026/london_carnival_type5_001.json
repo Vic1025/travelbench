@@ -1,0 +1,103 @@
+{
+  "task_id": "london_carnival_type5_001",
+  "city": "London",
+  "window_id": "london_carnival_2026",
+  "days": 2,
+  "start_date": "2026-08-21",
+  "public_input": {
+    "query": "I'm visiting London for a special anniversary celebration during the carnival weekend. We need advance reservations for everything since we're on a tight schedule. We prefer central Westminster restaurants and fine dining experiences for this special occasion."
+  },
+  "structural_type": "type5_hard_feasibility_reduction",
+  "difficulty": "hard",
+  "rubric": {
+    "hard_constraints": [
+      {
+        "id": "hc_001",
+        "type": "hours_check",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_002",
+        "type": "no_overlap",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_003",
+        "type": "travel_time_hard",
+        "check_method": "code",
+        "params": {}
+      }
+    ],
+    "personal_constraints": [
+      {
+        "id": "pc_001",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "advance reservations",
+        "description": "All venues must require advance reservations",
+        "scope": "all",
+        "condition": {
+          "field": "reservation_required",
+          "operator": "==",
+          "value": true
+        },
+        "aggregation": "all",
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_002",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "special occasion",
+        "description": "All meal venues must be fine dining",
+        "scope": "activity_type=meal",
+        "condition": {
+          "field": "price_tier",
+          "operator": "==",
+          "value": "fine-dining"
+        },
+        "aggregation": "all",
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_003",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "central Westminster restaurants",
+        "description": "At least one meal in Westminster district",
+        "scope": "activity_type=meal",
+        "condition": {
+          "field": "district",
+          "operator": "==",
+          "value": "Westminster"
+        },
+        "aggregation": {
+          "at_least": 1
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_004",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "anniversary celebration",
+        "description": "Must include at least one attraction for sightseeing",
+        "scope": "category=attraction",
+        "condition": {},
+        "aggregation": {
+          "at_least": 1
+        },
+        "consequence": "p_score_full"
+      }
+    ],
+    "b_score_constraints": [],
+    "required_venue_ids": []
+  },
+  "_validation_warnings": []
+}

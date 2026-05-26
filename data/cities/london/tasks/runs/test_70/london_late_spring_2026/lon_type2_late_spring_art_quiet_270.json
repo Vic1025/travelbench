@@ -1,0 +1,90 @@
+{
+  "task_id": "lon_type2_late_spring_art_quiet_270",
+  "city": "London",
+  "window_id": "london_late_spring_2026",
+  "days": 1,
+  "start_date": "2026-05-24",
+  "public_input": {
+    "query": "I only have 4.5 hours in London and want a compact art-focused day with coffee. Please pick the best subset of stops that fits within 270 minutes total, keeps meal stops no louder than moderate, and includes at least 3 art venues.",
+    "query_resources": {
+      "time_ceiling_minutes": 270
+    }
+  },
+  "structural_type": "type2_subset_selection",
+  "difficulty": "medium",
+  "rubric": {
+    "hard_constraints": [
+      {
+        "id": "hc_001",
+        "type": "hours_check",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_002",
+        "type": "no_overlap",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_003",
+        "type": "travel_time_hard",
+        "check_method": "code",
+        "params": {}
+      }
+    ],
+    "personal_constraints": [
+      {
+        "id": "pc_001",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "art-focused day",
+        "description": "Include at least 3 art venues",
+        "scope": "activity_type=visit",
+        "condition": {
+          "has_tag": "art"
+        },
+        "aggregation": {
+          "at_least": 3
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_002",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "with coffee",
+        "description": "Include at least 1 coffee stop",
+        "scope": "activity_type=meal",
+        "condition": {
+          "has_tag": "coffee"
+        },
+        "aggregation": {
+          "at_least": 1
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_003",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "keeps meal stops no louder than moderate",
+        "description": "All meal stops should have noise level at most moderate",
+        "scope": "activity_type=meal",
+        "condition": {
+          "field": "noise_level",
+          "operator": "<=",
+          "value": "moderate"
+        },
+        "aggregation": "all",
+        "consequence": "p_score_full"
+      }
+    ],
+    "b_score_constraints": [],
+    "required_venue_ids": []
+  },
+  "_validation_warnings": []
+}

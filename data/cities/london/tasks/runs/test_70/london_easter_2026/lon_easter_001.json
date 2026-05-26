@@ -1,0 +1,128 @@
+{
+  "task_id": "lon_easter_001",
+  "city": "London",
+  "window_id": "london_easter_2026",
+  "days": 1,
+  "start_date": "2026-04-05",
+  "public_input": {
+    "query": "My grandmother and I are spending Easter Sunday in East London. We want to explore venues in the Tower Hamlets or Southwark districts. Since she uses a wheelchair, every place we visit for sightseeing and meals must be fully wheelchair accessible. We'd love to visit a museum or a major attraction, and have a nice upscale dinner with a view. We're happy to book ahead for our main meal."
+  },
+  "structural_type": "type5_hard_feasibility_reduction",
+  "difficulty": "hard",
+  "rubric": {
+    "hard_constraints": [
+      {
+        "id": "hc_001",
+        "type": "hours_check",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_002",
+        "type": "no_overlap",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_003",
+        "type": "travel_time_hard",
+        "check_method": "code",
+        "params": {}
+      }
+    ],
+    "personal_constraints": [
+      {
+        "id": "pc_001",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "explore venues in the Tower Hamlets or Southwark districts",
+        "description": "All activities must be in the Tower Hamlets or Southwark districts.",
+        "scope": "all",
+        "condition": {
+          "any": [
+            {
+              "field": "district",
+              "operator": "==",
+              "value": "Tower Hamlets"
+            },
+            {
+              "field": "district",
+              "operator": "==",
+              "value": "Southwark"
+            }
+          ]
+        },
+        "aggregation": "all",
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_002",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "every place we visit for sightseeing and meals must be fully wheelchair accessible",
+        "description": "Every venue must be wheelchair accessible.",
+        "scope": "all",
+        "condition": {
+          "field": "wheelchair_accessible",
+          "operator": "==",
+          "value": true
+        },
+        "aggregation": "all",
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_003",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "interested in places with great views or a bit of history",
+        "description": "At least one museum visit must be at a venue with historical significance.",
+        "scope": "category=museum",
+        "condition": {
+          "has_tag": "history-royal-heritage"
+        },
+        "aggregation": {
+          "at_least": 1
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_004",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "upscale dinner with a view",
+        "description": "At least one upscale meal at a restaurant with views.",
+        "scope": "activity_type=meal",
+        "condition": {
+          "all": [
+            {
+              "field": "price_tier",
+              "operator": "==",
+              "value": "upscale"
+            },
+            {
+              "any": [
+                {
+                  "has_tag": "views"
+                },
+                {
+                  "has_tag": "architecture-city-skyline"
+                }
+              ]
+            }
+          ]
+        },
+        "aggregation": {
+          "at_least": 1
+        },
+        "consequence": "p_score_full"
+      }
+    ],
+    "b_score_constraints": [],
+    "required_venue_ids": []
+  },
+  "_validation_warnings": []
+}

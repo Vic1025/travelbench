@@ -1,0 +1,108 @@
+{
+  "task_id": "claude_sonnet_4_5_new_york_type1_20260521_1779375385",
+  "city": "new_york",
+  "window_id": "new_york_july_4th_2026",
+  "days": 3,
+  "start_date": "2026-07-04",
+  "structural_type": "type1_cascading_requirements",
+  "difficulty": "medium",
+  "public_input": {
+    "query": "I'm a mid-career architecture photographer celebrating landing a major gallery exhibition. I'll be in NYC for the July 4th weekend to capture waterfront views and skylines for my portfolio. I want to explore authentic local restaurants across different cuisines and neighborhoods, and I'd love to visit at least one art museum for inspiration. Looking for 3 days of photography and culinary exploration.",
+    "query_resources": {
+      "currency": "USD"
+    }
+  },
+  "rubric": {
+    "hard_constraints": [
+      {
+        "id": "hc_001",
+        "type": "hours_check",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_002",
+        "type": "no_overlap",
+        "check_method": "code",
+        "params": {}
+      },
+      {
+        "id": "hc_003",
+        "type": "travel_time_hard",
+        "check_method": "code",
+        "params": {}
+      }
+    ],
+    "personal_constraints": [
+      {
+        "id": "pc_001",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "explore authentic local restaurants",
+        "description": "At least 60% of meals at local cuisine restaurants",
+        "scope": "activity_type=meal",
+        "condition": {
+          "field": "local_cuisine",
+          "operator": "==",
+          "value": 1
+        },
+        "aggregation": {
+          "ratio": 0.6
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_002",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "different cuisines",
+        "description": "At least 3 distinct cuisines across meals",
+        "scope": "category=restaurant",
+        "condition": {},
+        "aggregation": {
+          "count_distinct": 3,
+          "field": "cuisine"
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_003",
+        "score_tier": "P",
+        "hop": 2,
+        "check_method": "code",
+        "source_in_profile": "art museum for inspiration",
+        "description": "At least 1 art museum visit",
+        "scope": "category=museum",
+        "condition": {
+          "has_tag": "art"
+        },
+        "aggregation": {
+          "at_least": 1
+        },
+        "consequence": "p_score_full"
+      },
+      {
+        "id": "pc_004",
+        "score_tier": "P",
+        "hop": 1,
+        "check_method": "code",
+        "source_in_profile": "waterfront views",
+        "description": "At least 2 waterfront venues",
+        "scope": "activity_type=visit",
+        "condition": {
+          "has_tag": "waterfront"
+        },
+        "aggregation": {
+          "at_least": 2
+        },
+        "consequence": "p_score_full"
+      }
+    ],
+    "b_score_constraints": [],
+    "required_venue_ids": []
+  },
+  "_validation_warnings": [],
+  "_turns_used": 19
+}
