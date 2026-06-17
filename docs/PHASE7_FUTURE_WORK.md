@@ -386,6 +386,135 @@ bind to.
 
 Likely (a) is the right answer for the next regen.
 
+## P7-I — OSM-grounded noise calibration (visibility gradient, omission, ghost listings)
+
+**Origin:** 2026-06-16 literature review (the "fragile information environment"
+review that P7-C said was a prerequisite). Anchor paper: Klinkhardt et al. 2023,
+*Quality Assessment of OpenStreetMap's Points of Interest with Large-Scale Real
+Data* (TRR) — POI data quality benchmarked against 49 German field surveys.
+Supporting: Haklay 2010 (OSM vs Ordnance Survey), Rahm & Do 2000 (dirty-data
+taxonomy). PDFs in `Books and Papers/Papers/Internet-Noise-Benchmark/`.
+
+**Key external finding:** crowd-sourced place-data quality is *conditioned on
+venue visibility/popularity* — highly visible storefronts were ~73% complete,
+hidden venues ~22%. Our `traffic_tier` gating of wrong-info already re-derives
+this independently, which is good validation. Three refinements follow.
+
+### (1) Replace the binary tier gate with a calibrated gradient
+Today wrong-info is forbidden on high-traffic venues (zero error) and applied
+flat to ~40% of mid/low (`generate_city_venues.py:58,427`;
+`agent_tools._check_no_wrong_info_on_high_traffic`). Klinkhardt shows even
+highly visible POIs are ~27% inaccurate — *perfectly clean iconic venues is an
+unrealistic assumption.* Make P(wrong-info) monotonic in tier:
+high ≈ 10–15% (small but **nonzero**), mid ≈ 40%, low ≈ 60–75%. Smallest diff,
+immediately more defensible, and citable.
+
+### (2) Omission / completeness as a first-class noise type *(the real gap)*
+Every venue currently exists in the DB; noise only *corrupts attributes*. The
+single largest OSM finding is **missingness** — a real venue entirely absent
+from a source, conditioned on visibility. Model a venue that is real (resolvable
+via `fetch_url`/official site) but **does not appear in `search_yelp`**, or
+appears only in a forum thread. P(absent from a surface) rises as `traffic_tier`
+falls. This directly exercises the README's "multi-source synthesis" thesis,
+which is currently *asserted but not tested*: no task today requires discovering
+a venue that no single tool lists. New field at venue-gen (e.g. `listed_in_yelp`)
++ filtering in `mock_tools.search_yelp`.
+
+### (3) Ghost / commission errors (closed-but-still-listed)
+Klinkhardt: 9 of 49 areas listed *more* venues than exist — closed businesses
+still shown as active (closure lag, COVID-amplified). We model date-*conditional*
+closures (`override_type=closed`), but a **permanently-closed venue still shown
+as a normal active Yelp listing**, with the correction buried three replies deep
+in a forum, is a stronger, very realistic trap. Add as a `temporal_decay`
+commission variant or a venue-level `ghost_listing` flag. Pairs with type5
+(hard feasibility) and type6 (closed-venue tension).
+
+**Does NOT transfer:** positional-coordinate jitter and contributor-density
+indicators — geospatial-specific, irrelevant to a planning benchmark.
+
+---
+
+## P7-J — Tool-level difficulty levers
+
+**Origin:** same 2026-06-16 review. Theme: difficulty currently lives in the
+*data* (wrong_info rows); the *tools* themselves are clean, reliable oracles.
+Real internet surfaces are not. Grounding: OSM intrinsic-quality indicators
+(Senaratne et al. 2017 review; Barron/Neis/Zipf 2014) — quality can be *inferred
+from metadata* like recency and edit count ("many eyes"/Linus's Law, Haklay 2010).
+
+- **Expose reliability metadata the agent must learn to weigh.** Have tools
+  return `last_updated`, `review_count`, and a corroboration/`mention_count`
+  signal. Concentrate wrong-info on low-metadata results. A capable agent should
+  learn to distrust stale, low-engagement listings — meta-reasoning we don't
+  currently reward. (Engagement exists internally per `agent_tools.py:805` but
+  isn't surfaced as an agent-usable signal.)
+- **Make `fetch_url` unreliable, not an oracle.** Sometimes 404 / "site
+  unavailable", sometimes return a stale *cached* version that is itself wrong.
+  Removes the "official site = ground truth" shortcut and forces triangulation.
+- **Partial / paginated / truncated results.** Tools return top-N with more
+  behind pagination, or silently cap. Forces the agent to decide *when it has
+  searched enough* — the completeness/"when to stop" skill, and a natural pair
+  with P7-I(2).
+- **Intra-source contradiction.** A single Yelp listing whose `hours` field
+  disagrees with its own review snippets (Rahm & Do *single-source* problem,
+  distinct from our current cross-source contradictions). Tests reading past the
+  structured field to the unstructured text.
+
+---
+
+## P7-K — Structure-level difficulty levers
+
+**Origin:** same review. These change *what skill the benchmark tests*, not just
+how hard the existing skill is. Highest ceiling, highest build cost.
+
+- **Entity resolution across tools (Ditto / Rahm & Do multi-source).** Today a
+  venue has one canonical identity across surfaces. On the real internet the same
+  venue appears under name variants ("The Ivy" / "Ivy West St" / "The Ivy
+  Restaurant"), and duplicate listings exist. Make the agent *match* that a
+  blog's "Joe's on 5th" is Yelp's "Joe's Cafe (5th Ave)". Add near-duplicate
+  venues + name variants across tools, plus **adversarial split traps**: two
+  genuinely different venues with confusingly similar names it must *not*
+  conflate. This is a distinct, very "internet-level" skill (entity matching) and
+  currently absent. Refs: Li et al. 2020 (Ditto, entity matching); the classic
+  Fodors–Zagat restaurant-matching benchmark.
+- **Latent source reliability + copying traps (truth discovery).** Source
+  trust is currently a fixed-ish hierarchy (official > yelp > forum). Li et al.
+  2016 (*A Survey on Truth Discovery*): real reliability is *inferred* from
+  cross-source agreement. Two extensions: (a) **field-conditioned reliability** —
+  a food blogger is trustworthy on food, useless on hours; an official site
+  reliable on hours, silent on vibe. (b) **Correlated/copying sources** — two
+  sources agree only because one copied the other (our existing
+  `propagation_error` category is exactly this), so naive majority voting fails;
+  the agent must detect the dependence. For some fields, remove the authoritative
+  source entirely so truth is *only* recoverable by corroboration across ≥3
+  independent sources.
+- **A detectability/difficulty dial (BART).** Arocena et al. 2015 (*Messing Up
+  with BART*) — the contribution is *controlling how detectable an injected error
+  is*. Parametrize wrong-info detectability: is there a corroborating second
+  source? how buried is the correction (top comment vs 3 replies deep)? is the
+  truth-carrier high- or low-engagement? Then generate the *same* task at
+  easy/medium/hard detectability and **report scores as a function of the dial** —
+  turns a single difficulty point into a difficulty *curve* and makes our hardness
+  claims quantitative. Directly resolves the open scoring question in **P7-C**.
+- **Non-i.i.d. error clustering (Haklay).** OSM error clusters spatially. Analog:
+  let noise rate depend on district churn and category (new restaurants churn
+  fast → stale hours; museums are stable), not `traffic_tier` alone. Makes the
+  noise *learnable* the way real data is, and rewards an agent that picks up the
+  pattern.
+
+**Relationship to existing entries:** P7-I/J/K supply the literature P7-C was
+waiting on, and the detectability dial (P7-K) is the missing piece for P7-C's
+scoring redesign. P7-E (semantic source-doc quality) is complementary —
+generation-side quality, vs the agent-difficulty axes here.
+
+### References (PDFs in `Books and Papers/Papers/Internet-Noise-Benchmark/`)
+- Klinkhardt et al. 2023 — OSM POI quality vs. field surveys (TRR).
+- Haklay 2010 — How good is VGI? OSM vs Ordnance Survey.
+- Senaratne et al. 2017 — review of VGI quality assessment methods.
+- Rahm & Do 2000 — Data Cleaning: Problems and Current Approaches (taxonomy).
+- Arocena et al. 2015 — Messing Up with BART (controllable error generation).
+- Li et al. 2020 — Ditto (deep entity matching); Li et al. 2016 — Truth Discovery survey.
+
 ---
 
 *This document is intentionally small and adds entries only when a real
