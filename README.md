@@ -100,7 +100,7 @@ when they're set. Either:
 - **Persistent (recommended):** Copy [`.env.example`](.env.example) to `.env`
   or paste the same `export …` lines into `~/.zshrc`. See `.env.example` for
   the full list of supported providers (Anthropic, OpenAI, Gemini, DeepSeek,
-  + optional Doubao / Moonshot / Zhipu).
+  + optional Doubao / Moonshot).
 - **Per-session:** `export ANTHROPIC_API_KEY=...` in your current shell.
 
 `.env` is gitignored — keys never leave your machine.
