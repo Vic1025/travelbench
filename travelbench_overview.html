@@ -1,0 +1,1725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TravelBench — Overview</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0d12;
+    --surface: #13131a;
+    --surface2: #1a1a24;
+    --border: #2a2a3a;
+    --accent: #6c8eff;
+    --accent2: #ff6c8e;
+    --accent3: #6cffc8;
+    --text: #e8e8f0;
+    --muted: #7878a0;
+    --warn: #ffa84a;
+    --good: #6cffc8;
+    --bad: #ff6c8e;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+  }
+
+  /* ── SLIDE SYSTEM ── */
+  .deck { width: 100%; height: 100vh; position: relative; }
+
+  .slide {
+    position: absolute; inset: 0;
+    display: none;
+    flex-direction: column;
+    padding: 56px 72px 48px;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+  }
+  .slide.active { display: flex; }
+  .slide.visible { opacity: 1; }
+
+  /* ── NAV ── */
+  .nav {
+    position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%);
+    display: flex; align-items: center; gap: 20px;
+    background: rgba(19,19,26,0.9);
+    border: 1px solid var(--border);
+    padding: 10px 20px; border-radius: 50px;
+    backdrop-filter: blur(8px);
+    z-index: 100;
+  }
+  .nav button {
+    background: none; border: none; color: var(--muted);
+    font-family: 'DM Mono', monospace; font-size: 13px;
+    cursor: pointer; padding: 4px 12px; border-radius: 20px;
+    transition: all 0.2s;
+  }
+  .nav button:hover { color: var(--text); background: var(--surface2); }
+  .nav button:disabled { opacity: 0.3; cursor: not-allowed; }
+  .slide-counter {
+    font-family: 'DM Mono', monospace; font-size: 12px;
+    color: var(--muted); min-width: 52px; text-align: center;
+  }
+  .nav-dots {
+    display: flex; gap: 6px; align-items: center;
+  }
+  .nav-dots span {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--border); cursor: pointer;
+    transition: all 0.2s;
+  }
+  .nav-dots span.active { background: var(--accent); width: 18px; border-radius: 3px; }
+
+  /* ── SHARED ELEMENTS ── */
+  .slide-label {
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    color: var(--accent); letter-spacing: 0.12em;
+    text-transform: uppercase; margin-bottom: 20px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .slide-label::before {
+    content: ''; display: block; width: 20px; height: 1px;
+    background: var(--accent);
+  }
+
+  h1.hero {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(44px, 6vw, 76px);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 20px;
+  }
+  h2.title {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(28px, 3.5vw, 46px);
+    line-height: 1.1; letter-spacing: -0.01em;
+    margin-bottom: 12px;
+  }
+
+  .tag {
+    display: inline-block;
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    padding: 3px 10px; border-radius: 4px;
+    border: 1px solid var(--border);
+    color: var(--muted);
+  }
+  .tag.accent { border-color: var(--accent); color: var(--accent); background: rgba(108,142,255,0.08); }
+  .tag.warn { border-color: var(--warn); color: var(--warn); background: rgba(255,168,74,0.08); }
+  .tag.bad { border-color: var(--bad); color: var(--bad); background: rgba(255,108,142,0.08); }
+  .tag.good { border-color: var(--good); color: var(--good); background: rgba(108,255,200,0.08); }
+
+  /* ── DECORATIVE ── */
+  .grid-lines {
+    position: absolute; inset: 0; pointer-events: none;
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 60px 60px;
+    opacity: 0.15;
+  }
+
+  /* ── SLIDE 1: TITLE ── */
+  #s1 {
+    justify-content: center;
+    background: radial-gradient(ellipse 80% 60% at 60% 40%, rgba(108,142,255,0.08) 0%, transparent 70%);
+  }
+  #s1 .eyebrow {
+    font-family: 'DM Mono', monospace; font-size: 12px;
+    color: var(--muted); letter-spacing: 0.1em;
+    text-transform: uppercase; margin-bottom: 28px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  #s1 .eyebrow span { display: block; width: 40px; height: 1px; background: var(--border); }
+  #s1 .subtitle {
+    font-size: 18px; color: var(--muted); max-width: 540px;
+    line-height: 1.6; margin-bottom: 48px;
+  }
+  .meta-row {
+    display: flex; gap: 32px; align-items: center;
+    font-family: 'DM Mono', monospace; font-size: 12px; color: var(--muted);
+  }
+  .meta-row .divider { width: 1px; height: 20px; background: var(--border); }
+
+  .corner-deco {
+    position: absolute; top: 48px; right: 72px;
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    color: var(--border); text-align: right; line-height: 2;
+  }
+
+  /* ── SLIDE 2: MOTIVATION ── */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; flex: 1; align-items: start; margin-top: 8px; }
+  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 32px; flex: 1; align-items: start; margin-top: 8px; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px;
+  }
+  .card h3 {
+    font-size: 14px; font-weight: 700; letter-spacing: 0.04em;
+    text-transform: uppercase; color: var(--accent);
+    margin-bottom: 16px;
+  }
+  .card p { font-size: 15px; line-height: 1.7; color: var(--muted); }
+  .card .big-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 52px; color: var(--text);
+    line-height: 1; margin-bottom: 8px;
+  }
+
+  /* ── PIPELINE DIAGRAM ── */
+  .pipeline {
+    display: flex; align-items: center; gap: 0;
+    margin-top: 32px;
+  }
+  .pipe-step {
+    flex: 1;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 16px;
+    text-align: center;
+  }
+  .pipe-step .icon { font-size: 24px; margin-bottom: 8px; }
+  .pipe-step .name { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+  .pipe-step .sub { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); line-height: 1.5; }
+  .pipe-arrow {
+    font-size: 18px; color: var(--border);
+    padding: 0 8px; flex-shrink: 0;
+  }
+
+  /* ── SCORE METER ── */
+  .score-bar-wrap { margin-bottom: 12px; }
+  .score-bar-label {
+    display: flex; justify-content: space-between;
+    font-size: 13px; margin-bottom: 6px;
+  }
+  .score-bar-label .val { font-family: 'DM Mono', monospace; font-weight: 500; }
+  .score-bar-bg {
+    height: 8px; background: var(--surface2);
+    border-radius: 4px; overflow: hidden;
+  }
+  .score-bar-fill {
+    height: 100%; border-radius: 4px;
+    transition: width 0.8s ease;
+  }
+
+  /* ── RESULTS TABLE ── */
+  .results-table {
+    width: 100%; border-collapse: collapse;
+    font-size: 14px;
+  }
+  .results-table th {
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    color: var(--muted); text-transform: uppercase;
+    letter-spacing: 0.08em; padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+  }
+  .results-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(42,42,58,0.5);
+  }
+  .results-table tr:last-child td { border-bottom: none; }
+  .results-table .model-name { font-weight: 700; }
+  .results-table .star { color: #ffc043; }
+  .mono { font-family: 'DM Mono', monospace; }
+  .score-chip {
+    display: inline-block; padding: 2px 8px;
+    border-radius: 4px; font-family: 'DM Mono', monospace;
+    font-size: 13px; font-weight: 500;
+  }
+  .zeros-chip {
+    display: inline-block; padding: 2px 8px;
+    border-radius: 4px; font-family: 'DM Mono', monospace;
+    font-size: 12px;
+  }
+  .zeros-ok { background: rgba(108,255,200,0.1); color: var(--good); }
+  .zeros-warn { background: rgba(255,168,74,0.1); color: var(--warn); }
+  .zeros-bad { background: rgba(255,108,142,0.1); color: var(--bad); }
+
+  /* ── ANNOTATION ── */
+  .annotation {
+    display: flex; gap: 12px; align-items: flex-start;
+    background: rgba(255,168,74,0.06);
+    border: 1px solid rgba(255,168,74,0.2);
+    border-radius: 10px; padding: 16px 20px;
+    margin-top: 20px;
+  }
+  .annotation .icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+  .annotation p { font-size: 14px; color: #c8b08a; line-height: 1.6; }
+
+  /* ── PROBLEM SLIDE ── */
+  .problem-visual {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 24px; flex: 1; margin-top: 8px;
+  }
+  .range-row {
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .range-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px; padding: 14px 18px;
+  }
+  .range-item .label { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); margin-bottom: 8px; }
+  .range-item .range-bar {
+    height: 28px; background: var(--surface2);
+    border-radius: 4px; position: relative; overflow: hidden;
+  }
+  .range-item .range-fill {
+    position: absolute; top: 0; bottom: 0;
+    border-radius: 4px; display: flex; align-items: center;
+    padding: 0 8px;
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    font-weight: 600;
+  }
+  .range-item .verdict {
+    font-size: 12px; margin-top: 8px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* ── CODE BLOCK ── */
+  .code-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 24px;
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    line-height: 1.8;
+    color: var(--muted);
+  }
+  .code-block .hl { color: var(--accent); }
+  .code-block .hl2 { color: var(--accent3); }
+  .code-block .hl3 { color: var(--warn); }
+  .code-block .comment { color: rgba(120,120,160,0.5); }
+
+  /* ── HOP DIAGRAM ── */
+  .hop-chain {
+    display: flex; align-items: center; gap: 0;
+    margin: 20px 0;
+  }
+  .hop-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 18px;
+    flex: 1;
+  }
+  .hop-box .hop-label { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); margin-bottom: 4px; }
+  .hop-box .hop-text { font-size: 14px; line-height: 1.4; }
+  .hop-box .hop-text em { font-style: normal; color: var(--accent); }
+  .hop-arrow {
+    display: flex; flex-direction: column; align-items: center;
+    padding: 0 10px; color: var(--border); font-size: 18px;
+    flex-shrink: 0;
+  }
+  .hop-arrow .hop-label { font-family: 'DM Mono', monospace; font-size: 10px; white-space: nowrap; }
+  .hop-box.blocked { border-color: rgba(255,108,142,0.3); background: rgba(255,108,142,0.04); }
+  .hop-box.blocked .hop-text { color: var(--muted); }
+
+  .insight-box {
+    background: var(--surface);
+    border-left: 3px solid var(--accent2);
+    border-radius: 0 10px 10px 0;
+    padding: 16px 20px;
+    margin: 16px 0;
+  }
+  .insight-box p { font-size: 15px; line-height: 1.6; color: var(--text); }
+  .insight-box .label { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--accent2); margin-bottom: 8px; }
+
+  /* ── DIRECTIONS ── */
+  .direction-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .direction-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 2px;
+  }
+  .direction-card.dir-a::before { background: var(--accent); }
+  .direction-card.dir-b::before { background: var(--accent3); }
+  .direction-card.dir-c::before { background: var(--warn); }
+  .direction-card h4 { font-size: 15px; font-weight: 700; margin-bottom: 12px; }
+  .direction-card p { font-size: 14px; line-height: 1.7; color: var(--muted); }
+  .direction-card .trade { font-family: 'DM Mono', monospace; font-size: 11px; margin-top: 12px; padding: 6px 10px; border-radius: 4px; background: var(--surface2); }
+  .direction-card.dir-a .trade { color: var(--accent); }
+  .direction-card.dir-b .trade { color: var(--accent3); }
+  .direction-card.dir-c .trade { color: var(--warn); }
+
+  /* ── WHAT AGENT DOES ── */
+  .agent-log {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 24px;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    line-height: 1.9;
+  }
+  .agent-log .turn { display: flex; gap: 12px; }
+  .agent-log .turn-n { color: var(--border); width: 50px; flex-shrink: 0; }
+  .agent-log .tool-name { color: var(--accent); }
+  .agent-log .tool-arg { color: var(--muted); }
+  .agent-log .same { color: rgba(255,108,142,0.7); }
+  .agent-log .verdict { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); color: var(--warn); }
+
+  /* gen pipeline boxes */
+  .gen-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-top: 16px;
+  }
+  .gen-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 14px;
+  }
+  .gen-box .step-num {
+    font-family: 'DM Mono', monospace; font-size: 10px;
+    color: var(--muted); margin-bottom: 8px;
+  }
+  .gen-box .step-name {
+    font-size: 13px; font-weight: 700; margin-bottom: 6px;
+  }
+  .gen-box .step-detail {
+    font-size: 12px; color: var(--muted); line-height: 1.5;
+  }
+
+  /* score system */
+  .score-tier-row {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 16px; margin-top: 16px; flex: 1;
+  }
+  .score-tier {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px 20px;
+    position: relative; overflow: hidden;
+  }
+  .score-tier .tier-letter {
+    font-family: 'DM Serif Display', serif;
+    font-size: 52px; line-height: 1;
+    margin-bottom: 12px;
+    display: block;
+  }
+  .score-tier .tier-name {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.1em; margin-bottom: 12px;
+  }
+  .score-tier .tier-desc {
+    font-size: 13px; color: var(--muted); line-height: 1.6;
+  }
+  .score-tier .tier-gate {
+    font-family: 'DM Mono', monospace; font-size: 10px;
+    margin-top: 14px; padding: 5px 8px;
+    border-radius: 4px; background: var(--surface2);
+    display: inline-block;
+  }
+  .score-tier.c-tier { border-top: 2px solid #6c8eff; }
+  .score-tier.c-tier .tier-letter { color: #6c8eff; }
+  .score-tier.c-tier .tier-gate { color: #6c8eff; }
+  .score-tier.f-tier { border-top: 2px solid var(--accent3); }
+  .score-tier.f-tier .tier-letter { color: var(--accent3); }
+  .score-tier.f-tier .tier-gate { color: var(--accent3); }
+  .score-tier.p-tier { border-top: 2px solid var(--warn); }
+  .score-tier.p-tier .tier-letter { color: var(--warn); }
+  .score-tier.p-tier .tier-gate { color: var(--warn); }
+  .score-tier.b-tier { border-top: 2px solid #c87eff; }
+  .score-tier.b-tier .tier-letter { color: #c87eff; }
+  .score-tier.b-tier .tier-gate { color: #c87eff; }
+
+  /* pool stats */
+  .stat-chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 6px; padding: 6px 12px;
+    font-family: 'DM Mono', monospace; font-size: 12px;
+    color: var(--muted); margin: 4px;
+  }
+  .stat-chip .stat-val { color: var(--text); font-weight: 600; }
+
+  /* underline accent */
+  .u-accent { text-decoration: underline; text-decoration-color: var(--accent); text-underline-offset: 4px; }
+  .u-bad { text-decoration: underline; text-decoration-color: var(--bad); text-underline-offset: 4px; }
+
+  .text-muted { color: var(--muted); }
+  .text-accent { color: var(--accent); }
+  .text-good { color: var(--good); }
+  .text-bad { color: var(--bad); }
+  .text-warn { color: var(--warn); }
+
+  p.body { font-size: 16px; line-height: 1.7; color: var(--muted); max-width: 700px; }
+  p.body.wide { max-width: 900px; }
+
+  /* closing */
+  .closing-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 20px; flex: 1; margin-top: 8px;
+  }
+  .closing-row {
+    display: flex; flex-direction: column; gap: 16px;
+  }
+  .cl-item {
+    display: flex; gap: 16px; align-items: flex-start;
+    padding: 16px 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+  }
+  .cl-item .cl-icon { font-size: 22px; flex-shrink: 0; }
+  .cl-item .cl-title { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+  .cl-item .cl-body { font-size: 13px; color: var(--muted); line-height: 1.5; }
+</style>
+</head>
+<body>
+<div class="deck">
+
+<!-- ═══════════════════════════════════ SLIDE 1 — TITLE ═══════════════════════════════════ -->
+<div class="slide" id="s1">
+  <div class="grid-lines"></div>
+  <div class="corner-deco">
+    TravelBench<br>
+    Research Presentation<br>
+    May 2026
+  </div>
+  <div class="eyebrow">
+    <span></span> Benchmark · LLM Evaluation · Travel Planning
+  </div>
+  <h1 class="hero">Travel<span style="color:var(--accent)">Bench</span></h1>
+  <p class="subtitle">
+    A pipeline for automatically generating and evaluating travel planning tasks — measuring whether LLM agents reason, or just comply.
+  </p>
+  <div class="meta-row">
+    <span>London · 50-venue pool · 23 tasks · 6 models</span>
+    <div class="divider"></div>
+    <span>Phase 5 — Benchmark Analysis</span>
+    <div class="divider"></div>
+    <span style="color:var(--accent)">Active</span>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════ SLIDE 2 — WHAT IS TRAVELBENCH ═══════════════════════════════════ -->
+<div class="slide" id="s2">
+  <div class="slide-label">01 — Overview</div>
+  <h2 class="title">What is TravelBench?</h2>
+  <p class="body" style="margin-bottom:20px;">
+    A benchmark that gives LLM agents a natural-language trip request, four mock research tools, and asks them to produce a structured day-by-day itinerary. Scoring measures: did they find the right venues, build a feasible schedule, and satisfy the traveller's personal constraints?
+  </p>
+
+  <div class="pipeline" style="margin-bottom:20px;">
+    <div class="pipe-step">
+      <div class="icon">🗂️</div>
+      <div class="name">City Dataset</div>
+      <div class="sub">71 venues · source docs<br>events · travel matrix</div>
+    </div>
+    <div class="pipe-arrow">→</div>
+    <div class="pipe-step">
+      <div class="icon">📋</div>
+      <div class="name">Benchmark Tasks</div>
+      <div class="sub">6 structural types<br>natural-language queries</div>
+    </div>
+    <div class="pipe-arrow">→</div>
+    <div class="pipe-step" style="border-color:var(--accent)">
+      <div class="icon">🤖</div>
+      <div class="name">LLM Agent</div>
+      <div class="sub">4 tools: search, blogs<br>official site, travel time</div>
+    </div>
+    <div class="pipe-arrow">→</div>
+    <div class="pipe-step">
+      <div class="icon">📊</div>
+      <div class="name">Evaluator</div>
+      <div class="sub">C / F / P scores<br>cascading gate structure</div>
+    </div>
+  </div>
+
+  <!-- ── Design Highlights ── -->
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+
+    <div style="display:flex; gap:12px; align-items:flex-start; background:var(--surface); border:1px solid var(--border); border-radius:9px; padding:14px 16px;">
+      <div style="font-size:18px; flex-shrink:0; margin-top:1px;">🔒</div>
+      <div>
+        <div style="font-size:13px; font-weight:700; margin-bottom:4px; color:var(--text);">Hidden ground truth</div>
+        <div style="font-size:12px; color:var(--muted); line-height:1.55;">The database is never exposed. Agents navigate four source types — directory listings, community guides, forum threads, and official pages — each with different reliability. Getting the answer right requires active cross-referencing, not reading one source.</div>
+      </div>
+    </div>
+
+    <div style="display:flex; gap:12px; align-items:flex-start; background:var(--surface); border:1px solid var(--border); border-radius:9px; padding:14px 16px;">
+      <div style="font-size:18px; flex-shrink:0; margin-top:1px;">🔍</div>
+      <div>
+        <div style="font-size:13px; font-weight:700; margin-bottom:4px; color:var(--text);">Signal filtering under volume</div>
+        <div style="font-size:12px; color:var(--muted); line-height:1.55;">The source corpus spans hundreds of documents across 71 venues. A model that reads everything indiscriminately exhausts its tool budget. Good models develop a research strategy — knowing when to verify, when to trust, and when to move on.</div>
+      </div>
+    </div>
+
+    <div style="display:flex; gap:12px; align-items:flex-start; background:var(--surface); border:1px solid var(--border); border-radius:9px; padding:14px 16px;">
+      <div style="font-size:18px; flex-shrink:0; margin-top:1px;">🧭</div>
+      <div>
+        <div style="font-size:13px; font-weight:700; margin-bottom:4px; color:var(--text);">Realistic requirements, no mechanical solution</div>
+        <div style="font-size:12px; color:var(--muted); line-height:1.55;">Tasks are built around real travel personas with layered, sometimes competing constraints. There's no keyword match that produces the answer — the model must reason about what combination of venues, timing, and trade-offs actually works for this specific person.</div>
+      </div>
+    </div>
+
+    <div style="display:flex; gap:12px; align-items:flex-start; background:var(--surface); border:1px solid var(--border); border-radius:9px; padding:14px 16px;">
+      <div style="font-size:18px; flex-shrink:0; margin-top:1px;">🎯</div>
+      <div>
+        <div style="font-size:13px; font-weight:700; margin-bottom:4px; color:var(--text);">Solution space, not a single answer</div>
+        <div style="font-size:12px; color:var(--muted); line-height:1.55;">Every task is verified to have at least one valid plan — but typically many. Evaluation checks whether a submitted plan falls within the valid solution space. Different itineraries that satisfy the same constraints all receive credit.</div>
+      </div>
+    </div>
+
+    <div style="display:flex; gap:12px; align-items:flex-start; background:var(--surface); border:1px solid rgba(108,142,255,0.3); border-radius:9px; padding:14px 16px; grid-column:1/-1;">
+      <div style="font-size:18px; flex-shrink:0; margin-top:1px;">📐</div>
+      <div>
+        <div style="font-size:13px; font-weight:700; margin-bottom:4px; color:var(--text);">Explainable three-tier evaluation</div>
+        <div style="font-size:12px; color:var(--muted); line-height:1.55;">Correct, partial, and wrong answers are distinguished by a cascading scoring system — <span style="color:var(--accent)">process integrity (C)</span>, <span style="color:var(--accent3)">schedule feasibility (F)</span>, and <span style="color:var(--warn)">preference satisfaction (P)</span> — each evaluated programmatically. Every deduction is traceable to a specific constraint, venue, or tool call. Not a black-box score.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════ SLIDE 3 — CITY GENERATION ═══════════════════════════════════ -->
+<div class="slide" id="s3">
+  <div class="slide-label">02 — Dataset Generation</div>
+  <h2 class="title">City Dataset Pipeline</h2>
+  <p class="body" style="margin-bottom:4px;">Fully automated end-to-end: Anthropic for planning, DeepSeek agents per venue, open data (Overpass, Nominatim) for grounding.</p>
+  <div class="gen-grid">
+    <div class="gen-box">
+      <div class="step-num">Step 1–2</div>
+      <div class="step-name">Research + Windows</div>
+      <div class="step-detail">Nominatim coords · Overpass districts · 4 seasonal windows (Easter, Late Spring, Carnival, Christmas)</div>
+    </div>
+    <div class="gen-box">
+      <div class="step-num">Step 3</div>
+      <div class="step-name">Plan Venues</div>
+      <div class="step-detail">One Anthropic call → 50 venue briefs with tier targets: 13 high / 21 mid / 16 low traffic</div>
+    </div>
+    <div class="gen-box" style="border-color:var(--accent)">
+      <div class="step-num">Step 5 — core</div>
+      <div class="step-name">Per-Venue Agent</div>
+      <div class="step-detail">DeepSeek agent per venue. 11 tools: CREATE_PAGE, FILL, COMMIT, ADD_WRONG_INFO, VERIFY. Parallel workers.</div>
+    </div>
+    <div class="gen-box">
+      <div class="step-num">Steps 6–12</div>
+      <div class="step-name">Validate &amp; Enrich</div>
+      <div class="step-detail">Validate pool · Travel matrix · Ticket availability · Events table · Window flags</div>
+    </div>
+  </div>
+  <div style="margin-top:20px;">
+    <p style="font-size:13px; color:var(--muted); margin-bottom:12px;">London test_50 pool breakdown:</p>
+    <div style="display:flex; flex-wrap:wrap; gap:8px;">
+      <span class="stat-chip"><span class="stat-val">18</span> museums &amp; attractions</span>
+      <span class="stat-chip"><span class="stat-val">18</span> restaurants</span>
+      <span class="stat-chip"><span class="stat-val">6</span> parks</span>
+      <span class="stat-chip"><span class="stat-val">3</span> bars / cafes</span>
+      <span class="stat-chip"><span class="stat-val">15</span> venues with wrong-info</span>
+      <span class="stat-chip"><span class="stat-val">3–5</span> source docs per venue</span>
+      <span class="stat-chip"><span class="stat-val">34</span> wheelchair accessible</span>
+      <span class="stat-chip"><span class="stat-val">39</span> photography-allowed tag</span>
+    </div>
+  </div>
+  <div class="annotation" style="margin-top:16px;">
+    <div class="icon">🧬</div>
+    <p>Each venue gets: a Yelp-style listing, 3–5 source documents (blog posts, forum threads), and an official site page. <strong>Wrong-info venues</strong> contain a factual error (e.g. stale hours, wrong price) in one source, with the correction appearing in another — designed as research traps for solving agents.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════ SLIDE 4 — TASK GENERATION ═══════════════════════════════════ -->
+<div class="slide" id="s4">
+  <div class="slide-label">03 — Task Generation</div>
+
+  <div style="margin-bottom:14px;">
+    <h2 class="title" style="margin-bottom:4px;">Task Structure &amp; Constraint Architecture</h2>
+    <p style="font-size:17px; font-weight:600; color:var(--text); margin-top:2px;">Six Structural Task Types</p>
+  </div>
+
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; flex:1;">
+
+    <div class="card" style="padding:16px 18px; display:flex; flex-direction:column; gap:6px;">
+      <div style="display:flex; align-items:baseline; gap:8px; margin-bottom:2px;">
+        <span style="font-family:'DM Mono',monospace; font-size:10px; color:var(--accent); font-weight:700;">TYPE 1</span>
+        <span style="font-size:13px; font-weight:700;">Cascading Requirements</span>
+      </div>
+      <p style="font-size:12px; color:var(--muted); line-height:1.55;">A few stated signals imply multiple interacting constraints via hop-2 reasoning. The agent must derive all downstream requirements from what's said — none are named explicitly.</p>
+      <div style="font-size:11px; font-family:'DM Mono',monospace; color:rgba(120,120,160,0.7); padding:7px 10px; background:var(--surface2); border-radius:5px; line-height:1.6; margin-top:auto;">
+        "Just me and my 8-year-old — she has ADHD, loses focus fast and gets super restless. She hates anything slow like museums. Big crowds make me really anxious, I can't keep track of her when it's packed."
+        <span style="color:var(--accent); display:block; margin-top:3px;">→ traffic_tier:low · noise_max · max_visit_duration · no museums</span>
+      </div>
+    </div>
+
+    <div class="card" style="padding:16px 18px; display:flex; flex-direction:column; gap:6px;">
+      <div style="display:flex; align-items:baseline; gap:8px; margin-bottom:2px;">
+        <span style="font-family:'DM Mono',monospace; font-size:10px; color:var(--accent3); font-weight:700;">TYPE 2</span>
+        <span style="font-size:13px; font-weight:700;">Subset Selection Under Ceiling</span>
+      </div>
+      <p style="font-size:12px; color:var(--muted); line-height:1.55;">More valid options exist than can fit. A hard resource ceiling (time, energy, days) forces deliberate selection and sequencing — not just satisfying constraints but choosing which to include.</p>
+      <div style="font-size:11px; font-family:'DM Mono',monospace; color:rgba(120,120,160,0.7); padding:7px 10px; background:var(--surface2); border-radius:5px; line-height:1.6; margin-top:auto;">
+        "Only one night in Shanghai — I really want to experience the bar scene properly, not just end up in one place all night."
+        <span style="color:var(--accent3); display:block; margin-top:3px;">→ time_ceiling · subset selection · route efficiency</span>
+      </div>
+    </div>
+
+    <div class="card" style="padding:16px 18px; display:flex; flex-direction:column; gap:6px;">
+      <div style="display:flex; align-items:baseline; gap:8px; margin-bottom:2px;">
+        <span style="font-family:'DM Mono',monospace; font-size:10px; color:var(--accent); font-weight:700;">TYPE 3</span>
+        <span style="font-size:13px; font-weight:700;">Competing Requirements</span>
+      </div>
+      <p style="font-size:12px; color:var(--muted); line-height:1.55;">Two preferences pull at disjoint parts of the venue pool. No plan fully satisfies both simultaneously — the agent must find a genuine tradeoff, not ignore one signal.</p>
+      <div style="font-size:11px; font-family:'DM Mono',monospace; color:rgba(120,120,160,0.7); padding:7px 10px; background:var(--surface2); border-radius:5px; line-height:1.6; margin-top:auto;">
+        "I want hidden gems — but my partner insists on all the iconic spots."
+        <span style="color:var(--accent); display:block; margin-top:3px;">→ traffic_tier balance · neither preference dominates</span>
+      </div>
+    </div>
+
+    <div class="card" style="padding:16px 18px; display:flex; flex-direction:column; gap:6px;">
+      <div style="display:flex; align-items:baseline; gap:8px; margin-bottom:2px;">
+        <span style="font-family:'DM Mono',monospace; font-size:10px; color:var(--warn); font-weight:700;">TYPE 4</span>
+        <span style="font-size:13px; font-weight:700;">Precision Allocation</span>
+      </div>
+      <p style="font-size:12px; color:var(--muted); line-height:1.55;">A tight budget requires intelligent distribution, not just compliance. Free-entry options must be found; spend must be concentrated where it creates the most value.</p>
+      <div style="font-size:11px; font-family:'DM Mono',monospace; color:rgba(120,120,160,0.7); padding:7px 10px; background:var(--surface2); border-radius:5px; line-height:1.6; margin-top:auto;">
+        "£40/day in London." (museum is free; one good meal; skip the paid attraction)
+        <span style="color:var(--warn); display:block; margin-top:3px;">→ sum aggregation · free-entry discovery · value tradeoff</span>
+      </div>
+    </div>
+
+    <div class="card" style="padding:16px 18px; display:flex; flex-direction:column; gap:6px;">
+      <div style="display:flex; align-items:baseline; gap:8px; margin-bottom:2px;">
+        <span style="font-family:'DM Mono',monospace; font-size:10px; color:var(--warn); font-weight:700;">TYPE 5</span>
+        <span style="font-size:13px; font-weight:700;">Hard Feasibility Reduction</span>
+      </div>
+      <p style="font-size:12px; color:var(--muted); line-height:1.55;">Stacking hard filters (group size, dietary, accessibility, occasion tier) eliminates most of the pool. The difficulty is discovering which venues even qualify — not choosing among many.</p>
+      <div style="font-size:11px; font-family:'DM Mono',monospace; color:rgba(120,120,160,0.7); padding:7px 10px; background:var(--surface2); border-radius:5px; line-height:1.6; margin-top:auto;">
+        "Group of 8 — halal, wheelchair accessible, upscale occasion."
+        <span style="color:var(--warn); display:block; margin-top:3px;">→ intersection may be 1–2 venues citywide</span>
+      </div>
+    </div>
+
+    <div class="card" style="padding:16px 18px; display:flex; flex-direction:column; gap:6px;">
+      <div style="display:flex; align-items:baseline; gap:8px; margin-bottom:2px;">
+        <span style="font-family:'DM Mono',monospace; font-size:10px; color:var(--warn); font-weight:700;">TYPE 6</span>
+        <span style="font-size:13px; font-weight:700;">Context-Window Tension</span>
+      </div>
+      <p style="font-size:12px; color:var(--muted); line-height:1.55;">A user requirement conflicts with the seasonal window's character. The agent must cross-reference persona signals against window-specific closures, events, or logistics — neither alone reveals the problem.</p>
+      <div style="font-size:11px; font-family:'DM Mono',monospace; color:rgba(120,120,160,0.7); padding:7px 10px; background:var(--surface2); border-radius:5px; line-height:1.6; margin-top:auto;">
+        "Business dinner in Rio — during Carnival."
+        <span style="color:var(--warn); display:block; margin-top:3px;">→ avoid closure zones · schedule before peak days · quiet restaurant</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════ SLIDE 5 — TASK GENERATION SANDBOX ═══════════════════════════════════ -->
+<div class="slide" id="s5">
+  <div class="slide-label">04 — Task Generation</div>
+  <div style="margin-bottom:12px;">
+    <h2 class="title" style="margin-bottom:4px;">Task Structure &amp; Constraint Architecture</h2>
+    <p style="font-size:17px; font-weight:600; color:var(--text); margin-top:2px;">Generation Sandbox</p>
+  </div>
+
+  <div style="display:grid; grid-template-columns:220px 1fr; gap:16px; flex:1; min-height:0;">
+
+    <!-- ── Left: tool legend ── -->
+    <div style="display:flex; flex-direction:column; gap:8px;">
+      <p style="font-family:'DM Mono',monospace; font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:4px;">Generation tools</p>
+      <div style="background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:12px 14px;">
+        <div style="font-family:'DM Mono',monospace; font-size:11px; color:var(--accent); font-weight:600; margin-bottom:4px;">HELP</div>
+        <div style="font-size:11px; color:var(--muted); line-height:1.5;">Query the pool handbook — available tags, regulations, validation rules</div>
+      </div>
+      <div style="background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:12px 14px;">
+        <div style="font-family:'DM Mono',monospace; font-size:11px; color:#c87eff; font-weight:600; margin-bottom:4px;">THINK</div>
+        <div style="font-size:11px; color:var(--muted); line-height:1.5;">Internal reasoning — persona design, constraint strategy, solvability logic</div>
+      </div>
+      <div style="background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:12px 14px;">
+        <div style="font-family:'DM Mono',monospace; font-size:11px; color:var(--accent3); font-weight:600; margin-bottom:4px;">query_pool</div>
+        <div style="font-size:11px; color:var(--muted); line-height:1.5;">Filter the venue pool by category, tag, regulation, tier — returns count + sample names</div>
+      </div>
+      <div style="background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:12px 14px;">
+        <div style="font-family:'DM Mono',monospace; font-size:11px; color:var(--warn); font-weight:600; margin-bottom:4px;">SUBMIT</div>
+        <div style="font-size:11px; color:var(--muted); line-height:1.5;">Publish task — validator checks solvability, upper bars, schema. Returns errors or accepts.</div>
+      </div>
+      <div style="margin-top:auto; padding:10px 12px; background:var(--surface2); border-radius:8px; font-size:10px; font-family:'DM Mono',monospace; color:var(--muted); line-height:1.6;">
+        Task: <span style="color:var(--text)">london_summer_<br>carnival_budget_<br>birthday</span><br>
+        Type: <span style="color:var(--warn)">type4_precision</span><br>
+        Window: <span style="color:var(--text)">Carnival 2026</span><br>
+        Turns: <span style="color:var(--text)">13</span>
+      </div>
+    </div>
+
+    <!-- ── Right: interactive player ── -->
+    <div style="display:flex; flex-direction:column; min-height:0;">
+
+      <!-- Progress bar -->
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
+        <div id="sb-progress-wrap" style="flex:1; height:4px; background:var(--surface2); border-radius:2px; overflow:hidden;">
+          <div id="sb-progress-fill" style="height:100%; background:var(--accent); border-radius:2px; transition:width 0.3s ease; width:0%"></div>
+        </div>
+        <span id="sb-step-label" style="font-family:'DM Mono',monospace; font-size:10px; color:var(--muted); white-space:nowrap;">Step 0 / 9</span>
+      </div>
+
+      <!-- Step title -->
+      <div id="sb-step-title" style="font-family:'DM Mono',monospace; font-size:12px; font-weight:700; color:var(--accent); margin-bottom:8px; min-height:18px;"></div>
+
+      <!-- Main display area -->
+      <div id="sb-main" style="flex:1; display:flex; flex-direction:column; gap:8px; min-height:0; overflow-y:auto;">
+
+        <!-- Think block -->
+        <div id="sb-think" style="display:none; background:rgba(200,126,255,0.07); border:1px solid rgba(200,126,255,0.25); border-radius:8px; padding:12px 14px;">
+          <div style="font-family:'DM Mono',monospace; font-size:10px; color:#c87eff; margin-bottom:6px; text-transform:uppercase; letter-spacing:0.1em;">↯ thinking</div>
+          <div id="sb-think-text" style="font-size:12px; color:var(--muted); line-height:1.65;"></div>
+        </div>
+
+        <!-- Actions list -->
+        <div id="sb-actions" style="display:flex; flex-direction:column; gap:6px;"></div>
+
+        <!-- Submit detail panel -->
+        <div id="sb-errors" style="display:flex;flex-direction:column;gap:6px;"></div>
+
+        <!-- Success / PC cards -->
+        <div id="sb-pcs" style="display:none; display:flex; flex-direction:column; gap:6px; margin-top:4px;"></div>
+
+      </div>
+
+      <!-- Controls -->
+      <div style="display:flex; gap:8px; margin-top:10px; align-items:center;">
+        <button onclick="sbReset()" style="font-family:'DM Mono',monospace; font-size:11px; padding:6px 14px; border-radius:6px; border:1px solid var(--border); background:var(--surface); color:var(--muted); cursor:pointer;">↺ reset</button>
+        <button onclick="sbPrev()" id="sb-prev" style="font-family:'DM Mono',monospace; font-size:11px; padding:6px 14px; border-radius:6px; border:1px solid var(--border); background:var(--surface); color:var(--muted); cursor:pointer; opacity:0.4;">← prev</button>
+        <button onclick="sbNext()" id="sb-next" style="font-family:'DM Mono',monospace; font-size:12px; padding:7px 22px; border-radius:6px; border:1px solid var(--accent); background:rgba(108,142,255,0.12); color:var(--accent); cursor:pointer; font-weight:700;">next step →</button>
+        <div id="sb-status" style="font-family:'DM Mono',monospace; font-size:10px; color:var(--muted); margin-left:auto;"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════ SLIDE 6 — P-SCORE VALIDATION ════════════════════════════════════ -->
+<div class="slide" id="s6">
+  <div class="slide-label">06 — P-Score Design</div>
+  <div style="margin-bottom:12px;">
+    <h2 class="title" style="margin-bottom:4px;">Task Structure &amp; Constraint Architecture</h2>
+    <p style="font-size:17px; font-weight:600; color:var(--text); margin-top:2px; margin-bottom:8px;">P-Score Constraint Validation</p>
+    <p style="font-size:13px; color:var(--muted); line-height:1.6; max-width:800px;">Before a task is published, every P-constraint pair is tested for genuine tension — satisfying both simultaneously must require real tradeoff. Validation uses different geometry depending on whether constraints operate at the <em>venue pool</em> level or the <em>plan structure</em> level.</p>
+  </div>
+
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; flex:1;">
+
+    <!-- ── A×A ─────────────────────────────────────────────────────────────── -->
+    <div style="display:flex; flex-direction:column; gap:10px;">
+      <div style="background:var(--surface); border:1px solid rgba(108,142,255,0.35); border-radius:10px; padding:14px 16px; flex:1; display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <span style="font-family:'DM Mono',monospace; font-size:14px; font-weight:800; color:var(--accent); letter-spacing:0.05em;">A × A</span>
+          <span style="font-size:12px; color:var(--muted);">Pool-filter constraints — each produces a venue set</span>
+        </div>
+        <p style="font-size:11px; color:var(--muted); line-height:1.6;">Two constraints that filter the venue pool. Tension requires the sets to be mostly <em>disjoint</em> — agent must draw from both sides and cannot satisfy both with the same venues.</p>
+
+        <!-- Venn diagrams -->
+        <svg viewBox="0 0 320 140" xmlns="http://www.w3.org/2000/svg" style="width:100%;">
+          <!-- LEFT: small overlap = tension -->
+          <text x="55" y="13" font-family="DM Mono,monospace" font-size="8" fill="rgba(108,255,200,0.9)" text-anchor="middle">small overlap → ✅ tension</text>
+          <circle cx="38" cy="72" r="40" fill="rgba(108,142,255,0.13)" stroke="#6c8eff" stroke-width="1.3"/>
+          <circle cx="86" cy="72" r="40" fill="rgba(108,255,200,0.13)" stroke="#6cffc8" stroke-width="1.3"/>
+          <text x="62" y="75" font-family="DM Mono,monospace" font-size="7" fill="rgba(200,255,220,0.7)" text-anchor="middle">≤3</text>
+          <text x="18" y="73" font-family="DM Mono,monospace" font-size="8.5" fill="#6c8eff" text-anchor="middle">A</text>
+          <text x="106" y="73" font-family="DM Mono,monospace" font-size="8.5" fill="#6cffc8" text-anchor="middle">B</text>
+          <text x="18" y="84" font-family="DM Mono,monospace" font-size="6.5" fill="rgba(108,142,255,0.8)" text-anchor="middle">upscale</text>
+          <text x="18" y="93" font-family="DM Mono,monospace" font-size="6" fill="rgba(108,142,255,0.5)" text-anchor="middle">7 venues</text>
+          <text x="106" y="84" font-family="DM Mono,monospace" font-size="6.5" fill="rgba(108,255,200,0.8)" text-anchor="middle">hidden-gem</text>
+          <text x="106" y="93" font-family="DM Mono,monospace" font-size="6" fill="rgba(108,255,200,0.5)" text-anchor="middle">22 venues</text>
+          <text x="62" y="122" font-family="DM Mono,monospace" font-size="6" fill="rgba(120,120,160,0.6)" text-anchor="middle">overlap=2 / 7 = 29% → tension ✅</text>
+
+          <!-- divider -->
+          <line x1="160" y1="8" x2="160" y2="132" stroke="var(--border)" stroke-width="0.8"/>
+
+          <!-- RIGHT: large overlap = no tension -->
+          <text x="240" y="13" font-family="DM Mono,monospace" font-size="8" fill="rgba(255,108,142,0.9)" text-anchor="middle">large overlap → ❌ no tension</text>
+          <circle cx="206" cy="72" r="40" fill="rgba(255,168,74,0.1)" stroke="#ffa84a" stroke-width="1.3"/>
+          <circle cx="272" cy="72" r="40" fill="rgba(200,126,255,0.1)" stroke="#c87eff" stroke-width="1.3"/>
+          <text x="239" y="75" font-family="DM Mono,monospace" font-size="7" fill="rgba(220,200,255,0.7)" text-anchor="middle">&gt;25%</text>
+          <text x="183" y="73" font-family="DM Mono,monospace" font-size="8.5" fill="#ffa84a" text-anchor="middle">A</text>
+          <text x="295" y="73" font-family="DM Mono,monospace" font-size="8.5" fill="#c87eff" text-anchor="middle">B</text>
+          <text x="183" y="84" font-family="DM Mono,monospace" font-size="6.5" fill="rgba(255,168,74,0.8)" text-anchor="middle">wheelchair</text>
+          <text x="183" y="93" font-family="DM Mono,monospace" font-size="6" fill="rgba(255,168,74,0.5)" text-anchor="middle">45 venues</text>
+          <text x="295" y="84" font-family="DM Mono,monospace" font-size="6.5" fill="rgba(200,126,255,0.8)" text-anchor="middle">outdoor</text>
+          <text x="295" y="93" font-family="DM Mono,monospace" font-size="6" fill="rgba(200,126,255,0.5)" text-anchor="middle">20 venues</text>
+          <text x="239" y="122" font-family="DM Mono,monospace" font-size="6" fill="rgba(120,120,160,0.6)" text-anchor="middle">overlap=15 / 20 = 75% → no tension ❌</text>
+        </svg>
+
+        <!-- Formula -->
+        <div style="background:var(--surface2); border-radius:6px; padding:8px 12px; font-family:'DM Mono',monospace; font-size:11px; color:var(--muted); line-height:1.9;">
+          <span style="color:var(--accent);">tension</span> iff &nbsp;overlap ≤ <span style="color:var(--text);">3</span> &nbsp;<em style="color:rgba(120,120,160,0.5);">OR</em>&nbsp; overlap / min(|A|, |B|) ≤ <span style="color:var(--text);">0.25</span><br>
+          <span style="font-size:9px; color:rgba(120,120,160,0.5);">absolute cap handles small sets · ratio cap handles large sets</span>
+        </div>
+
+        <div style="font-size:10px; color:var(--muted); line-height:1.6; padding:6px 8px; background:rgba(255,108,142,0.06); border:1px solid rgba(255,108,142,0.15); border-radius:5px;">
+          <span style="color:#ff6c8e;">Old metric failure:</span> divided by pool size (68) — upscale(7) vs hidden-gem(22) overlap=2 scored 2/68=3% &lt; 12% threshold. Rejected despite being genuinely disjoint.
+        </div>
+      </div>
+    </div>
+
+    <!-- ── B×B ─────────────────────────────────────────────────────────────── -->
+    <div style="display:flex; flex-direction:column; gap:10px;">
+      <div style="background:var(--surface); border:1px solid rgba(255,168,74,0.35); border-radius:10px; padding:14px 16px; flex:1; display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <span style="font-family:'DM Mono',monospace; font-size:14px; font-weight:800; color:var(--warn); letter-spacing:0.05em;">B × B</span>
+          <span style="font-size:12px; color:var(--muted);">Plan-structure constraints — narrow the valid schedule space</span>
+        </div>
+        <p style="font-size:11px; color:var(--muted); line-height:1.6;">Counting constraints don't filter venues — they narrow the space of valid plans. Each reduces the baseline plan count by a factor. Tension requires the combined narrowing to collapse plan count below threshold.</p>
+
+        <!-- Plan count bars -->
+        <div style="display:flex; flex-direction:column; gap:5px;">
+          <div style="font-family:'DM Mono',monospace; font-size:9px; color:var(--muted); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:2px;">plan count after applying constraints (2-day London)</div>
+          
+          <div style="display:flex; align-items:center; gap:8px;">
+            <div style="font-family:'DM Mono',monospace; font-size:9px; color:var(--muted); width:90px; text-align:right; flex-shrink:0;">baseline<br><span style="color:var(--text);">~1.2M plans</span></div>
+            <div style="flex:1; height:20px; background:rgba(120,120,160,0.3); border-radius:3px; position:relative;">
+              <div style="position:absolute; inset:0; display:flex; align-items:center; padding-left:6px; font-family:'DM Mono',monospace; font-size:8px; color:rgba(255,255,255,0.5);">C(34,4) × C(34,4) ≈ 1.2M</div>
+            </div>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <div style="font-family:'DM Mono',monospace; font-size:9px; color:#6c8eff; width:90px; text-align:right; flex-shrink:0;">× constraint A<br>time_ceiling · r=0.40</div>
+            <div style="flex:1; height:20px; background:rgba(120,120,160,0.08); border-radius:3px; overflow:hidden;">
+              <div style="height:100%; width:40%; background:rgba(108,142,255,0.4); border-radius:3px; display:flex; align-items:center; padding-left:4px;"><span style="font-family:'DM Mono',monospace; font-size:8px; color:#6c8eff;">~480k</span></div>
+            </div>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <div style="font-family:'DM Mono',monospace; font-size:9px; color:#ffa84a; width:90px; text-align:right; flex-shrink:0;">× constraint B<br>category_min · r=0.20</div>
+            <div style="flex:1; height:20px; background:rgba(120,120,160,0.08); border-radius:3px; overflow:hidden;">
+              <div style="height:100%; width:8%; background:rgba(255,168,74,0.45); border-radius:3px; display:flex; align-items:center; padding-left:4px;"><span style="font-family:'DM Mono',monospace; font-size:8px; color:#ffa84a;">~96k</span></div>
+            </div>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <div style="font-family:'DM Mono',monospace; font-size:9px; color:var(--good); width:90px; text-align:right; flex-shrink:0;">stacked product<br>r = 0.08</div>
+            <div style="flex:1; height:20px; background:rgba(120,120,160,0.08); border-radius:3px; overflow:hidden;">
+              <div style="height:100%; width:3%; background:rgba(108,255,200,0.55); border-radius:3px;"></div>
+            </div>
+            <div style="font-family:'DM Mono',monospace; font-size:9px; color:var(--good);">~1.5k &lt; 2000/day → tension ✅</div>
+          </div>
+          <div style="font-family:'DM Mono',monospace; font-size:8px; color:rgba(120,120,160,0.45); text-align:right; margin-top:2px;">independence product = conservative upper bound (correlated constraints narrow more)</div>
+        </div>
+
+        <!-- Formula -->
+        <div style="background:var(--surface2); border-radius:6px; padding:8px 12px; font-family:'DM Mono',monospace; font-size:11px; color:var(--muted); line-height:1.9;">
+          <span style="color:var(--warn);">tension</span> iff &nbsp;r<sub style="font-size:8px;">A</sub> × r<sub style="font-size:8px;">B</sub> ≤ <span style="color:var(--text);">0.10</span> (type 3) &nbsp;<em style="color:rgba(120,120,160,0.5);">AND</em>&nbsp; valid_count ≤ <span style="color:var(--text);">2000 × days</span><br>
+          <span style="font-size:9px; color:rgba(120,120,160,0.5);">ratio bound catches 1-day cases · absolute bound prevents multi-day inflation</span>
+        </div>
+
+        <div style="font-size:10px; color:var(--muted); line-height:1.6; padding:6px 8px; background:rgba(255,108,142,0.06); border:1px solid rgba(255,108,142,0.15); border-radius:5px;">
+          <span style="color:#ff6c8e;">Hardcoded pairs fail:</span> whether <code style="font-family:'DM Mono',monospace; font-size:9px;">time_ceiling + category_min</code> creates tension depends on the specific K and pool — a static whitelist can't capture this.
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════ SLIDE 7 — SCORING SYSTEM ═══════════════════════════════════ -->
+<div class="slide" id="s7">
+  <div class="slide-label">07 — Model Evaluation</div>
+  <div style="margin-bottom:14px;">
+    <h2 class="title" style="margin-bottom:4px;">Model Evaluation</h2>
+    <p style="font-size:17px; font-weight:600; color:var(--text); margin-top:2px;">Three-Score Evaluation System</p>
+  </div>
+  <p class="body" style="margin-bottom:0">Each tier gates the next. F and P scores only apply if C passes. The three tiers together characterise plan quality: process, feasibility, and preference satisfaction.</p>
+  <div class="score-tier-row">
+    <div class="score-tier c-tier">
+      <span class="tier-letter">C</span>
+      <div class="tier-name">Process Score</div>
+      <div class="tier-desc">
+        Tool calls were valid. Plan is parseable JSON. All venue IDs were discovered via tool calls — not hallucinated.
+      </div>
+      <div style="display:flex; flex-direction:column; gap:5px; margin-top:10px;">
+        <div style="font-family:'DM Mono',monospace; font-size:9px; color:rgba(108,142,255,0.6); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:2px;">What we check</div>
+        <div style="background:rgba(108,142,255,0.07); border:1px solid rgba(108,142,255,0.2); border-radius:6px; padding:8px 11px;">
+          <div style="font-family:'DM Mono',monospace; font-size:10px; font-weight:700; color:#6c8eff; margin-bottom:4px;">Format errors</div>
+          <div style="font-size:10px; color:var(--muted); line-height:1.6;">Missing required fields · invalid activity_type · malformed HH:MM times · time_end before time_start · days count mismatch</div>
+        </div>
+        <div style="background:rgba(108,142,255,0.07); border:1px solid rgba(108,142,255,0.2); border-radius:6px; padding:8px 11px;">
+          <div style="font-family:'DM Mono',monospace; font-size:10px; font-weight:700; color:#6c8eff; margin-bottom:4px;">Tool calling errors</div>
+          <div style="font-size:10px; color:var(--muted); line-height:1.6;">Hallucinated tool names · missing required params · venue_id not from any tool result · wrong parameter types</div>
+        </div>
+      </div>
+      <div class="tier-gate">GATE → F &amp; P skipped on fail</div>
+    </div>
+    <div class="score-tier f-tier">
+      <span class="tier-letter">F</span>
+      <div class="tier-name">Feasibility Score</div>
+      <div class="tier-desc">
+        No venue visit outside opening hours. No schedule overlaps. Travel time between venues is realistic. Sold-out events avoided.
+      </div>
+      <div style="display:flex; flex-direction:column; gap:5px; margin-top:10px;">
+        <div style="font-family:'DM Mono',monospace; font-size:9px; color:rgba(108,255,200,0.6); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:2px;">What we check</div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:5px;">
+          <div style="background:rgba(108,255,200,0.07); border:1px solid rgba(108,255,200,0.2); border-radius:6px; padding:8px 11px;">
+            <div style="font-family:'DM Mono',monospace; font-size:10px; font-weight:700; color:#6cffc8; margin-bottom:4px;">Opening hours</div>
+            <div style="font-size:10px; color:var(--muted); line-height:1.55;">Visit falls within the venue's day-specific opening window</div>
+          </div>
+          <div style="background:rgba(108,255,200,0.07); border:1px solid rgba(108,255,200,0.2); border-radius:6px; padding:8px 11px;">
+            <div style="font-family:'DM Mono',monospace; font-size:10px; font-weight:700; color:#6cffc8; margin-bottom:4px;">Tickets</div>
+            <div style="font-size:10px; color:var(--muted); line-height:1.55;">Venue not sold out on the scheduled date · booking verified</div>
+          </div>
+          <div style="background:rgba(108,255,200,0.07); border:1px solid rgba(108,255,200,0.2); border-radius:6px; padding:8px 11px;">
+            <div style="font-family:'DM Mono',monospace; font-size:10px; font-weight:700; color:#6cffc8; margin-bottom:4px;">Activity overlap</div>
+            <div style="font-size:10px; color:var(--muted); line-height:1.55;">No two activities on the same day have overlapping time windows</div>
+          </div>
+          <div style="background:rgba(108,255,200,0.07); border:1px solid rgba(108,255,200,0.2); border-radius:6px; padding:8px 11px;">
+            <div style="font-family:'DM Mono',monospace; font-size:10px; font-weight:700; color:#6cffc8; margin-bottom:4px;">Transportation</div>
+            <div style="font-size:10px; color:var(--muted); line-height:1.55;">Travel duration between consecutive venues fits the gap in the schedule</div>
+          </div>
+        </div>
+      </div>
+      <div class="tier-gate">Hard fail → composite = 0</div>
+    </div>
+    <div class="score-tier p-tier">
+      <span class="tier-letter">P</span>
+      <div class="tier-name">Preference Score</div>
+      <div class="tier-desc">
+        Persona constraints satisfied. Code-evaluated: price tier, tags, regulations, districts, budget, cuisine diversity. LLM judge for semantic.
+      </div>
+      <div class="tier-gate">Proportional (0.0 – 1.0)</div>
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- ═══════════════════════════════════ SLIDE 8 — EVALUATION COMPARISON ════════════════════════════════════ -->
+<div class="slide" id="s8">
+  <div class="slide-label">08 — Model Evaluation</div>
+  <div style="margin-bottom:10px;">
+    <h2 class="title" style="margin-bottom:4px;">Model Evaluation</h2>
+    <p style="font-size:17px; font-weight:600; color:var(--text); margin-top:2px;">Solving Process Sandbox</p>
+  </div>
+
+  <!-- Task header with full content -->
+  <div style="background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:12px 16px; margin-bottom:12px;">
+    <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap; margin-bottom:10px;">
+      <div style="font-family:'DM Mono',monospace; font-size:11px; font-weight:700; color:var(--accent);">london_easter_food_photographer_2026</div>
+      <div style="font-family:'DM Mono',monospace; font-size:10px; color:var(--muted);">type1_cascading · Easter 2026 · 4 days · 60-call budget</div>
+      <div style="margin-left:auto; display:flex; gap:12px; align-items:center;">
+        <span style="font-family:'DM Mono',monospace; font-size:10px; color:var(--good);">● GPT-5.4 &nbsp; C=100% F=85% P=100%</span>
+        <span style="opacity:0.3;">|</span>
+        <span style="font-family:'DM Mono',monospace; font-size:10px; color:var(--bad);">● Gemini 3.1 Pro &nbsp; C=96% F=69% P=33%</span>
+      </div>
+    </div>
+    <div style="display:grid; grid-template-columns:1fr auto; gap:16px; align-items:start;">
+      <div style="font-size:12px; color:var(--text); line-height:1.65; font-style:italic; padding:8px 12px; background:var(--surface2); border-radius:6px; border-left:3px solid var(--accent);">
+        &ldquo;I&rsquo;m a food photographer from the US visiting London for a magazine assignment during Easter week. I&rsquo;m traveling with my elderly mother who uses a wheelchair, so accessibility is crucial. I need to capture diverse London food culture and some really photogenic, instagrammable spots. I prefer upscale venues for dinner &mdash; professional assignment with a good budget.&rdquo;
+      </div>
+      <div style="display:flex; flex-direction:column; gap:4px; min-width:220px;">
+        <div style="font-family:'DM Mono',monospace; font-size:9px; color:var(--muted); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:2px;">3 P-constraints</div>
+        <div style="display:flex; gap:6px; align-items:center; font-size:10px;">
+          <span style="font-family:'DM Mono',monospace; font-size:9px; padding:2px 6px; border:1px solid #ffa84a; color:#ffa84a; border-radius:3px;">hop-2</span>
+          <span style="color:var(--muted);">≥60% venues wheelchair accessible</span>
+        </div>
+        <div style="display:flex; gap:6px; align-items:center; font-size:10px;">
+          <span style="font-family:'DM Mono',monospace; font-size:9px; padding:2px 6px; border:1px solid #6c8eff; color:#6c8eff; border-radius:3px;">hop-1</span>
+          <span style="color:var(--muted);">At least 2 upscale meal venues</span>
+        </div>
+        <div style="display:flex; gap:6px; align-items:center; font-size:10px;">
+          <span style="font-family:'DM Mono',monospace; font-size:9px; padding:2px 6px; border:1px solid #6c8eff; color:#6c8eff; border-radius:3px;">hop-1</span>
+          <span style="color:var(--muted);">At least 1 instagrammable venue</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tool legend row — all 7 solving tools -->
+  <div style="display:grid; grid-template-columns:repeat(7,1fr); gap:6px; margin-bottom:12px;">
+    <div style="background:var(--surface); border:1px solid rgba(108,142,255,0.3); border-radius:6px; padding:6px 8px;">
+      <div style="font-family:'DM Mono',monospace; font-size:9px; font-weight:700; color:#6c8eff; margin-bottom:3px;">search_yelp</div>
+      <div style="font-size:9px; color:var(--muted); line-height:1.4;">Venue directory — discovery by keyword, tag, category, regulation</div>
+    </div>
+    <div style="background:var(--surface); border:1px solid rgba(200,126,255,0.3); border-radius:6px; padding:6px 8px;">
+      <div style="font-family:'DM Mono',monospace; font-size:9px; font-weight:700; color:#c87eff; margin-bottom:3px;">search_blogs</div>
+      <div style="font-size:9px; color:var(--muted); line-height:1.4;">Blog &amp; forum posts — recent visitor reports, price corrections</div>
+    </div>
+    <div style="background:var(--surface); border:1px solid rgba(108,255,200,0.3); border-radius:6px; padding:6px 8px;">
+      <div style="font-family:'DM Mono',monospace; font-size:9px; font-weight:700; color:#6cffc8; margin-bottom:3px;">get_official_site</div>
+      <div style="font-size:9px; color:var(--muted); line-height:1.4;">Authoritative hours, ticket availability, regulations — date-specific</div>
+    </div>
+    <div style="background:var(--surface); border:1px solid rgba(255,168,74,0.3); border-radius:6px; padding:6px 8px;">
+      <div style="font-family:'DM Mono',monospace; font-size:9px; font-weight:700; color:#ffa84a; margin-bottom:3px;">get_travel_time</div>
+      <div style="font-size:9px; color:var(--muted); line-height:1.4;">Walking / transit / bike time between venue IDs</div>
+    </div>
+    <div style="background:var(--surface); border:1px solid rgba(108,200,255,0.3); border-radius:6px; padding:6px 8px;">
+      <div style="font-family:'DM Mono',monospace; font-size:9px; font-weight:700; color:#6cc8ff; margin-bottom:3px;">get_weather_forecast</div>
+      <div style="font-size:9px; color:var(--muted); line-height:1.4;">Weather forecast by city and date — required before outdoor venues</div>
+    </div>
+    <div style="background:var(--surface); border:1px solid rgba(108,255,150,0.3); border-radius:6px; padding:6px 8px;">
+      <div style="font-family:'DM Mono',monospace; font-size:9px; font-weight:700; color:#6cff96; margin-bottom:3px;">find_nearby_venues</div>
+      <div style="font-size:9px; color:var(--muted); line-height:1.4;">Venues within walking distance of an anchor — scope meals around a site</div>
+    </div>
+    <div style="background:var(--surface); border:1px solid rgba(200,126,255,0.2); border-radius:6px; padding:6px 8px;">
+      <div style="font-family:'DM Mono',monospace; font-size:9px; font-weight:700; color:#c87eff; margin-bottom:3px;">THINK</div>
+      <div style="font-size:9px; color:var(--muted); line-height:1.4;">Log reasoning — free, not counted in budget, stored in think_log</div>
+    </div>
+  </div>
+
+  <!-- Two-panel comparison -->
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; flex:1; min-height:0;">
+
+    <!-- GPT Panel -->
+    <div style="display:flex; flex-direction:column; background:var(--surface); border:1px solid rgba(108,255,200,0.2); border-radius:10px; padding:12px 14px; min-height:0;">
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+        <span style="font-family:'DM Mono',monospace; font-size:11px; font-weight:700; color:#6cffc8;">GPT-5.4</span>
+        <span style="font-family:'DM Mono',monospace; font-size:10px; color:var(--good); margin-left:auto;">composite 99% · 36 calls · 132k tokens</span>
+      </div>
+      <!-- Progress -->
+      <div style="display:flex; align-items:center; gap:6px; margin-bottom:6px;">
+        <div style="flex:1; height:3px; background:var(--surface2); border-radius:2px; overflow:hidden;">
+          <div id="gpt-fill" style="height:100%; background:#6cffc8; border-radius:2px; transition:width 0.3s; width:0%"></div>
+        </div>
+        <span id="gpt-lbl" style="font-family:'DM Mono',monospace; font-size:9px; color:var(--muted); white-space:nowrap;">0/6</span>
+      </div>
+      <div id="gpt-title" style="font-family:'DM Mono',monospace; font-size:11px; font-weight:700; color:#6cffc8; min-height:16px; margin-bottom:6px;"></div>
+      <div style="flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:6px; min-height:0;">
+        <div id="gpt-think" style="display:none; background:rgba(200,126,255,0.07); border:1px solid rgba(200,126,255,0.2); border-radius:6px; padding:8px 10px;">
+          <div style="font-family:'DM Mono',monospace; font-size:9px; color:#c87eff; margin-bottom:4px;">↯ reasoning</div>
+          <div id="gpt-think-text" style="font-size:11px; color:var(--muted); line-height:1.55;"></div>
+        </div>
+        <div id="gpt-actions" style="display:flex; flex-direction:column; gap:5px;"></div>
+        <div id="gpt-result-panel" style="display:none;"></div>
+      </div>
+      <div style="display:flex; gap:6px; margin-top:8px;">
+        <button onclick="evPrev('gpt')" id="gpt-prev" style="font-family:'DM Mono',monospace; font-size:10px; padding:5px 10px; border-radius:5px; border:1px solid var(--border); background:var(--surface2); color:var(--muted); cursor:pointer; opacity:0.35;">← prev</button>
+        <button onclick="evNext('gpt')" id="gpt-next" style="font-family:'DM Mono',monospace; font-size:10px; padding:5px 14px; border-radius:5px; border:1px solid #6cffc8; background:rgba(108,255,200,0.1); color:#6cffc8; cursor:pointer; font-weight:700;">next →</button>
+        <button onclick="evReset('gpt')" style="font-family:'DM Mono',monospace; font-size:10px; padding:5px 8px; border-radius:5px; border:1px solid var(--border); background:var(--surface2); color:var(--muted); cursor:pointer; margin-left:auto;">↺</button>
+      </div>
+    </div>
+
+    <!-- GLM Panel -->
+    <div style="display:flex; flex-direction:column; background:var(--surface); border:1px solid rgba(255,108,142,0.2); border-radius:10px; padding:12px 14px; min-height:0;">
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+        <span style="font-family:'DM Mono',monospace; font-size:11px; font-weight:700; color:#ff6c8e;">Gemini 3.1 Pro</span>
+        <span style="font-family:'DM Mono',monospace; font-size:10px; color:var(--bad); margin-left:auto;">composite 68% · 10 calls · 38k tokens</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:6px; margin-bottom:6px;">
+        <div style="flex:1; height:3px; background:var(--surface2); border-radius:2px; overflow:hidden;">
+          <div id="glm-fill" style="height:100%; background:#ff6c8e; border-radius:2px; transition:width 0.3s; width:0%"></div>
+        </div>
+        <span id="glm-lbl" style="font-family:'DM Mono',monospace; font-size:9px; color:var(--muted); white-space:nowrap;">0/5</span>
+      </div>
+      <div id="glm-title" style="font-family:'DM Mono',monospace; font-size:11px; font-weight:700; color:#ff6c8e; min-height:16px; margin-bottom:6px;"></div>
+      <div style="flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:6px; min-height:0;">
+        <div id="glm-think" style="display:none; background:rgba(200,126,255,0.07); border:1px solid rgba(200,126,255,0.2); border-radius:6px; padding:8px 10px;">
+          <div style="font-family:'DM Mono',monospace; font-size:9px; color:#c87eff; margin-bottom:4px;">↯ reasoning</div>
+          <div id="glm-think-text" style="font-size:11px; color:var(--muted); line-height:1.55;"></div>
+        </div>
+        <div id="glm-actions" style="display:flex; flex-direction:column; gap:5px;"></div>
+        <div id="glm-result-panel" style="display:none;"></div>
+      </div>
+      <div style="display:flex; gap:6px; margin-top:8px;">
+        <button onclick="evPrev('glm')" id="glm-prev" style="font-family:'DM Mono',monospace; font-size:10px; padding:5px 10px; border-radius:5px; border:1px solid var(--border); background:var(--surface2); color:var(--muted); cursor:pointer; opacity:0.35;">← prev</button>
+        <button onclick="evNext('glm')" id="glm-next" style="font-family:'DM Mono',monospace; font-size:10px; padding:5px 14px; border-radius:5px; border:1px solid #ff6c8e; background:rgba(255,108,142,0.1); color:#ff6c8e; cursor:pointer; font-weight:700;">next →</button>
+        <button onclick="evReset('glm')" style="font-family:'DM Mono',monospace; font-size:10px; padding:5px 8px; border-radius:5px; border:1px solid var(--border); background:var(--surface2); color:var(--muted); cursor:pointer; margin-left:auto;">↺</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+
+<!-- ═══════════════════════════════════ SLIDE 9 — LEADERBOARD ════════════════════════════════════ -->
+<div class="slide" id="s9">
+  <div class="slide-label">09 — Results</div>
+  <div style="margin-bottom:14px;">
+    <h2 class="title" style="margin-bottom:4px;">Model Evaluation</h2>
+    <p style="font-size:17px; font-weight:600; color:var(--text); margin-top:2px;">Leaderboard — 5.5d complete runs · London test_70 · 16 tasks</p>
+  </div>
+
+  <!-- Table -->
+  <div style="flex:1; display:flex; flex-direction:column; gap:12px; min-height:0;">
+    <div style="overflow:hidden; border:1px solid var(--border); border-radius:10px;">
+      <table style="width:100%; border-collapse:collapse; font-family:'DM Mono',monospace; font-size:12px;">
+        <thead>
+          <tr style="background:var(--surface2); border-bottom:1px solid var(--border);">
+            <th style="text-align:left; padding:10px 16px; color:var(--muted); font-weight:600; font-size:10px; text-transform:uppercase; letter-spacing:0.08em;">Model</th>
+            <th style="text-align:right; padding:10px 12px; color:#6c8eff; font-weight:600; font-size:10px; text-transform:uppercase; letter-spacing:0.08em;">C — Process</th>
+            <th style="text-align:right; padding:10px 12px; color:#6cffc8; font-weight:600; font-size:10px; text-transform:uppercase; letter-spacing:0.08em;">F — Feasibility</th>
+            <th style="text-align:right; padding:10px 12px; color:#c87eff; font-weight:600; font-size:10px; text-transform:uppercase; letter-spacing:0.08em;">P — Preference</th>
+            <th style="text-align:right; padding:10px 12px; color:#ff6c8e; font-weight:600; font-size:10px; text-transform:uppercase; letter-spacing:0.08em;">Zeros</th>
+            <th style="text-align:right; padding:10px 12px; color:var(--muted); font-weight:600; font-size:10px; text-transform:uppercase; letter-spacing:0.08em;">Avg calls</th>
+            <th style="text-align:right; padding:10px 12px; color:var(--muted); font-weight:600; font-size:10px; text-transform:uppercase; letter-spacing:0.08em;">Avg tokens</th>
+            <th style="text-align:right; padding:10px 16px; color:#ffa84a; font-weight:600; font-size:10px; text-transform:uppercase; letter-spacing:0.08em;">Score/100k</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Gemini 3.1 Pro — overall leader -->
+          <tr style="border-bottom:1px solid var(--border); background:rgba(108,142,255,0.04);">
+            <td style="padding:12px 16px; font-weight:700; color:var(--text); font-size:13px;">Gemini 3.1 Pro</td>
+            <td style="text-align:right; padding:12px 12px; color:#6c8eff;">94.2%</td>
+            <td style="text-align:right; padding:12px 12px; color:#6cffc8; font-weight:700;">85.7%</td>
+            <td style="text-align:right; padding:12px 12px; color:#c87eff;">64.8%</td>
+            <td style="text-align:right; padding:12px 12px; color:var(--good);">0 / 16</td>
+            <td style="text-align:right; padding:12px 12px; color:var(--muted);">23.2</td>
+            <td style="text-align:right; padding:12px 12px; color:var(--muted);">160k</td>
+            <td style="text-align:right; padding:12px 16px; color:#ffa84a;">0.552</td>
+          </tr>
+          <!-- Doubao — most token-efficient -->
+          <tr style="border-bottom:1px solid var(--border); background:rgba(255,168,74,0.04);">
+            <td style="padding:12px 16px; font-weight:700; color:var(--text); font-size:13px;">Doubao-Seed-2.0</td>
+            <td style="text-align:right; padding:12px 12px; color:#6c8eff;">87.0%</td>
+            <td style="text-align:right; padding:12px 12px; color:#6cffc8;">78.5%</td>
+            <td style="text-align:right; padding:12px 12px; color:#c87eff; font-weight:700;">76.3%</td>
+            <td style="text-align:right; padding:12px 12px; color:var(--good);">0 / 16</td>
+            <td style="text-align:right; padding:12px 12px; color:var(--muted); font-weight:700;">13.5</td>
+            <td style="text-align:right; padding:12px 12px; color:var(--muted); font-weight:700;">83k</td>
+            <td style="text-align:right; padding:12px 16px; color:#ffa84a; font-weight:700;">1.047</td>
+          </tr>
+          <!-- GPT-5.4 -->
+          <tr style="border-bottom:1px solid var(--border);">
+            <td style="padding:12px 16px; font-weight:700; color:var(--text); font-size:13px;">GPT-5.4</td>
+            <td style="text-align:right; padding:12px 12px; color:#6c8eff; font-weight:700;">96.8%</td>
+            <td style="text-align:right; padding:12px 12px; color:#6cffc8;">69.4%</td>
+            <td style="text-align:right; padding:12px 12px; color:#c87eff;">70.0%</td>
+            <td style="text-align:right; padding:12px 12px; color:var(--good);">0 / 16</td>
+            <td style="text-align:right; padding:12px 12px; color:var(--muted);">24.6</td>
+            <td style="text-align:right; padding:12px 12px; color:var(--muted);">101k</td>
+            <td style="text-align:right; padding:12px 16px; color:#ffa84a;">0.781</td>
+          </tr>
+          <!-- Gemini 3 Flash -->
+          <tr style="border-bottom:1px solid var(--border);">
+            <td style="padding:12px 16px; font-weight:700; color:var(--text); font-size:13px;">Gemini 3 Flash</td>
+            <td style="text-align:right; padding:12px 12px; color:#6c8eff;">89.5%</td>
+            <td style="text-align:right; padding:12px 12px; color:#6cffc8;">76.3%</td>
+            <td style="text-align:right; padding:12px 12px; color:#c87eff;">68.3%</td>
+            <td style="text-align:right; padding:12px 12px; color:#ffa84a;">1 / 16</td>
+            <td style="text-align:right; padding:12px 12px; color:var(--muted);">36.1</td>
+            <td style="text-align:right; padding:12px 12px; color:var(--muted);">135k</td>
+            <td style="text-align:right; padding:12px 16px; color:#ffa84a;">0.573</td>
+          </tr>
+          <!-- GLM -->
+          <tr style="background:rgba(255,108,142,0.04);">
+            <td style="padding:12px 16px; font-weight:700; color:var(--muted); font-size:13px;">GLM-4-7-251222</td>
+            <td style="text-align:right; padding:12px 12px; color:rgba(108,142,255,0.5);">65.1%</td>
+            <td style="text-align:right; padding:12px 12px; color:rgba(108,255,200,0.5);">71.4%</td>
+            <td style="text-align:right; padding:12px 12px; color:rgba(200,126,255,0.5);">68.8%</td>
+            <td style="text-align:right; padding:12px 12px; color:#ff6c8e; font-weight:700;">6 / 16</td>
+            <td style="text-align:right; padding:12px 12px; color:var(--muted);">31.2</td>
+            <td style="text-align:right; padding:12px 12px; color:rgba(255,100,100,0.7);">194k</td>
+            <td style="text-align:right; padding:12px 16px; color:rgba(255,168,74,0.5);">0.249</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Insight pills -->
+    <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:10px;">
+      <div style="background:var(--surface); border:1px solid rgba(255,168,74,0.3); border-radius:8px; padding:12px 14px;">
+        <div style="font-family:'DM Mono',monospace; font-size:10px; color:#ffa84a; font-weight:700; margin-bottom:5px;">Token efficiency</div>
+        <div style="font-size:11px; color:var(--muted); line-height:1.55;">Doubao achieves near-top results with 83k avg tokens — half of Gemini Pro's 160k. Score/100k of 1.047 vs 0.552.</div>
+      </div>
+      <div style="background:var(--surface); border:1px solid rgba(108,142,255,0.3); border-radius:8px; padding:12px 14px;">
+        <div style="font-family:'DM Mono',monospace; font-size:10px; color:#6c8eff; font-weight:700; margin-bottom:5px;">C ≠ P</div>
+        <div style="font-size:11px; color:var(--muted); line-height:1.55;">GPT leads C (96.8%) but ranks 3rd on P (70.0%). Format correctness and constraint satisfaction are independent skills.</div>
+      </div>
+      <div style="background:var(--surface); border:1px solid rgba(108,255,200,0.3); border-radius:8px; padding:12px 14px;">
+        <div style="font-family:'DM Mono',monospace; font-size:10px; color:#6cffc8; font-weight:700; margin-bottom:5px;">P score ceiling</div>
+        <div style="font-size:11px; color:var(--muted); line-height:1.55;">Best P score is 76.3% (Doubao). All models struggle with preference satisfaction — the hardest tier to optimise.</div>
+      </div>
+      <div style="background:var(--surface); border:1px solid rgba(255,108,142,0.3); border-radius:8px; padding:12px 14px;">
+        <div style="font-family:'DM Mono',monospace; font-size:10px; color:#ff6c8e; font-weight:700; margin-bottom:5px;">Zero rate</div>
+        <div style="font-size:11px; color:var(--muted); line-height:1.55;">GLM scores 0 on 6/16 tasks (tool-name hallucinations). Top 4 models complete every task with non-zero scores.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- ══════════════════════ SLIDE 10 — MULTI-PRINCIPAL TYPE 3 ══════════════════════ -->
+<div class="slide" id="s10">
+  <div class="slide-label">10 — Multi-Principal</div>
+  <div style="margin-bottom:14px;">
+    <h2 class="title" style="margin-bottom:4px;">Multi-Principal Agents</h2>
+    <p style="font-size:17px; font-weight:600; color:var(--text); margin-top:2px;">Natural inheritance in Type 3 tasks</p>
+  </div>
+
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px; flex:1; min-height:0;">
+
+    <!-- LEFT: Type 3 as currently designed -->
+    <div style="display:flex; flex-direction:column; gap:12px;">
+      <div style="font-family:'DM Mono',monospace; font-size:10px; color:var(--accent); text-transform:uppercase; letter-spacing:0.12em;">Type 3 — current design</div>
+
+      <div style="background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:16px 18px;">
+        <div style="font-size:12px; color:var(--muted); line-height:1.65; margin-bottom:14px;">One traveller. One rubric. Two internal preferences that pull at disjoint venue sets. The agent must find a plan that genuinely compromises — it cannot satisfy both fully given the pool.</div>
+
+        <div style="font-family:'DM Mono',monospace; font-size:11px; color:rgba(120,120,160,0.75); padding:10px 12px; background:var(--surface2); border-radius:6px; line-height:1.65; margin-bottom:14px;">
+          "I want hidden gems — but my partner insists on all the iconic spots."
+          <span style="color:var(--accent); display:block; margin-top:5px;">→ one query, one principal, one rubric</span>
+        </div>
+
+        <div style="display:flex; flex-direction:column; gap:7px;">
+          <div style="font-family:'DM Mono',monospace; font-size:9px; color:var(--muted); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:2px;">tension mechanism</div>
+          <div style="display:grid; grid-template-columns:1fr auto 1fr; gap:8px; align-items:center;">
+            <div style="background:rgba(108,142,255,0.08); border:1px solid rgba(108,142,255,0.25); border-radius:6px; padding:8px 10px; text-align:center;">
+              <div style="font-family:'DM Mono',monospace; font-size:10px; font-weight:700; color:#6c8eff; margin-bottom:3px;">constraint A</div>
+              <div style="font-size:10px; color:var(--muted);">hidden-gem tag<br>traffic_tier: low</div>
+              <div style="font-family:'DM Mono',monospace; font-size:9px; color:rgba(108,142,255,0.6); margin-top:4px;">22 venues</div>
+            </div>
+            <div style="text-align:center;">
+              <div style="font-family:'DM Mono',monospace; font-size:11px; color:var(--border);">∩</div>
+              <div style="font-family:'DM Mono',monospace; font-size:8px; color:var(--muted); margin-top:2px;">≤25%<br>overlap</div>
+            </div>
+            <div style="background:rgba(108,255,200,0.08); border:1px solid rgba(108,255,200,0.25); border-radius:6px; padding:8px 10px; text-align:center;">
+              <div style="font-family:'DM Mono',monospace; font-size:10px; font-weight:700; color:#6cffc8; margin-bottom:3px;">constraint B</div>
+              <div style="font-size:10px; color:var(--muted);">iconic tag<br>traffic_tier: high</div>
+              <div style="font-family:'DM Mono',monospace; font-size:9px; color:rgba(108,255,200,0.6); margin-top:4px;">7 venues</div>
+            </div>
+          </div>
+          <div style="background:var(--surface2); border-radius:6px; padding:8px 12px; font-family:'DM Mono',monospace; font-size:10px; color:var(--muted); line-height:1.7; margin-top:2px;">
+            P-score = <span style="color:var(--text);">satisfied(A) + satisfied(B)</span> / total<br>
+            <span style="font-size:9px; color:rgba(120,120,160,0.5);">single utility function — flattened from one query</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:10px; align-items:flex-start; padding:11px 14px; background:rgba(255,108,142,0.06); border:1px solid rgba(255,108,142,0.2); border-radius:8px;">
+        <div style="font-size:15px; flex-shrink:0; margin-top:1px;">⚠</div>
+        <div style="font-size:11px; color:#c88090; line-height:1.6;">"My partner" is background flavour — there is no second scoreable utility function. An agent that ignores one preference entirely gets the same structural treatment as one that merely under-weights it.</div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Multi-principal extension -->
+    <div style="display:flex; flex-direction:column; gap:12px;">
+      <div style="font-family:'DM Mono',monospace; font-size:10px; color:var(--warn); text-transform:uppercase; letter-spacing:0.12em;">Type 3 — multi-principal extension</div>
+
+      <div style="background:var(--surface); border:1px solid rgba(255,168,74,0.3); border-radius:10px; padding:16px 18px;">
+        <div style="font-size:12px; color:var(--muted); line-height:1.65; margin-bottom:14px;">Two named principals. Two independent utility functions. One shared bounded plan. The agent must optimize a weighted social objective — satisfying neither fully is expected, ignoring one entirely is the measurable failure mode.</div>
+
+        <div style="font-family:'DM Mono',monospace; font-size:11px; color:rgba(120,120,160,0.75); padding:10px 12px; background:var(--surface2); border-radius:6px; line-height:1.65; margin-bottom:14px;">
+          <span style="color:#6c8eff;">A (planner):</span> "I want hidden gems, local spots away from tourists."<br>
+          <span style="color:#ffa84a;">B (partner):</span> "I'm only coming if we do the iconic London spots."
+          <span style="color:var(--warn); display:block; margin-top:5px;">→ two named principals, split rubric, weighted P-score</span>
+        </div>
+
+        <div style="display:flex; flex-direction:column; gap:7px;">
+          <div style="font-family:'DM Mono',monospace; font-size:9px; color:var(--muted); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:2px;">scoring — Yang et al. (2026) formulation</div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+            <div style="background:rgba(108,142,255,0.07); border:1px solid rgba(108,142,255,0.25); border-radius:6px; padding:10px 12px;">
+              <div style="font-family:'DM Mono',monospace; font-size:10px; font-weight:700; color:#6c8eff; margin-bottom:5px;">Principal A · u₁</div>
+              <div style="font-size:10px; color:var(--muted); line-height:1.55; margin-bottom:6px;">P-constraints tagged <span style="font-family:'DM Mono',monospace; color:var(--text);">principal=A</span>. Score computed independently.</div>
+              <div style="font-family:'DM Mono',monospace; font-size:9px; color:rgba(108,142,255,0.7);">w₁ = 0.5 · U₁(plan)</div>
+            </div>
+            <div style="background:rgba(255,168,74,0.07); border:1px solid rgba(255,168,74,0.25); border-radius:6px; padding:10px 12px;">
+              <div style="font-family:'DM Mono',monospace; font-size:10px; font-weight:700; color:#ffa84a; margin-bottom:5px;">Principal B · u₂</div>
+              <div style="font-size:10px; color:var(--muted); line-height:1.55; margin-bottom:6px;">P-constraints tagged <span style="font-family:'DM Mono',monospace; color:var(--text);">principal=B</span>. Score computed independently.</div>
+              <div style="font-family:'DM Mono',monospace; font-size:9px; color:rgba(255,168,74,0.7);">w₂ = 0.5 · U₂(plan)</div>
+            </div>
+          </div>
+          <div style="background:var(--surface2); border-radius:6px; padding:10px 14px; font-family:'DM Mono',monospace; font-size:11px; color:var(--muted); line-height:1.9; text-align:center; margin-top:2px;">
+            P-score = <span style="color:#6c8eff;">0.5 × U₁(plan)</span> + <span style="color:#ffa84a;">0.5 × U₂(plan)</span><br>
+            <span style="font-size:9px; color:rgba(120,120,160,0.45);">equal weights by default · role-asymmetric weights possible</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+        <div style="background:rgba(255,108,142,0.06); border:1px solid rgba(255,108,142,0.2); border-radius:8px; padding:10px 13px;">
+          <div style="font-family:'DM Mono',monospace; font-size:9px; color:#ff6c8e; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:6px;">what changes</div>
+          <div style="font-size:11px; color:var(--muted); line-height:1.6;">P-constraints get a <span style="font-family:'DM Mono',monospace; color:var(--text);">principal</span> field. Evaluator splits score by principal before summing. Task agent gets a two-principal protocol.</div>
+        </div>
+        <div style="background:rgba(108,142,255,0.06); border:1px solid rgba(108,142,255,0.2); border-radius:8px; padding:10px 13px;">
+          <div style="font-family:'DM Mono',monospace; font-size:9px; color:#6c8eff; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:6px;">what stays the same</div>
+          <div style="font-size:11px; color:var(--muted); line-height:1.6;">One query. One plan. One bounded day. A×A tension validation still applies. Existing Type 3 tasks untouched.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ══════════════════════ SLIDE 11 — FUTURE DIRECTIONS ══════════════════════ -->
+<div class="slide" id="s11">
+  <div class="slide-label">11 — Future Directions</div>
+  <div style="margin-bottom:20px;">
+    <h2 class="title" style="margin-bottom:4px;">Future Directions</h2>
+    <p style="font-size:17px; font-weight:600; color:var(--text); margin-top:2px;">Where TravelBench goes as a research platform</p>
+  </div>
+
+  <div style="display:flex; flex-direction:column; gap:16px; flex:1;">
+
+    <!-- Direction 1: Full multi-principal benchmark -->
+    <div style="background:var(--surface); border:1px solid rgba(255,168,74,0.3); border-radius:10px; padding:20px 24px; display:flex; gap:20px; align-items:flex-start;">
+      <div style="flex-shrink:0; padding-top:2px;">
+        <span style="font-family:'DM Mono',monospace; font-size:9px; font-weight:700; color:#ffa84a; text-transform:uppercase; letter-spacing:0.12em; border:1px solid rgba(255,168,74,0.4); padding:3px 10px; border-radius:3px; white-space:nowrap;">longer-term</span>
+      </div>
+      <div style="flex:1;">
+        <div style="font-size:14px; font-weight:700; margin-bottom:8px;">Every task as a multi-principal problem</div>
+        <p style="font-size:12px; color:var(--muted); line-height:1.7;">Move beyond Type 3 — make the full benchmark multi-principal by default. Every task involves a group of travellers where each principal only states their own needs. No one has the full picture. The planning agent must discover and reconcile all principals' requirements across the trip. Each principal's P-constraints are evaluated independently and combined via a weighted social objective. An agent that produces a plan one person loves but another finds unusable fails structurally — not just on a specific constraint.</p>
+        <div style="font-family:'DM Mono',monospace; font-size:10px; color:rgba(120,120,160,0.6); margin-top:10px; line-height:1.7;">
+          Directly extends Yang et al. (2026) multi-principal formulation into a concrete, scoreable planning domain &nbsp;·&nbsp; Scoring: <span style="color:#ffa84a;">Σ wᵢ × Uᵢ(plan)</span> per principal
+        </div>
+      </div>
+    </div>
+
+    <!-- Direction 2: Multi-round user agent + coordination bottlenecks -->
+    <div style="background:var(--surface); border:1px solid rgba(108,142,255,0.3); border-radius:10px; padding:20px 24px; display:flex; gap:20px; align-items:flex-start;">
+      <div style="flex-shrink:0; padding-top:2px;">
+        <span style="font-family:'DM Mono',monospace; font-size:9px; font-weight:700; color:#6c8eff; text-transform:uppercase; letter-spacing:0.12em; border:1px solid rgba(108,142,255,0.4); padding:3px 10px; border-radius:3px; white-space:nowrap;">longer-term</span>
+      </div>
+      <div style="flex:1;">
+        <div style="font-size:14px; font-weight:700; margin-bottom:8px;">Multi-round user agent — proactive questioning under multi-principal constraints</div>
+        <p style="font-size:12px; color:var(--muted); line-height:1.7;">Introduce a live user agent on the other end. Hop-1/2/3 constraints are no longer stated upfront — they are revealed only when the planning agent asks the right questions. This isolates questioning ability as a distinct testable capability, separate from reasoning over known constraints. In a multi-principal setting, the agent must identify which principal to ask, when, and what — surface coordination bottlenecks that pure single-query evaluation cannot detect. Models that proactively elicit the right information build better plans; models that proceed without asking produce structurally incomplete solutions.</p>
+        <div style="font-family:'DM Mono',monospace; font-size:10px; color:rgba(120,120,160,0.6); margin-top:10px; line-height:1.7;">
+          Tests: <span style="color:#6c8eff;">information elicitation</span> · <span style="color:#6c8eff;">principal identification</span> · <span style="color:#6c8eff;">coordination bottlenecks</span> &nbsp;·&nbsp; directly surfaces failure modes from Yang et al. §3.2
+        </div>
+      </div>
+    </div>
+
+    <!-- Direction 3: Epistemic / P20 -->
+    <div style="background:var(--surface); border:1px solid rgba(108,255,200,0.3); border-radius:10px; padding:20px 24px; display:flex; gap:20px; align-items:flex-start;">
+      <div style="flex-shrink:0; padding-top:2px;">
+        <span style="font-family:'DM Mono',monospace; font-size:9px; font-weight:700; color:#6cffc8; text-transform:uppercase; letter-spacing:0.12em; border:1px solid rgba(108,255,200,0.4); padding:3px 10px; border-radius:3px; white-space:nowrap;">longer-term</span>
+      </div>
+      <div style="flex:1;">
+        <div style="font-size:14px; font-weight:700; margin-bottom:8px;">Epistemic benchmark — long-horizon belief formation across rounds</div>
+        <p style="font-size:12px; color:var(--muted); line-height:1.7;">Strip the evaluation to its epistemic core: an agent in an information environment it does not fully trust, building an accurate world model over time. Round-based structure — the agent passes its own notes forward across chunks of tasks, accumulating beliefs about source reliability, venue facts, and environment quirks. Accuracy against ground truth is measured per chunk. The learning curve is the metric. A model that reasons improves at round 50; one that doesn't will plateau at round 10. The note compression problem — what to keep, what to discard — separates genuine reasoners from pattern matchers. Under multi-principal constraints, long-horizon belief formation now includes modelling multiple users' preferences across encounters — a natural extension of the direction above.</p>
+        <div style="font-family:'DM Mono',monospace; font-size:10px; color:rgba(120,120,160,0.6); margin-top:10px; line-height:1.7;">
+          Metric: <span style="color:#6cffc8;">accuracy AUC over rounds</span> &nbsp;·&nbsp; current 9pt P-score spread is the motivation &nbsp;·&nbsp; separates <span style="color:#6cffc8;">reasoners vs memorisers</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</div><!-- /deck -->
+
+<!-- ═══════════════════════════════════ NAVIGATION ═══════════════════════════════════ -->
+<div class="nav">
+  <button id="prev-btn" onclick="prev()" disabled>← prev</button>
+  <div class="nav-dots" id="dots"></div>
+  <span class="slide-counter" id="counter">1 / 11</span>
+  <button id="next-btn" onclick="next()">next →</button>
+</div>
+
+<script>
+const slides = document.querySelectorAll('.slide');
+const total = slides.length;
+let current = 0;
+
+const dotsEl = document.getElementById('dots');
+const counter = document.getElementById('counter');
+const prevBtn = document.getElementById('prev-btn');
+const nextBtn = document.getElementById('next-btn');
+
+// Build dots
+slides.forEach((_, i) => {
+  const d = document.createElement('span');
+  d.onclick = () => goto(i);
+  dotsEl.appendChild(d);
+});
+
+function goto(n) {
+  slides[current].classList.remove('active', 'visible');
+  current = Math.max(0, Math.min(n, total - 1));
+  slides[current].classList.add('active');
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => slides[current].classList.add('visible'));
+  });
+  counter.textContent = `${current + 1} / ${total}`;
+  prevBtn.disabled = current === 0;
+  nextBtn.disabled = current === total - 1;
+  dotsEl.querySelectorAll('span').forEach((d, i) => d.classList.toggle('active', i === current));
+}
+
+function next() { goto(current + 1); }
+function prev() { goto(current - 1); }
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); next(); }
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); prev(); }
+});
+
+goto(0);
+</script>
+
+<script>
+const SB_STEPS = [{"label":"Read the handbook","type":"help","think":"For a Type 4 task I need a binding budget constraint tight enough that imprecise calculation fails. Let me read the handbook to understand pool fields and validation rules before designing the task.","actions":[{"tool":"HELP","call":"HELP(\"-h tags\")","result":"99 tags available: fine-dining \u00b7 instagrammable \u00b7 free-entry \u00b7 locals-favourite \u00b7 photography-allowed..."},{"tool":"HELP","call":"HELP(\"-h pool_fields\")","result":"Filterable: category \u00b7 price_tier \u00b7 avg_cost_local \u00b7 traffic_tier \u00b7 booking_required \u00b7 has_official_site..."},{"tool":"HELP","call":"HELP(\"-h validate\")","result":"Type 4: budget_per_day validated against cheapest viable plan \u2014 must be 1.1\u20131.3\u00d7 cheapest plan to create genuine pressure."}]},{"label":"Design the persona","type":"think","think":"Birthday celebration + tight budget is the natural Type 4 setup: one signal (birthday dinner) pulls toward upscale and expensive; another (\u00a330/day budget) pulls toward free museums and cheap lunches. The constraint tension is built into the persona \u2014 the agent must allocate precisely to fit both.","actions":[]},{"label":"Scan full pool \u00b7 read cost structure","type":"query","think":"I need to know the cost distribution across the entire pool to set a meaningful budget ceiling. Free-entry museums matter here \u2014 they let the budget stretch to cover one upscale dinner.","actions":[{"tool":"query_pool","call":"query_pool({})  \u2190 full pool scan","result":"68 venues returned \u00b7 Cheapest: Volcano Coffee (\u00a34.5) \u00b7 Free museums: British Museum, National Gallery, Tate Modern \u00b7 Sample: Roti King, Barrafina Adelaide Street, Bao Fitzrovia..."}]},{"label":"Find upscale venues \u00b7 check prices","type":"query","think":"Cheapest viable plan (free museums + cheap lunch + budget dinner) \u2248 \u00a324/day. If I set budget at \u00a335, that's 1.46\u00d7 \u2014 too loose. Need 1.1\u20131.3\u00d7, so I'll target \u00a326\u201331. Let me find the upscale options first.","actions":[{"tool":"query_pool","call":"query_pool(price_tier=\"upscale\")","result":"7 upscale venues \u00b7 range \u00a330\u201385 \u00b7 Barrafina Adelaide Street, Sketch \u2013 The Gallery, Ottolenghi Islington... \u00b7 Key tension: cheapest upscale meal \u2248 \u00a330 = the entire daily budget ceiling"}]},{"label":"Submit attempt 1","type":"submit_fail","think":"Birthday celebration + \u00a335/day + museums. Ready to submit.","actions":[{"tool":"SUBMIT","call":"SUBMIT(task v1 \u2014 \u00a335/day budget)","result":"\u274c  structural_type value invalid: got \"type4\""}],"submitted":"structural_type: \"type4\"  \u00b7  budget \u00a335/day  \u00b7  3 P-constraints","errors":["structural_type must be one of: type4_precision_allocation, not \"type4\". Use the full snake_case name."]},{"label":"Submit attempt 2","type":"submit_fail","think":"Fixed the type key. But \u00a335 is 1.46\u00d7 the cheapest viable plan \u2014 the validator needs 1.1\u20131.3\u00d7. I need to tighten the budget.","actions":[{"tool":"SUBMIT","call":"SUBMIT(task v2 \u2014 fixed type)","result":"\u274c  budget too loose"}],"submitted":"structural_type: \"type4_precision_allocation\"  \u00b7  budget_per_day: 35  \u00b7  3 P-constraints","errors":["Solvability: Type 4 budget too loose \u2014 stated \u00a335/day is 1.46\u00d7 cheapest viable plan (\u00a324/day). Need 1.1\u20131.3\u00d7 to create genuine allocation pressure. Tighten to \u00a326\u201331."]},{"label":"Submit attempt 3 \u2014 accepted \u2705","type":"success","think":"\u00a330/day = 1.25\u00d7 cheapest viable plan \u2014 exactly in the 1.1\u20131.3\u00d7 window. The upscale birthday dinner alone costs \u00a330, so the agent must route all other meals through free or budget options. Genuine tension.","actions":[{"tool":"SUBMIT","call":"SUBMIT(task v3 \u2014 \u00a330/day)","result":"\u2705  Task accepted and published"}],"submitted":"budget_per_day: 30  \u00b7  cheapest plan: \u00a324  \u00b7  ratio: 1.25\u00d7 (target: 1.1\u20131.3\u00d7)","errors":[],"pcs":[{"id":"pc_001","hop":1,"src":"\"budget of \u00a330 per day\"","desc":"Daily spend \u2264 \u00a330","agg":"sum \u00b7 per_day"},{"id":"pc_002","hop":2,"src":"\"special birthday dinner at an upscale restaurant\"","desc":"At least 1 upscale meal","agg":"at_least: 1 \u00b7 meal scope"},{"id":"pc_003","hop":1,"src":"\"love art and history, especially museums\"","desc":"At least 2 museums","agg":"at_least: 2 \u00b7 museum scope"}],"task":{"task_id":"london_summer_carnival_budget_birthday","window":"Carnival 2026 \u00b7 Aug 22\u201323","days":2,"query":"I'm celebrating my birthday in London during Carnival weekend with my partner. We have a budget of \u00a330 per day and want a special birthday dinner at an upscale restaurant. We love art and history, especially museums, and want to explore the city without overspending."}}];
+let sbCurrent = -1;
+
+function sbToolColor(name) {
+  const map = {'HELP':'#6c8eff','THINK':'#c87eff','query_pool':'#6cffc8','SUBMIT':'#ffa84a','RESULT':'#6cffc8'};
+  return map[name] || '#6c8eff';
+}
+
+function sbTypeIcon(type) {
+  return {'help':'📖','think':'💭','query':'🔍','submit':'📤','success':'✅'}[type] || '•';
+}
+
+function sbRender(idx) {
+  const step = SB_STEPS[idx];
+  const total = SB_STEPS.length;
+
+  document.getElementById('sb-progress-fill').style.width = ((idx+1)/total*100)+'%';
+  document.getElementById('sb-step-label').textContent = 'Step '+(idx+1)+' / '+total;
+
+  const icons = {help:'📖',think:'💭',query:'🔍',submit:'📤',submit_fail:'📤',success:'✅'};
+  document.getElementById('sb-step-title').textContent = (icons[step.type]||'•')+' '+step.label;
+
+  // Think block
+  const thinkEl = document.getElementById('sb-think');
+  document.getElementById('sb-think-text').textContent = step.think||'';
+  thinkEl.style.display = step.think ? 'block' : 'none';
+
+  // Actions
+  const actionsEl = document.getElementById('sb-actions');
+  actionsEl.innerHTML = '';
+  const toolColors = {HELP:'#6c8eff',THINK:'#c87eff',query_pool:'#6cffc8',SUBMIT:'#ffa84a',RESULT:'#6cffc8'};
+
+  (step.actions||[]).forEach(a => {
+    const col = toolColors[a.tool]||'#6c8eff';
+    const isErr = a.result && a.result.startsWith('❌');
+    const isOk  = a.result && a.result.startsWith('✅');
+    const resBg  = isErr ? 'rgba(255,108,142,0.08)' : isOk ? 'rgba(108,255,200,0.08)' : 'var(--surface2)';
+    const resCol = isErr ? '#ff6c8e' : isOk ? '#6cffc8' : 'var(--muted)';
+    const borderCol = isErr ? 'rgba(255,108,142,0.3)' : isOk ? 'rgba(108,255,200,0.25)' : 'var(--border)';
+    const div = document.createElement('div');
+    div.style.cssText = 'background:var(--surface);border:1px solid '+borderCol+';border-radius:7px;padding:10px 13px;';
+    div.innerHTML =
+      '<div style="display:flex;align-items:baseline;gap:8px;margin-bottom:6px;">'+
+        '<span style="font-family:DM Mono,monospace;font-size:10px;font-weight:700;color:'+col+';text-transform:uppercase;">'+a.tool+'</span>'+
+        '<code style="font-family:DM Mono,monospace;font-size:11px;color:'+col+';opacity:0.85;">'+a.call+'</code>'+
+      '</div>'+
+      '<div style="font-family:DM Mono,monospace;font-size:11px;padding:6px 10px;border-radius:5px;background:'+resBg+';color:'+resCol+';line-height:1.6;">'+a.result+'</div>';
+    actionsEl.appendChild(div);
+  });
+
+  // Submitted + errors panel (for submit_fail and success steps)
+  const errEl = document.getElementById('sb-errors');
+  errEl.innerHTML = '';
+  if (step.submitted || (step.errors && step.errors.length > 0)) {
+    if (step.submitted) {
+      const subDiv = document.createElement('div');
+      subDiv.style.cssText = 'background:var(--surface);border:1px solid rgba(255,168,74,0.2);border-radius:7px;padding:10px 14px;';
+      subDiv.innerHTML =
+        '<div style="font-family:DM Mono,monospace;font-size:9px;color:#ffa84a;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;">what was submitted</div>'+
+        '<div style="font-family:DM Mono,monospace;font-size:11px;color:#c8a060;line-height:1.65;">'+step.submitted+'</div>';
+      errEl.appendChild(subDiv);
+    }
+    if (step.errors && step.errors.length > 0) {
+      const errDiv = document.createElement('div');
+      errDiv.style.cssText = 'background:var(--surface);border:1px solid rgba(255,108,142,0.2);border-radius:7px;padding:10px 14px;';
+      const errItems = step.errors.map(e =>
+        '<div style="display:flex;gap:8px;align-items:flex-start;margin-bottom:5px;">'+
+          '<span style="color:#ff6c8e;flex-shrink:0;">✗</span>'+
+          '<span style="font-size:11px;color:var(--muted);line-height:1.6;">'+e+'</span>'+
+        '</div>'
+      ).join('');
+      errDiv.innerHTML =
+        '<div style="font-family:DM Mono,monospace;font-size:9px;color:#ff6c8e;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;">validator errors</div>'+
+        errItems;
+      errEl.appendChild(errDiv);
+    }
+  }
+
+  // PC cards (success step)
+  const pcsEl = document.getElementById('sb-pcs');
+  pcsEl.style.display = 'none';
+  pcsEl.innerHTML = '';
+  if (step.pcs) {
+    pcsEl.style.display = 'flex';
+    const hopColors = {1:'#6c8eff',2:'#ffa84a',3:'#c87eff'};
+
+    if (step.task) {
+      const t = step.task;
+      const tDiv = document.createElement('div');
+      tDiv.style.cssText = 'background:var(--surface);border:1px solid rgba(108,255,200,0.2);border-radius:7px;padding:10px 14px;margin-bottom:4px;';
+      tDiv.innerHTML =
+        '<div style="display:flex;gap:10px;align-items:baseline;flex-wrap:wrap;margin-bottom:10px;">'
+        + '<span style="font-family:DM Mono,monospace;font-size:13px;font-weight:800;color:#6cffc8;letter-spacing:0.02em;">' + t.task_id + '</span>'
+        + '<span style="font-family:DM Mono,monospace;font-size:11px;color:rgba(108,255,200,0.6);">' + t.window + ' · ' + t.days + ' days</span>'
+        + '</div>'
+        + '<div style="font-size:13px;color:var(--text);line-height:1.7;font-style:italic;padding:10px 14px;background:rgba(108,255,200,0.06);border:1px solid rgba(108,255,200,0.15);border-radius:6px;">“' + t.query + '”</div>';
+      pcsEl.appendChild(tDiv);
+    }
+
+    pcsEl.innerHTML += '<div style="font-family:DM Mono,monospace;font-size:10px;color:var(--good);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:4px;margin-top:6px;">Generated P-constraints</div>';
+    step.pcs.forEach(pc => {
+      const hcol = hopColors[pc.hop]||'#6c8eff';
+      const div = document.createElement('div');
+      div.style.cssText = 'background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:9px 13px;display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;';
+      div.innerHTML =
+        '<span style="font-family:DM Mono,monospace;font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;border:1px solid '+hcol+';color:'+hcol+';">hop-'+pc.hop+'</span>'+
+        '<div><div style="font-size:12px;font-weight:600;margin-bottom:2px;">'+pc.desc+'</div><div style="font-family:DM Mono,monospace;font-size:10px;color:var(--muted);">from: '+pc.src+'</div></div>'+
+        '<span style="font-family:DM Mono,monospace;font-size:10px;color:var(--muted);white-space:nowrap;">'+pc.agg+'</span>';
+      pcsEl.appendChild(div);
+    });
+  }
+
+  // Buttons
+  document.getElementById('sb-prev').style.opacity = idx > 0 ? '1' : '0.3';
+  document.getElementById('sb-next').style.opacity = idx < total-1 ? '1' : '0.3';
+  document.getElementById('sb-next').textContent = idx < total-1 ? 'next step →' : 'done ✓';
+  document.getElementById('sb-status').textContent = idx === total-1 ? '18 turns · task published' : '';
+}
+
+function sbNext() {
+  if (sbCurrent < SB_STEPS.length - 1) { sbCurrent++; sbRender(sbCurrent); }
+}
+function sbPrev() {
+  if (sbCurrent > 0) { sbCurrent--; sbRender(sbCurrent); }
+}
+function sbReset() {
+  sbCurrent = -1;
+  document.getElementById('sb-progress-fill').style.width = '0%';
+  document.getElementById('sb-step-label').textContent = 'Step 0 / '+SB_STEPS.length;
+  document.getElementById('sb-step-title').textContent = '';
+  document.getElementById('sb-think').style.display = 'none';
+  document.getElementById('sb-actions').innerHTML = '';
+  document.getElementById('sb-errors').innerHTML = '';
+  document.getElementById('sb-pcs').style.display = 'none';
+  document.getElementById('sb-status').textContent = '';
+  document.getElementById('sb-prev').style.opacity = '0.3';
+  document.getElementById('sb-next').style.opacity = '1';
+  document.getElementById('sb-next').textContent = 'next step →';
+}
+</script>
+
+
+<script>
+const EV_STEPS = { gpt: [{"label":"Task received","type":"task","actions":[{"tool":"TASK","call":"london_easter_food_photographer_2026","result":"4 days \u00b7 Easter 2026 (Apr 4\u20137) \u00b7 3 P-constraints \u00b7 60-call budget \u00b7 Food photographer from US + elderly wheelchair-using mother"}]},{"label":"Discovery \u2014 5 constraint-targeted searches","type":"search","actions":[{"tool":"search_yelp","call":"search_yelp(\"wheelchair accessible photogenic cafe\")","result":"6 results \u2014 Workshop Coffee Clerkenwell, Monmouth Coffee Borough, Caf\u00e9 OTO..."},{"tool":"search_yelp","call":"search_yelp(\"wheelchair accessible upscale restaurant instagrammable\")","result":"6 results \u2014 Gymkhana, Dishoom King's Cross, Sketch \u2013 The Gallery..."},{"tool":"search_yelp","call":"search_yelp(\"wheelchair accessible market food hall photogenic\")","result":"6 results \u2014 Borough Market, Flat Iron Covent Garden..."},{"tool":"search_yelp","call":"search_yelp(\"wheelchair accessible museum\")","result":"6 results \u2014 The British Museum, Natural History Museum, Tate Modern, Courtauld Gallery..."},{"tool":"search_yelp","call":"search_yelp(\"wheelchair accessible park scenic\")","result":"4 results \u2014 Hyde Park, Kew Gardens, Regent's Park..."}]},{"label":"Blog cross-check \u2014 8 venue-targeted queries","type":"search","actions":[{"tool":"search_blogs_and_forums","call":"search_blogs_and_forums(venue_name=\"Borough Market\")","result":"5 posts \u2014 wheelchair access via Stoney St entrance \u00b7 'best food photography spot in London' \u00b7 busy Easter weekend"},{"tool":"search_blogs_and_forums","call":"search_blogs_and_forums(venue_name=\"Sketch \u2013 The Gallery\")","result":"5 posts \u2014 'absolutely instagrammable' pink room \u00b7 reservation required \u00b7 no hours warnings"},{"tool":"search_blogs_and_forums","call":"search_blogs_and_forums(venue_name=\"Gymkhana\")","result":"5 posts \u2014 Michelin star \u00b7 wheelchair accessible \u00b7 lunch/dinner only \u00b7 'exceptional upscale Indian'"},{"tool":"search_blogs_and_forums","call":"search_blogs_and_forums(venue_name=\"The British Museum\")","result":"5 posts \u2014 free entry \u00b7 Easter week very busy \u00b7 wheelchair full access \u00b7 opens 10:00"},{"tool":"search_blogs_and_forums","call":"search_blogs_and_forums(venue_name=\"Kew Gardens\")","result":"5 posts \u2014 good for photography \u00b7 Easter extra busy \u00b7 wheelchair accessible \u00b7 large site needs half-day"}]},{"label":"Official site \u2014 12 calls with specific dates","type":"official","actions":[{"tool":"get_official_site","call":"get_official_site(\"heHfpkV\", date=\"2026-04-04\")","result":"Borough Market: open 10:00\u201317:00 \u00b7 wheelchair \u2713 \u00b7 no ticket required \u00b7 Easter Saturday market"},{"tool":"get_official_site","call":"get_official_site(\"U4UtHGm\", date=\"2026-04-05\")","result":"Sketch \u2013 The Gallery: \u26a0 SOLD OUT on 2026-04-05 \u00b7 next availability 2026-04-07 \u00b7 \u00a365pp"},{"tool":"get_official_site","call":"get_official_site(\"GjmHbqS\", date=\"2026-04-04\")","result":"The British Museum: open 10:00\u201317:30 \u00b7 free \u00b7 wheelchair \u2713 \u00b7 special Easter exhibition"},{"tool":"get_official_site","call":"get_official_site(\"wRvzwmq\", date=\"2026-04-04\")","result":"Natural History Museum: open 10:00\u201317:50 \u00b7 free \u00b7 wheelchair \u2713"},{"tool":"get_official_site","call":"get_official_site(\"EZN4wAu\", date=\"2026-04-06\")","result":"Gymkhana: open 12:00\u201314:30, 18:00\u201322:30 \u00b7 booking required \u00b7 wheelchair \u2713 \u00b7 upscale"}]},{"label":"Travel time \u2014 7 consecutive pairs","type":"travel","actions":[{"tool":"get_travel_time","call":"get_travel_time(\"heHfpkV\" \u2192 \"wRvzwmq\")","result":"Borough Market \u2192 British Museum: 34.2 min walk \u00b7 9.1 min transit"},{"tool":"get_travel_time","call":"get_travel_time(\"U4UtHGm\" \u2192 \"lv1VhcX\")","result":"Sketch \u2192 Courtauld Gallery: 12.3 min walk"},{"tool":"get_travel_time","call":"get_travel_time(\"QFYcgIF\" \u2192 \"UzglqUU\")","result":"Natural History Museum \u2192 V&A Museum: 8.4 min walk"},{"tool":"get_travel_time","call":"get_travel_time(\"qtIrHEa\" \u2192 \"z1C34lE\")","result":"Gymkhana \u2192 Dishoom: 11.2 min walk"}]},{"label":"Evaluation result","type":"result","actions":[{"tool":"PLAN","call":"4-day plan submitted \u00b7 36 tool calls \u00b7 132k tokens","result":"Plan parsed \u2705 \u00b7 4 days \u00b7 16 activities"}],"scores":{"C":"100%","F":"85%","P":"100%"},"miss":"F \u221215%: Sketch \u2013 The Gallery scheduled Apr 5 (sold out). Official site returned sold-out signal but agent proceeded with booking.","pcs":[{"id":"pc_001","score":1.0,"label":"\u226560% venues wheelchair accessible"},{"id":"pc_002","score":1.0,"label":"\u22652 upscale meal venues"},{"id":"pc_003","score":1.0,"label":"\u22651 instagrammable venue"}]}], glm: [{"label":"Task received","type":"task","actions":[{"tool":"TASK","call":"london_easter_food_photographer_2026","result":"4 days \u00b7 Easter 2026 (Apr 4\u20137) \u00b7 3 P-constraints \u00b7 60-call budget \u00b7 Food photographer from US + elderly wheelchair-using mother"}]},{"label":"Discovery \u2014 4 searches, all wheelchair-only","type":"search","actions":[{"tool":"search_yelp","call":"search_yelp(\"wheelchair accessible restaurant photogenic\")","result":"6 results \u2014 Natural History Museum Cafe, Dishoom King's Cross, Flat Iron..."},{"tool":"search_yelp","call":"search_yelp(\"wheelchair accessible upscale dinner\")","result":"6 results \u2014 Gymkhana, Barrafina Adelaide Street, The Wolseley..."},{"tool":"search_yelp","call":"search_yelp(\"wheelchair accessible cafe instagrammable\")","result":"6 results \u2014 Workshop Coffee Clerkenwell, Monmouth Coffee, Proud Archivist..."},{"tool":"search_yelp","call":"search_yelp(\"wheelchair accessible market food\")","result":"6 results \u2014 Borough Market, Maltby Street Market, Flat Iron Covent Garden..."}]},{"label":"Official site \u2014 4 venues only, no blog checks","type":"official","actions":[{"tool":"get_official_site","call":"get_official_site(\"wRvzwmq\", date=\"2026-04-04\")","result":"Natural History Museum: open 10:00\u201317:50 \u00b7 free \u00b7 wheelchair \u2713"},{"tool":"get_official_site","call":"get_official_site(\"heHfpkV\", date=\"2026-04-04\")","result":"Borough Market: open 10:00\u201317:00 \u00b7 wheelchair \u2713"},{"tool":"get_official_site","call":"get_official_site(\"vEWMxcY\", date=\"2026-04-04\")","result":"Workshop Coffee Clerkenwell: open 09:00\u201317:00 \u00b7 wheelchair \u2713"},{"tool":"get_official_site","call":"get_official_site(\"z1C34lE\", date=\"2026-04-05\")","result":"Dishoom King's Cross: open 08:00\u201323:00 \u00b7 wheelchair \u2713"},{"tool":"search_blogs_and_forums","call":"search_blogs_and_forums(query=\"wheelchair accessible photogenic spots London\")","result":"5 generic posts \u2014 no venue-specific hours or upscale/instagrammable info"},{"tool":"get_travel_time","call":"get_travel_time(\"heHfpkV\" \u2192 \"wRvzwmq\")","result":"Borough Market \u2192 Natural History Museum: 41.2 min walk"}]},{"label":"Evaluation result","type":"result_fail","actions":[{"tool":"PLAN","call":"4-day plan submitted \u00b7 10 tool calls \u00b7 38k tokens","result":"Plan parsed \u2705 \u00b7 4 days \u00b7 activities present"}],"scores":{"C":"96%","F":"69%","P":"33%"},"miss":"F: Workshop Coffee scheduled 14:00\u201318:00 but closes 17:00 \u2014 never verified hours against the plan times. P: 2 of 3 constraints failed \u2014 no instagrammable venue search, no upscale dinner verification.","pcs":[{"id":"pc_001","score":1.0,"label":"\u226560% venues wheelchair accessible"},{"id":"pc_002","score":0.0,"label":"\u22652 upscale meal venues"},{"id":"pc_003","score":0.0,"label":"\u22651 instagrammable venue"}]}] };
+const EV_IDX   = { gpt: -1, glm: -1 };
+const EV_ACCENT = { gpt: '#6cffc8', glm: '#ff6c8e' };
+const TOOL_COL = {'search_yelp':'#6c8eff','search_blogs_and_forums':'#c87eff','get_official_site':'#6cffc8','get_travel_time':'#ffa84a','QUERY':'rgba(120,120,160,0.7)','RESULT':'#6cffc8'};
+
+function evRender(m) {
+  const idx   = EV_IDX[m];
+  const steps = EV_STEPS[m];
+  const total = steps.length;
+  const step  = steps[idx];
+  const acc   = EV_ACCENT[m];
+
+  document.getElementById(m+'-fill').style.width = ((idx+1)/total*100)+'%';
+  document.getElementById(m+'-lbl').textContent  = (idx+1)+'/'+total;
+
+  const icons = {task:'📋',search:'🔍',official:'📄',travel:'🗺️',result:'✅',result_fail:'❌'};
+  document.getElementById(m+'-title').textContent = (icons[step.type]||'•')+' '+step.label;
+
+  // No think block for solving transcripts — reasoning text not stored
+  const thinkEl = document.getElementById(m+'-think');
+  thinkEl.style.display = 'none';
+
+  const actEl = document.getElementById(m+'-actions');
+  actEl.innerHTML = '';
+  const TOOL_ACCENT = {'search_yelp':'#6c8eff','search_blogs_and_forums':'#c87eff','get_official_site':'#6cffc8','get_travel_time':'#ffa84a','get_weather_forecast':'#6cc8ff','find_nearby_venues':'#6cff96','THINK':'#c87eff','TASK':'rgba(120,120,160,0.6)','PLAN':'rgba(120,120,160,0.6)'};
+  (step.actions||[]).forEach(a => {
+    const col    = TOOL_ACCENT[a.tool] || '#6c8eff';
+    const isWarn = a.result && a.result.includes('SOLD OUT');
+    const isNote = a.result && a.result.includes('←');
+    const resBg  = isWarn ? 'rgba(255,168,74,0.1)' : 'var(--surface2)';
+    const resCol = isWarn ? '#ffa84a' : isNote ? 'rgba(120,120,160,0.8)' : 'var(--muted)';
+    const d = document.createElement('div');
+    d.style.cssText = 'background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:8px 10px;';
+    d.innerHTML =
+      '<div style="display:flex;align-items:baseline;gap:6px;margin-bottom:5px;">'+
+        '<span style="font-family:DM Mono,monospace;font-size:9px;font-weight:700;color:'+col+';text-transform:uppercase;flex-shrink:0;">'+a.tool+'</span>'+
+        '<code style="font-family:DM Mono,monospace;font-size:10px;color:'+col+';opacity:0.85;word-break:break-all;">'+a.call+'</code>'+
+      '</div>'+
+      '<div style="font-family:DM Mono,monospace;font-size:10px;padding:5px 8px;border-radius:4px;background:'+resBg+';color:'+resCol+';line-height:1.6;">'+a.result+'</div>';
+    actEl.appendChild(d);
+  });
+
+  const rp = document.getElementById(m+'-result-panel');
+  if (step.type === 'result' || step.type === 'result_fail') {
+    rp.style.display = 'block';
+    const good = step.type === 'result';
+    let html = '<div style="background:var(--surface2);border:1px solid '+(good?'rgba(108,255,200,0.25)':'rgba(255,108,142,0.25)')+';border-radius:6px;padding:10px 12px;">';
+
+    // C / F / P score row
+    if (step.scores) {
+      html += '<div style="display:flex;gap:14px;margin-bottom:8px;flex-wrap:wrap;">';
+      const SCORE_LABELS = {C:'Process', F:'Feasibility', P:'Preference'};
+      Object.entries(step.scores).forEach(([k,v]) => {
+        const pct = parseFloat(v);
+        const c = v==='N/A'?'var(--muted)': pct===0?'#ff6c8e': pct>=90?'#6cffc8': pct>=70?'#ffa84a':'#ff6c8e';
+        const bg = v==='N/A'?'rgba(120,120,160,0.08)': pct===0?'rgba(255,108,142,0.1)': pct>=90?'rgba(108,255,200,0.1)': 'rgba(255,168,74,0.1)';
+        html += '<div style="display:flex;flex-direction:column;align-items:center;padding:6px 12px;border-radius:6px;background:'+bg+';border:1px solid '+c+'40;">';
+        html += '<span style="font-family:DM Mono,monospace;font-size:18px;font-weight:800;color:'+c+';">'+v+'</span>';
+        html += '<span style="font-family:DM Mono,monospace;font-size:9px;color:var(--muted);margin-top:2px;">'+k+' — '+(SCORE_LABELS[k]||k)+'</span>';
+        html += '</div>';
+      });
+      html += '</div>';
+    }
+
+    if (step.miss) html += '<div style="font-size:10px;color:'+(good?'#ffa84a':'#ff6c8e')+';line-height:1.55;margin-bottom:7px;padding:5px 8px;background:rgba(0,0,0,0.15);border-radius:4px;">'+step.miss+'</div>';
+
+    if (step.c_issues) {
+      step.c_issues.forEach(ci => {
+        html += '<div style="font-family:DM Mono,monospace;font-size:10px;color:#ff6c8e;line-height:1.5;padding:2px 0;">✗ '+ci+'</div>';
+      });
+    }
+
+    if (step.pcs) {
+      html += '<div style="margin-top:6px;display:flex;flex-direction:column;gap:3px;">';
+      step.pcs.forEach(pc => {
+        const c = pc.score===1.0?'#6cffc8': pc.score===0.5?'#ffa84a':'#ff6c8e';
+        const ic = pc.score===1.0?'✓': pc.score===0.5?'~':'✗';
+        html += '<div style="display:flex;gap:6px;align-items:center;">'+
+          '<span style="font-family:DM Mono,monospace;font-size:10px;color:'+c+';width:12px;">'+ic+'</span>'+
+          '<span style="font-family:DM Mono,monospace;font-size:9px;color:var(--muted);width:40px;">'+pc.id+'</span>'+
+          '<span style="font-size:10px;color:var(--muted);flex:1;">'+pc.label+'</span>'+
+          '<span style="font-family:DM Mono,monospace;font-size:10px;color:'+c+';">'+pc.score.toFixed(1)+'</span>'+
+        '</div>';
+      });
+      html += '</div>';
+    }
+    html += '</div>';
+    rp.innerHTML = html;
+  } else rp.style.display = 'none';
+
+  document.getElementById(m+'-prev').style.opacity = idx>0 ? '1' : '0.35';
+  const isLast = idx >= total-1;
+  const btn = document.getElementById(m+'-next');
+  btn.textContent = isLast ? 'done ✓' : 'next →';
+  btn.style.opacity = isLast ? '0.5' : '1';
+}
+
+function evNext(m) {
+  if (EV_IDX[m] < EV_STEPS[m].length-1) { EV_IDX[m]++; evRender(m); }
+}
+function evPrev(m) {
+  if (EV_IDX[m] > 0) { EV_IDX[m]--; evRender(m); }
+}
+function evReset(m) {
+  EV_IDX[m] = -1;
+  document.getElementById(m+'-fill').style.width='0%';
+  document.getElementById(m+'-lbl').textContent='0/'+EV_STEPS[m].length;
+  document.getElementById(m+'-title').textContent='';
+  document.getElementById(m+'-think').style.display='none';
+  document.getElementById(m+'-actions').innerHTML='';
+  document.getElementById(m+'-result-panel').style.display='none';
+  document.getElementById(m+'-prev').style.opacity='0.35';
+  const btn = document.getElementById(m+'-next');
+  btn.textContent='next →'; btn.style.opacity='1';
+}
+</script>
+
+
+
+</body>
+</html>
