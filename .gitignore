@@ -77,3 +77,13 @@ logs/
 results/Archive.zip
 results/scratch/
 *.zip
+
+# ── Third-party reference PDFs (cited in docs/EXTERNAL_REFERENCES.md) ───────
+# Freely available on arXiv; not redistributed in-repo.
+docs/travelbench_paper/
+
+# ── Pilot stub DBs (auto-recreatable copies of test_70/travelbench.db) ──────
+# Copy data/cities/<city>/runs/test_70/travelbench.db into these dirs before
+# invoking --clean-environment for the A/B pilot.
+data/cities/*/runs/test_70_clean/
+data/cities/*/runs/test_70_faulty/
