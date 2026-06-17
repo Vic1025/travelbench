@@ -1,0 +1,24 @@
+===== PILOT STARTED Sat Jun  6 22:59:03 EDT 2026 =====
+Tasks: 5  ·  Models: 2  ·  2 modes = 20 runs
+
+===== deepseek-chat  ·  faulty  ·  Sat Jun  6 22:59:03 EDT 2026 =====
+  exit_code=0 · latest_run_ts=20260606_225904 · rows_added=5
+
+===== deepseek-chat  ·  clean  ·  Sat Jun  6 23:02:45 EDT 2026 =====
+  exit_code=0 · latest_run_ts=20260606_230245 · rows_added=5
+
+===== gemini-3.1-pro-preview  ·  faulty  ·  Sat Jun  6 23:06:24 EDT 2026 =====
+  exit_code=0 · latest_run_ts=20260606_230624 · rows_added=5
+
+===== gemini-3.1-pro-preview  ·  clean  ·  Sat Jun  6 23:10:52 EDT 2026 =====
+  exit_code=0 · latest_run_ts=20260606_231052 · rows_added=5
+
+===== PILOT COMPLETE Sat Jun  6 23:17:16 EDT 2026 =====
+
+PER-MODEL means — clean vs faulty (only rows since 20260606_225903):
+model                   rn       n  mean_c  mean_f  mean_p
+----------------------  -------  -  ------  ------  ------
+deepseek-chat           present  5  0.368   0.067   0.778 
+deepseek-chat           present  5  0.768   0.208   0.859 
+gemini-3.1-pro-preview  present  5  0.96    0.738   0.608 
+gemini-3.1-pro-preview  present  5  0.904   0.762   0.725 

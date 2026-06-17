@@ -1,0 +1,157 @@
+  Using evaluator DB: /Users/victoriajin/Documents/Career_related/TravelPlanningAgent/travelbench_Phase5.10/data/cities/new_york/runs/test_70/travelbench.db
+
+───────────────────────────────────────────────────────
+TOKEN BUDGET ESTIMATE — doubao-seed-2-0-pro-260215
+───────────────────────────────────────────────────────
+  claude_sonnet_4_5_new_york_type1_20260521_1779375385 (medium) ~16,350 tokens  (~12 tool calls)
+  gemini_3_1_pro_preview_new_york_type2_20260521_1779375520 (medium) ~16,350 tokens  (~12 tool calls)
+  gemini_3_1_pro_preview_new_york_type3_20260521_1779375659 (hard  ) ~30,500 tokens  (~18 tool calls)
+  gpt_5_4_new_york_type4_20260521_1779375371 (medium) ~16,350 tokens  (~12 tool calls)
+  gemini_3_1_pro_preview_new_york_type5_20260521_1779375933 (hard  ) ~30,500 tokens  (~18 tool calls)
+  gpt_5_4_new_york_type6_20260521_1779375462 (medium) ~16,350 tokens  (~12 tool calls)
+  ──────────────────────────────────────────────────
+  Total input:  ~67,200
+  Total output: ~59,200
+  Total tokens: ~126,400
+  Est. cost:    unknown (model not in pricing table)
+───────────────────────────────────────────────────────
+
+[1/6] Running claude_sonnet_4_5_new_york_type1_20260521_1779375385  (medium)  → doubao-seed-2-0-pro-260215
+
+  ┌─ claude_sonnet_4_5_new_york_type1_20260521_1779375385  (medium)  [52,071 tokens]
+  │  Tool calls: 12
+  │  Plan parsed: yes
+  │
+  │  C-score (process): 96.0%  ✅ deductions=1 warnings=4
+  │    −0.04  Plan task_id 'nyc_architecture_photography_july4_2026' doesn't match task 'claude_son
+  │    ⚠  Day 1: venue_id 'BiMQKnh' appears 2 times. If this is a split visit (e.g. morning + aftern
+  │    ⚠  Day 2: venue_id 'ywrp541' appears 2 times. If this is a split visit (e.g. morning + aftern
+  │    ⚠  Day 3: venue_id 'ZAA2ohh' appears 2 times. If this is a split visit (e.g. morning + aftern
+  │  F-score (feasibility): 37.0%  ❌
+  │    −0.05 [F2c] Day 1: 'Ops' has wrong info but agent never retrieved truth-carri
+  │    −0.02 [F4a] Day 1: 'Brooklyn Bridge' over-scheduled 650min (max 150, rec 90mi
+  │    −0.15 [F1b] Day 1: gap 'Grimaldi's Pizzeria'→'Brooklyn Bridge' is 0min but wa
+  │    ... +6 more
+  │  P-score (preferences): 87.5%
+  │    ✓ [pc_001] score=1.00  At least 60% of meals at local cuisine restaurants
+  │    ✓ [pc_002] score=1.00  At least 3 distinct cuisines across meals: 9/9 mat
+  │    ✓ [pc_003] score=1.00  At least 1 art museum visit: 1/1 matching (pass)
+  │    ~ [pc_004] score=0.50  At least 2 waterfront venues: 1/1 matching (fail)
+  │  B-score (bonus):       100.0%
+  │
+  ⏱  136.2s  [45,694in + 6,377out = 52,071 tokens]
+  📝 Transcript: claude_sonnet_4_5_new_york_type1_20260521_1779375385_20260606_223327.json.gz (4KB)
+[2/6] Running gemini_3_1_pro_preview_new_york_type2_20260521_1779375520  (medium)  → doubao-seed-2-0-pro-260215
+
+  ┌─ gemini_3_1_pro_preview_new_york_type2_20260521_1779375520  (medium)  [20,693 tokens]
+  │  Tool calls: 4
+  │  Plan parsed: yes
+  │
+  │  C-score (process): 96.0%  ✅ deductions=1 warnings=0
+  │    −0.04  Plan task_id 'fidi_20260704_afternoon' doesn't match task 'gemini_3_1_pro_preview_new
+  │  F-score (feasibility): 55.0%  ⚠
+  │    −0.15 [F2a] Day 1: 'New York Stock Exchange' CLOSED on sat (scheduled 14:00–1
+  │    −0.30 [F2e] type2 contiguous time-ceiling overrun: 98min engaged (ceiling 90m
+  │  P-score (preferences): 100.0%
+  │    ✓ [pc_001] score=1.00  All activities must be in Downtown Manhattan / Fin
+  │    ✓ [pc_002] score=1.00  At least 50% of activities must be free: 2/2 match
+  │    ✓ [pc_003] score=1.00  At least 2 attractions must be scheduled: 2/2 matc
+  │  B-score (bonus):       100.0%
+  │
+  ⏱  53.2s  [18,651in + 2,042out = 20,693 tokens]
+  📝 Transcript: gemini_3_1_pro_preview_new_york_type2_20260521_1779375520_20260606_223327.json.gz (1KB)
+[3/6] Running gemini_3_1_pro_preview_new_york_type3_20260521_1779375659  (hard)  → doubao-seed-2-0-pro-260215
+
+  ┌─ gemini_3_1_pro_preview_new_york_type3_20260521_1779375659  (hard)  [26,937 tokens]
+  │  Tool calls: 8
+  │  Plan parsed: yes
+  │
+  │  C-score (process): 88.0%  ✅ deductions=3 warnings=1
+  │    −0.04  Plan task_id 'nyc_2day_july4_2026' doesn't match task 'gemini_3_1_pro_preview_new_yor
+  │    −0.04  Day 1 act 9: venue_id 'ext_brooklyn_bridge_park' not seen in any tool result
+  │    −0.04  Day 2 act 7: venue_id 'ext_central_park_meadow' not seen in any tool result
+  │    ⚠  total_estimated_cost_local mismatch: stated=268 vs computed=227 (diff 41)
+  │  F-score (feasibility): 48.0%  ❌
+  │    −0.05 [F2c] Day 1: 'Roberta's' has wrong info but agent never retrieved truth
+  │    −0.02 [F4a] Day 1: 'Smorgasburg LIC Winter Pop-Up' over-scheduled 190min (max
+  │    −0.15 [F1b] Day 2: transit leg 'Katz's Delicatessen'→'Rockefeller Center' all
+  │    ... +2 more
+  │  P-score (preferences): 41.7%
+  │    ~ [pc_001] score=0.75  At least 4 high-traffic venues: 3/10 matching (fai
+  │    ✗ [pc_002] score=0.25  At least 4 low-traffic venues: 1/10 matching (fail
+  │    ✗ [pc_003] score=0.00  At least 1 park per day: fail (per_day)
+  │    ~ [pc_004] score=0.67  At least 3 distinct cuisines at mid-priced venues:
+  │  B-score (bonus):       100.0%
+  │
+  ⏱  116.5s  [21,159in + 5,778out = 26,937 tokens]
+  📝 Transcript: gemini_3_1_pro_preview_new_york_type3_20260521_1779375659_20260606_223327.json.gz (3KB)
+[4/6] Running gpt_5_4_new_york_type4_20260521_1779375371  (medium)  → doubao-seed-2-0-pro-260215
+
+  ┌─ gpt_5_4_new_york_type4_20260521_1779375371  (medium)  [44,288 tokens]
+  │  Tool calls: 11
+  │  Plan parsed: yes
+  │
+  │  C-score (process): 96.0%  ✅ deductions=1 warnings=0
+  │    −0.04  Plan task_id 'nyc_independence_day_budget_trip' doesn't match task 'gpt_5_4_new_york_
+  │  F-score (feasibility):  0.0%  ❌
+  │    −0.05 [F2c] Day 1: 'Ess-a-Bagel' has wrong info but agent never retrieved tru
+  │    −0.15 [F1b] Day 1: walking leg 'Brooklyn Bridge'→'The Oculus' allocated 15min
+  │    −0.15 [F1b] Day 1: transit leg 'The Oculus'→'El Malecón' allocated 20min, nee
+  │    ... +6 more
+  │  P-score (preferences): 75.0%
+  │    ✓ [pc_001] score=1.00  Total estimated cost per day must stay within the 
+  │    ✓ [pc_002] score=1.00  All visit activities must be at free-entry venues:
+  │    ✓ [pc_003] score=1.00  No venue in the plan may be tagged as a tourist tr
+  │    ✗ [pc_004] score=0.00  All meal activities must be at budget-priced venue
+  │  B-score (bonus):        0.0%
+  │
+  ⏱  116.3s  [38,963in + 5,325out = 44,288 tokens]
+  📝 Transcript: gpt_5_4_new_york_type4_20260521_1779375371_20260606_223327.json.gz (2KB)
+[5/6] Running gemini_3_1_pro_preview_new_york_type5_20260521_1779375933  (hard)  → doubao-seed-2-0-pro-260215
+
+  ┌─ gemini_3_1_pro_preview_new_york_type5_20260521_1779375933  (hard)  [45,813 tokens]
+  │  Tool calls: 10
+  │  Plan parsed: yes
+  │
+  │  C-score (process): 92.0%  ✅ deductions=2 warnings=0
+  │    −0.04  Plan task_id 'nyc_2day_wheelchair_budget_cafe' doesn't match task 'gemini_3_1_pro_pre
+  │    −0.04  Day 2 act 5: missing field 'venue_id'
+  │  F-score (feasibility): 98.0%  ✅
+  │    −0.02 [F4a] Day 1: 'Brooklyn Bridge' over-scheduled 165min (max 150, rec 90mi
+  │  P-score (preferences): 33.3%
+  │    ✗ [pc_001] score=0.00  All venues must be budget or free: 4/9 matching (f
+  │    ✗ [pc_002] score=0.00  All venues must be wheelchair accessible: 6/9 matc
+  │    ✓ [pc_003] score=1.00  Visit at least 1 cafe: 4/4 matching (distinct venu
+  │  B-score (bonus):       100.0%
+  │
+  ⏱  117.1s  [40,126in + 5,687out = 45,813 tokens]
+  📝 Transcript: gemini_3_1_pro_preview_new_york_type5_20260521_1779375933_20260606_223327.json.gz (2KB)
+[6/6] Running gpt_5_4_new_york_type6_20260521_1779375462  (medium)  → doubao-seed-2-0-pro-260215
+  ❌ Error running task: Expecting ',' delimiter: line 1 column 65 (char 64)
+
+  ┌─ gpt_5_4_new_york_type6_20260521_1779375462  (medium)  [0 tokens]
+  │  Tool calls: 0
+  │  Plan parsed: NO ← check raw output
+  │
+  │  ❌ TASK ERROR: Expecting ',' delimiter: line 1 column 65 (char 64)
+  └─ COMPOSITE:   N/A   (task did not complete)
+  ⏱  41.1s  [0in + 0out = 0 tokens]
+
+════════════════════════════════════════════════════════════
+RUN SUMMARY — doubao-seed-2-0-pro-260215
+════════════════════════════════════════════════════════════
+Task                      Diff        C      F      P   Tokens
+────────────────────────────────────────────────────────────
+  claude_sonnet_4_5_new_york_type1_20260521_1779375385 medium    96%    37%    88%   52,071
+  gemini_3_1_pro_preview_new_york_type2_20260521_1779375520 medium    96%    55%   100%   20,693
+  gemini_3_1_pro_preview_new_york_type3_20260521_1779375659 hard      88%    48%    42%   26,937
+  gpt_5_4_new_york_type4_20260521_1779375371 medium    96%     0%    75%   44,288
+  gemini_3_1_pro_preview_new_york_type5_20260521_1779375933 hard      92%    98%    33%   45,813
+  gpt_5_4_new_york_type6_20260521_1779375462 medium    N/A    N/A    N/A        0
+────────────────────────────────────────────────────────────
+  TOTAL                                     189,802 tokens
+  Wall time: 580.5s
+════════════════════════════════════════════════════════════
+real 580.98
+user 1.03
+sys 0.26

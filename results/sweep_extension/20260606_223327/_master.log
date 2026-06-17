@@ -1,0 +1,27 @@
+===== SWEEP STARTED Sat Jun  6 22:33:27 EDT 2026 =====
+Tasks: 6  ·  Models: 5  ·  Log dir: results/sweep_extension/20260606_223327
+
+===== MODEL: doubao-seed-2-0-pro-260215  ·  Sat Jun  6 22:33:27 EDT 2026 =====
+  exit_code=0 · latest_run_ts=20260606_223327 · rows_added=6
+
+===== MODEL: glm-4-7-251222  ·  Sat Jun  6 22:43:08 EDT 2026 =====
+  exit_code=0 · latest_run_ts=20260606_224308 · rows_added=6
+
+===== MODEL: kimi-k2.6  ·  Sat Jun  6 22:56:52 EDT 2026 =====
+  exit_code=0 · latest_run_ts=20260606_225652 · rows_added=6
+
+===== MODEL: gpt-5.5  ·  Sun Jun  7 00:06:03 EDT 2026 =====
+  exit_code=0 · latest_run_ts=20260607_000604 · rows_added=6
+
+===== MODEL: claude-opus-4-8  ·  Sun Jun  7 00:13:57 EDT 2026 =====
+  exit_code=0 · latest_run_ts=20260607_001357 · rows_added=6
+
+===== SWEEP COMPLETE Sun Jun  7 00:24:39 EDT 2026 =====
+Log dir: results/sweep_extension/20260606_223327
+model                       rows  mean_c  mean_f  mean_p
+--------------------------  ----  ------  ------  ------
+claude-opus-4-8             6     0.907   0.847   0.819 
+doubao-seed-2-0-pro-260215  6     0.936   0.476   0.675 
+glm-4-7-251222              6     0.72    0.642   0.66  
+gpt-5.5                     6     0.16    0.4     0.667 
+kimi-k2.6                   6     0.913   0.45    0.773 

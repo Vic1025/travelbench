@@ -1,0 +1,160 @@
+  Using evaluator DB: /Users/victoriajin/Documents/Career_related/TravelPlanningAgent/travelbench_Phase5.10/data/cities/new_york/runs/test_70_faulty/travelbench.db
+
+───────────────────────────────────────────────────────
+TOKEN BUDGET ESTIMATE — deepseek-chat
+───────────────────────────────────────────────────────
+  claude_sonnet_4_5_new_york_type1_20260521_1779375385 (medium) ~16,350 tokens  (~12 tool calls)
+  gemini_3_1_pro_preview_new_york_type2_20260521_1779375520 (medium) ~16,350 tokens  (~12 tool calls)
+  gemini_3_1_pro_preview_new_york_type3_20260521_1779375659 (hard  ) ~30,500 tokens  (~18 tool calls)
+  gpt_5_4_new_york_type4_20260521_1779375371 (medium) ~16,350 tokens  (~12 tool calls)
+  gemini_3_1_pro_preview_new_york_type5_20260521_1779375933 (hard  ) ~30,500 tokens  (~18 tool calls)
+  ──────────────────────────────────────────────────
+  Total input:  ~58,250
+  Total output: ~51,800
+  Total tokens: ~110,050
+  Est. cost:    ~$0.0727
+───────────────────────────────────────────────────────
+
+[1/5] Running claude_sonnet_4_5_new_york_type1_20260521_1779375385  (medium)  → deepseek-chat
+    [rescue:openai] finish=stop out_tokens=3077 text_len=11401 has_tag=True
+
+  ┌─ claude_sonnet_4_5_new_york_type1_20260521_1779375385  (medium)  [268,954 tokens]
+  │  Tool calls: 49
+  │  Plan parsed: yes
+  │
+  │  C-score (process): 88.0%  ✅ deductions=3 warnings=1
+  │    −0.04  Plan task_id 'new_york_july4_photography_2026' doesn't match task 'claude_sonnet_4_5_
+  │    −0.04  Day 3 act 1: missing field 'from_venue_id'
+  │    −0.04  Day 3 act 1: missing field 'to_venue_id'
+  │    ⚠  Day 1: venue_id 'IhQ1cao' appears 2 times. If this is a split visit (e.g. morning + aftern
+  │  F-score (feasibility):  0.0%  ❌
+  │    −0.02 [F4a] Day 1: 'Brooklyn Bridge Park' over-scheduled 210min (max 180, rec
+  │    −0.15 [F1b] Day 1: walking leg 'The Oculus'→'Brooklyn Bridge' allocated 5min,
+  │    −0.15 [F1b] Day 1: gap 'Grimaldi's Pizzeria'→'Brooklyn Bridge Park' is 0min b
+  │    ... +7 more
+  │  P-score (preferences): 100.0%
+  │    ✓ [pc_001] score=1.00  At least 60% of meals at local cuisine restaurants
+  │    ✓ [pc_002] score=1.00  At least 3 distinct cuisines across meals: 6/6 mat
+  │    ✓ [pc_003] score=1.00  At least 1 art museum visit: 2/2 matching (pass)
+  │    ✓ [pc_004] score=1.00  At least 2 waterfront venues: 4/7 matching (distin
+  │  B-score (bonus):       66.7%
+  │
+  ⏱  61.1s  [261,404in + 7,550out = 268,954 tokens]
+  📝 Transcript: claude_sonnet_4_5_new_york_type1_20260521_1779375385_20260606_225904.json.gz (6KB)
+[2/5] Running gemini_3_1_pro_preview_new_york_type2_20260521_1779375520  (medium)  → deepseek-chat
+    [rescue:openai] finish=stop out_tokens=1099 text_len=3983 has_tag=True
+
+  ┌─ gemini_3_1_pro_preview_new_york_type2_20260521_1779375520  (medium)  [107,577 tokens]
+  │  Tool calls: 16
+  │  Plan parsed: yes
+  │
+  │  C-score (process): 96.0%  ✅ deductions=1 warnings=1
+  │    −0.04  Plan task_id 'New_York_FinDist_Jul4_Afternoon' doesn't match task 'gemini_3_1_pro_pre
+  │    ⚠  Day 1: venue_id 'ZknUeq0' appears 2 times. If this is a split visit (e.g. morning + aftern
+  │  F-score (feasibility): 20.0%  ❌
+  │    −0.15 [F2b] Day 1: '9/11 Memorial & Museum' SOLD OUT on 2026-07-04
+  │    −0.15 [F2a] Day 1: 'New York Stock Exchange' CLOSED on sat (scheduled 14:55–1
+  │    −0.15 [F2a] Day 1: 'New York Stock Exchange' CLOSED on sat (scheduled 15:20–1
+  │    ... +2 more
+  │  P-score (preferences): 83.3%
+  │    ✓ [pc_001] score=1.00  All activities must be in Downtown Manhattan / Fin
+  │    ✓ [pc_002] score=1.00  At least 50% of activities must be free: 2/3 match
+  │    ~ [pc_003] score=0.50  At least 2 attractions must be scheduled: 2/2 matc
+  │  B-score (bonus):        0.0%
+  │
+  ⏱  27.7s  [104,940in + 2,637out = 107,577 tokens]
+  📝 Transcript: gemini_3_1_pro_preview_new_york_type2_20260521_1779375520_20260606_225904.json.gz (3KB)
+[3/5] Running gemini_3_1_pro_preview_new_york_type3_20260521_1779375659  (hard)  → deepseek-chat
+    [rescue:openai] finish=stop out_tokens=266 text_len=993 has_tag=False
+
+  ┌─ gemini_3_1_pro_preview_new_york_type3_20260521_1779375659  (hard)  [172,805 tokens]
+  │  Tool calls: 32
+  │  Plan parsed: NO ← check raw output
+  │
+  │  C-score (process):  0.0%  ❌ deductions=1 warnings=0
+  │    −1.00  Hard gate: no <final_plan> produced or JSON parse failed
+  │  [C gate failed — F/P/B not evaluated]
+  │
+  │  ── Agent debug (32/30 tool rounds) ──
+  │  call 1: search_yelp(query=famous attractions, city=New_York, category=attraction)
+  │  call 2: search_yelp(query=hidden gem off the beaten, city=New_York, category=attraction)
+  │  call 3: search_yelp(query=mid priced diverse cuisin, city=New_York, category=restaurant)
+  │  call 4: search_yelp(query=famous landmarks NYC, city=New_York, category=attraction)
+  │  call 5: search_yelp(query=museum, city=New_York, category=museum)
+  │  call 6: search_yelp(query=park outdoor, city=New_York, category=park)
+  │  call 7: search_yelp(query=Statue of Liberty Empire , city=New_York, category=attraction)
+  │  call 8: search_yelp(query=Korean Chinese Mexican Th, city=New_York, category=restaurant)
+  │  ── end debug ──
+  │
+  ⏱  33.3s  [169,332in + 3,473out = 172,805 tokens]
+  📝 Transcript: gemini_3_1_pro_preview_new_york_type3_20260521_1779375659_20260606_225904.json.gz (2KB)
+[4/5] Running gpt_5_4_new_york_type4_20260521_1779375371  (medium)  → deepseek-chat
+    [rescue:openai] finish=stop out_tokens=2643 text_len=10014 has_tag=True
+
+  ┌─ gpt_5_4_new_york_type4_20260521_1779375371  (medium)  [191,222 tokens]
+  │  Tool calls: 32
+  │  Plan parsed: yes
+  │
+  │  C-score (process):  0.0%  ✅ deductions=28 warnings=1
+  │    −0.04  Plan task_id 'New_York_Independence_Day_Weekend' doesn't match task 'gpt_5_4_new_york
+  │    −0.04  Day 1 act 2: missing field 'mode'
+  │    −0.04  Day 1 act 2: missing field 'from_venue_id'
+  │    −0.04  Day 1 act 2: missing field 'to_venue_id'
+  │    −0.04  Day 1 act 4: missing field 'mode'
+  │    ⚠  Day 2: venue_id 'IhQ1cao' appears 2 times. If this is a split visit (e.g. morning + aftern
+  │  F-score (feasibility):  0.0%  ❌
+  │    −0.15 [F1b] Day 1: walking leg 'Ess-a-Bagel'→'The High Line' allocated 30min,
+  │    −0.15 [F1b] Day 1: walking leg 'The High Line'→'Central Park' allocated 30min
+  │    −0.15 [F1b] Day 1: walking leg 'Central Park'→'Veselka' allocated 30min, need
+  │    ... +5 more
+  │  P-score (preferences): 50.0%
+  │    ✗ [pc_001] score=0.00  Total estimated cost per day must stay within the 
+  │    ✓ [pc_002] score=1.00  All visit activities must be at free-entry venues:
+  │    ✓ [pc_003] score=1.00  No venue in the plan may be tagged as a tourist tr
+  │    ✗ [pc_004] score=0.00  All meal activities must be at budget-priced venue
+  │  B-score (bonus):        0.0%
+  │
+  ⏱  51.1s  [185,322in + 5,900out = 191,222 tokens]
+  📝 Transcript: gpt_5_4_new_york_type4_20260521_1779375371_20260606_225904.json.gz (5KB)
+[5/5] Running gemini_3_1_pro_preview_new_york_type5_20260521_1779375933  (hard)  → deepseek-chat
+    [rescue:openai] finish=stop out_tokens=2633 text_len=10361 has_tag=False
+
+  ┌─ gemini_3_1_pro_preview_new_york_type5_20260521_1779375933  (hard)  [180,266 tokens]
+  │  Tool calls: 30
+  │  Plan parsed: NO ← check raw output
+  │
+  │  C-score (process):  0.0%  ❌ deductions=1 warnings=0
+  │    −1.00  Hard gate: no <final_plan> produced or JSON parse failed
+  │  [C gate failed — F/P/B not evaluated]
+  │
+  │  ── Agent debug (30/30 tool rounds) ──
+  │  call 1: search_yelp(query=wheelchair accessible caf, city=new_york, category=cafe)
+  │  call 2: search_yelp(query=budget friendly attractio, city=new_york, category=attraction)
+  │  call 3: search_yelp(query=free museum wheelchair ac, city=new_york, category=museum)
+  │  call 4: search_yelp(query=budget cafe cheap coffee , city=new_york, category=cafe)
+  │  call 5: search_yelp(query=park free entry wheelchai, city=new_york, category=park)
+  │  call 6: search_yelp(query=budget restaurant cheap e, city=new_york, category=restaurant)
+  │  call 7: search_yelp(query=cafe bakery cheap wheelch, city=new_york, category=cafe)
+  │  call 8: search_blogs_and_forums(query=wheelchair accessible che, city=new_york, top_k=5)
+  │  ── end debug ──
+  │
+  ⏱  47.5s  [174,692in + 5,574out = 180,266 tokens]
+  📝 Transcript: gemini_3_1_pro_preview_new_york_type5_20260521_1779375933_20260606_225904.json.gz (4KB)
+
+════════════════════════════════════════════════════════════
+RUN SUMMARY — deepseek-chat
+════════════════════════════════════════════════════════════
+Task                      Diff        C      F      P   Tokens
+────────────────────────────────────────────────────────────
+  claude_sonnet_4_5_new_york_type1_20260521_1779375385 medium    88%     0%   100%  268,954
+  gemini_3_1_pro_preview_new_york_type2_20260521_1779375520 medium    96%    20%    83%  107,577
+  gemini_3_1_pro_preview_new_york_type3_20260521_1779375659 hard       0%    N/A    N/A  172,805
+  gpt_5_4_new_york_type4_20260521_1779375371 medium     0%     0%    50%  191,222
+  gemini_3_1_pro_preview_new_york_type5_20260521_1779375933 hard       0%    N/A    N/A  180,266
+────────────────────────────────────────────────────────────
+  TOTAL                                     920,824 tokens
+  Wall time: 220.8s
+════════════════════════════════════════════════════════════
+real 221.45
+user 1.52
+sys 0.27

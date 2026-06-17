@@ -1,0 +1,177 @@
+  Using evaluator DB: /Users/victoriajin/Documents/Career_related/TravelPlanningAgent/travelbench_Phase5.10/data/cities/new_york/runs/test_70/travelbench.db
+
+───────────────────────────────────────────────────────
+TOKEN BUDGET ESTIMATE — gpt-5.5
+───────────────────────────────────────────────────────
+  claude_sonnet_4_5_new_york_type1_20260521_1779375385 (medium) ~16,350 tokens  (~12 tool calls)
+  gemini_3_1_pro_preview_new_york_type2_20260521_1779375520 (medium) ~16,350 tokens  (~12 tool calls)
+  gemini_3_1_pro_preview_new_york_type3_20260521_1779375659 (hard  ) ~30,500 tokens  (~18 tool calls)
+  gpt_5_4_new_york_type4_20260521_1779375371 (medium) ~16,350 tokens  (~12 tool calls)
+  gemini_3_1_pro_preview_new_york_type5_20260521_1779375933 (hard  ) ~30,500 tokens  (~18 tool calls)
+  gpt_5_4_new_york_type6_20260521_1779375462 (medium) ~16,350 tokens  (~12 tool calls)
+  ──────────────────────────────────────────────────
+  Total input:  ~67,200
+  Total output: ~59,200
+  Total tokens: ~126,400
+  Est. cost:    unknown (model not in pricing table)
+───────────────────────────────────────────────────────
+
+[1/6] Running claude_sonnet_4_5_new_york_type1_20260521_1779375385  (medium)  → gpt-5.5
+
+  ┌─ claude_sonnet_4_5_new_york_type1_20260521_1779375385  (medium)  [236,138 tokens]
+  │  Tool calls: 42
+  │  Plan parsed: NO ← check raw output
+  │
+  │  C-score (process):  0.0%  ❌ deductions=1 warnings=0
+  │    −1.00  Hard gate: no <final_plan> produced or JSON parse failed
+  │  [C gate failed — F/P/B not evaluated]
+  │
+  │  ── Agent debug (42/45 tool rounds) ──
+  │  call 1: search_yelp(city=new_york, query=waterfront skyline views , category=park)
+  │  call 2: search_yelp(city=new_york, query=art museum architecture p, category=museum)
+  │  call 3: search_yelp(city=new_york, query=authentic local restauran, category=restaurant)
+  │  call 4: search_blogs_and_forums(city=new_york, query=NYC July 4 weekend skylin, top_k=5)
+  │  call 5: search_yelp(city=new_york, query=Top of the Rock skyline o, category=attraction)
+  │  call 6: search_yelp(city=new_york, query=One World Observatory sky, category=attraction)
+  │  call 7: search_yelp(city=new_york, query=skyline views bar William, category=bar)
+  │  call 8: search_yelp(city=new_york, query=Astoria Greek authentic r, category=restaurant)
+  │  ── end debug ──
+  │
+  ⏱  137.9s  [228,594in + 7,544out = 236,138 tokens]
+  📝 Transcript: claude_sonnet_4_5_new_york_type1_20260521_1779375385_20260607_000604.json.gz (2KB)
+[2/6] Running gemini_3_1_pro_preview_new_york_type2_20260521_1779375520  (medium)  → gpt-5.5
+
+  ┌─ gemini_3_1_pro_preview_new_york_type2_20260521_1779375520  (medium)  [47,979 tokens]
+  │  Tool calls: 13
+  │  Plan parsed: yes
+  │
+  │  C-score (process): 96.0%  ✅ deductions=1 warnings=0
+  │    −0.04  Plan task_id 'downtown_manhattan_fidi_2026-07-04_afternoon' doesn't match task 'gemin
+  │  F-score (feasibility): 40.0%  ❌
+  │    −0.15 [F2b] Day 1: '9/11 Memorial & Museum' SOLD OUT on 2026-07-04
+  │    −0.05 [F4a] Day 1: '9/11 Memorial & Museum' under-scheduled 25min (min 75, re
+  │    −0.05 [F4a] Day 1: 'The Oculus' under-scheduled 25min (min 30, rec 60min)
+  │    ... +2 more
+  │  P-score (preferences): 66.7%
+  │    ✗ [pc_001] score=0.00  All activities must be in Downtown Manhattan / Fin
+  │    ✓ [pc_002] score=1.00  At least 50% of activities must be free: 2/3 match
+  │    ✓ [pc_003] score=1.00  At least 2 attractions must be scheduled: 2/2 matc
+  │  B-score (bonus):       100.0%
+  │
+  ⏱  57.1s  [45,038in + 2,941out = 47,979 tokens]
+  📝 Transcript: gemini_3_1_pro_preview_new_york_type2_20260521_1779375520_20260607_000604.json.gz (2KB)
+[3/6] Running gemini_3_1_pro_preview_new_york_type3_20260521_1779375659  (hard)  → gpt-5.5
+    [rescue:openai FAILED] BadRequestError: Error code: 400 - {'error': {'message': "Invalid value for 'tool_choice': 'tool_choice' is only allowed when 'tools' are specified.", 'type': 'invalid_request_error', 'param': 'tool_choice', 'code': None}}
+
+  ┌─ gemini_3_1_pro_preview_new_york_type3_20260521_1779375659  (hard)  [97,463 tokens]
+  │  Tool calls: 31
+  │  Plan parsed: NO ← check raw output
+  │
+  │  C-score (process):  0.0%  ❌ deductions=1 warnings=0
+  │    −1.00  Hard gate: no <final_plan> produced or JSON parse failed
+  │  [C gate failed — F/P/B not evaluated]
+  │
+  │  ── Agent debug (31/30 tool rounds) ──
+  │  call 1: search_yelp(city=New_York, query=famous sites outdoor New , category=attraction)
+  │  call 2: search_yelp(city=New_York, query=hidden gem outdoor New Yo, category=attraction)
+  │  call 3: search_yelp(city=New_York, query=hidden gem park summer, category=park)
+  │  call 4: search_blogs_and_forums(city=New_York, query=July 4 2026 New York itin, top_k=5)
+  │  call 5: search_yelp(city=New_York, query=mid-priced different cuis, category=restaurant)
+  │  call 6: search_yelp(city=New_York, query=mid-priced Mexican tacos , category=restaurant)
+  │  call 7: search_yelp(city=New_York, query=mid-priced Thai restauran, category=restaurant)
+  │  call 8: search_yelp(city=New_York, query=mid-priced Italian pizza , category=restaurant)
+  │  ── end debug ──
+  │
+  ⏱  65.8s  [94,456in + 3,007out = 97,463 tokens]
+  📝 Transcript: gemini_3_1_pro_preview_new_york_type3_20260521_1779375659_20260607_000604.json.gz (1KB)
+[4/6] Running gpt_5_4_new_york_type4_20260521_1779375371  (medium)  → gpt-5.5
+    [rescue:openai FAILED] BadRequestError: Error code: 400 - {'error': {'message': "Invalid value for 'tool_choice': 'tool_choice' is only allowed when 'tools' are specified.", 'type': 'invalid_request_error', 'param': 'tool_choice', 'code': None}}
+
+  ┌─ gpt_5_4_new_york_type4_20260521_1779375371  (medium)  [139,794 tokens]
+  │  Tool calls: 31
+  │  Plan parsed: NO ← check raw output
+  │
+  │  C-score (process):  0.0%  ❌ deductions=1 warnings=0
+  │    −1.00  Hard gate: no <final_plan> produced or JSON parse failed
+  │  [C gate failed — F/P/B not evaluated]
+  │
+  │  ── Agent debug (31/30 tool rounds) ──
+  │  call 1: search_yelp(city=New_York, query=free hidden gem park muse, top_k=8)
+  │  call 2: search_yelp(city=New_York, query=budget cheap eats, category=restaurant)
+  │  call 3: search_blogs_and_forums(city=New_York, query=NYC free things to do bud, top_k=5)
+  │  call 4: search_yelp(city=New_York, query=dumplings budget restaura, category=restaurant)
+  │  call 5: search_yelp(city=New_York, query=pizza budget restaurant c, category=restaurant)
+  │  call 6: search_yelp(city=New_York, query=free entry waterfront hid, top_k=10)
+  │  call 7: search_yelp(city=New_York, query=free museum pay what you , category=museum)
+  │  call 8: search_yelp(city=New_York, query=Flushing cheap dumplings , category=restaurant)
+  │  ── end debug ──
+  │
+  ⏱  95.3s  [135,824in + 3,970out = 139,794 tokens]
+  📝 Transcript: gpt_5_4_new_york_type4_20260521_1779375371_20260607_000604.json.gz (1KB)
+[5/6] Running gemini_3_1_pro_preview_new_york_type5_20260521_1779375933  (hard)  → gpt-5.5
+    [rescue:openai FAILED] BadRequestError: Error code: 400 - {'error': {'message': "Invalid value for 'tool_choice': 'tool_choice' is only allowed when 'tools' are specified.", 'type': 'invalid_request_error', 'param': 'tool_choice', 'code': None}}
+
+  ┌─ gemini_3_1_pro_preview_new_york_type5_20260521_1779375933  (hard)  [111,334 tokens]
+  │  Tool calls: 31
+  │  Plan parsed: NO ← check raw output
+  │
+  │  C-score (process):  0.0%  ❌ deductions=1 warnings=0
+  │    −1.00  Hard gate: no <final_plan> produced or JSON parse failed
+  │  [C gate failed — F/P/B not evaluated]
+  │
+  │  ── Agent debug (31/30 tool rounds) ──
+  │  call 1: search_yelp(city=new_york, query=wheelchair accessible fre, category=museum)
+  │  call 2: search_yelp(city=new_york, query=wheelchair accessible caf, category=cafe)
+  │  call 3: search_yelp(city=new_york, query=wheelchair accessible par, category=park)
+  │  call 4: search_blogs_and_forums(city=new_york, query=wheelchair accessible bud, top_k=5)
+  │  call 5: search_yelp(city=new_york, query=cafe step-free breakfast , category=cafe)
+  │  call 6: search_yelp(city=new_york, query=cafe step-free Chelsea bu, category=cafe)
+  │  call 7: search_yelp(city=new_york, query=cafe step-free Brooklyn D, category=cafe)
+  │  call 8: search_yelp(city=new_york, query=free wheelchair accessibl, category=attraction)
+  │  ── end debug ──
+  │
+  ⏱  58.7s  [108,491in + 2,843out = 111,334 tokens]
+  📝 Transcript: gemini_3_1_pro_preview_new_york_type5_20260521_1779375933_20260607_000604.json.gz (1KB)
+[6/6] Running gpt_5_4_new_york_type6_20260521_1779375462  (medium)  → gpt-5.5
+    [rescue:openai FAILED] BadRequestError: Error code: 400 - {'error': {'message': "Invalid value for 'tool_choice': 'tool_choice' is only allowed when 'tools' are specified.", 'type': 'invalid_request_error', 'param': 'tool_choice', 'code': None}}
+
+  ┌─ gpt_5_4_new_york_type6_20260521_1779375462  (medium)  [119,150 tokens]
+  │  Tool calls: 32
+  │  Plan parsed: NO ← check raw output
+  │
+  │  C-score (process):  0.0%  ❌ deductions=1 warnings=0
+  │    −1.00  Hard gate: no <final_plan> produced or JSON parse failed
+  │  [C gate failed — F/P/B not evaluated]
+  │
+  │  ── Agent debug (32/30 tool rounds) ──
+  │  call 1: search_yelp(city=New_York, query=calm museum upper west si, category=museum)
+  │  call 2: search_yelp(city=New_York, query=quiet park relaxed upper , category=park)
+  │  call 3: search_yelp(city=New_York, query=nice evening meal quiet u, category=restaurant)
+  │  call 4: search_blogs_and_forums(city=New_York, query=New York July 4 calm avoi, top_k=5)
+  │  call 5: search_yelp(city=New_York, query=American Museum of Natura, category=museum)
+  │  call 6: search_yelp(city=New_York, query=romantic quiet fine dinin, category=restaurant)
+  │  call 7: search_yelp(city=New_York, query=Riverside Park Upper West, category=park)
+  │  call 8: search_yelp(city=New_York, query=The Met Cloisters calm ga, category=museum)
+  │  ── end debug ──
+  │
+  ⏱  57.9s  [116,374in + 2,776out = 119,150 tokens]
+  📝 Transcript: gpt_5_4_new_york_type6_20260521_1779375462_20260607_000604.json.gz (1KB)
+
+════════════════════════════════════════════════════════════
+RUN SUMMARY — gpt-5.5
+════════════════════════════════════════════════════════════
+Task                      Diff        C      F      P   Tokens
+────────────────────────────────────────────────────────────
+  claude_sonnet_4_5_new_york_type1_20260521_1779375385 medium     0%    N/A    N/A  236,138
+  gemini_3_1_pro_preview_new_york_type2_20260521_1779375520 medium    96%    40%    67%   47,979
+  gemini_3_1_pro_preview_new_york_type3_20260521_1779375659 hard       0%    N/A    N/A   97,463
+  gpt_5_4_new_york_type4_20260521_1779375371 medium     0%    N/A    N/A  139,794
+  gemini_3_1_pro_preview_new_york_type5_20260521_1779375933 hard       0%    N/A    N/A  111,334
+  gpt_5_4_new_york_type6_20260521_1779375462 medium     0%    N/A    N/A  119,150
+────────────────────────────────────────────────────────────
+  TOTAL                                     751,858 tokens
+  Wall time: 472.9s
+════════════════════════════════════════════════════════════
+real 473.51
+user 1.58
+sys 0.32
