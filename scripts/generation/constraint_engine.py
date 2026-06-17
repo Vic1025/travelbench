@@ -384,6 +384,12 @@ def _evaluate_generic_constraint(cid: str, constraint: dict,
                 return True
             if "exactly" in agg and agg["exactly"] > 0:
                 return True
+            # count_distinct: N (N>0) requires visiting venues that span N
+            # distinct values — vacuously passing when zero matched activities
+            # would let a model satisfy "visit 3 cuisines" by scheduling
+            # nothing in scope. Fail in that case.
+            if "count_distinct" in agg and agg["count_distinct"] > 0:
+                return True
         return False
 
     if not matching:
@@ -398,6 +404,8 @@ def _evaluate_generic_constraint(cid: str, constraint: dict,
 
     agg    = aggregation
     passed = False
+    # Set by count_distinct / at_most_distinct branches: (got, threshold, field, sample_values)
+    _distinct_diag: tuple | None = None
 
     if agg == "all":
         passed = n_satisfied == n_matching
@@ -434,6 +442,7 @@ def _evaluate_generic_constraint(cid: str, constraint: dict,
                         if _tag_key in tag:
                             vals.add(tag)
             passed = len(vals) >= agg["count_distinct"]
+            _distinct_diag = (len(vals), agg["count_distinct"], field, sorted(vals)[:8])
         elif "at_most_distinct" in agg:
             # Sibling of count_distinct but with ≤ semantics.
             field = agg["field"]
@@ -450,6 +459,7 @@ def _evaluate_generic_constraint(cid: str, constraint: dict,
                         if _tag_key in tag:
                             vals.add(tag)
             passed = len(vals) <= agg["at_most_distinct"]
+            _distinct_diag = (len(vals), agg["at_most_distinct"], field, sorted(vals)[:8])
         elif "ratio" in agg:
             denom  = len([a for a in all_activities
                           if _activity_matches_scope(a, scope, venues)])
@@ -466,23 +476,34 @@ def _evaluate_generic_constraint(cid: str, constraint: dict,
             elif op == "<":  passed = total < val
             elif op == ">":  passed = total > val
 
-    # Partial credit for at_least: proportional progress toward threshold,
-    # using DISTINCT venue count (P6-T9) so it matches the pass criterion above.
-    # 1/4 required → 0.25, 2/4 → 0.5, 3/4 → 0.75, 4/4 → 1.0
+    # Partial credit:
+    #   at_least:       proportional to distinct-venue count (P6-T9)
+    #   count_distinct: proportional to distinct-value count vs threshold
+    # Both: 1/N → 1/N, 2/N → 2/N, ..., N/N → 1.0. Clamped to [0, 1].
     if not passed and isinstance(agg, dict) and "at_least" in agg:
         _denom  = agg["at_least"]
         _n_dist = len({a.get("venue_id") for a in satisfied if a.get("venue_id")})
         score = round(min(_n_dist / _denom, 1.0), 3) if _denom > 0 else 0.0
+    elif not passed and isinstance(agg, dict) and "count_distinct" in agg and _distinct_diag:
+        _got, _need, _, _ = _distinct_diag
+        score = round(min(_got / _need, 1.0), 3) if _need > 0 else 0.0
     else:
         score = 1.0 if passed else 0.0
 
-    # For at_least also surface the distinct-venue count so the reason string
-    # makes clear when matching activities collapse to fewer distinct venues.
+    # Reason string: surface aggregation-specific diagnostic so the user can
+    # see exactly what failed (or passed). at_least → distinct-venue count;
+    # count_distinct / at_most_distinct → distinct-value count + sample.
     _extra = ""
     if isinstance(agg, dict) and "at_least" in agg:
         _n_dist = len({a.get("venue_id") for a in satisfied if a.get("venue_id")})
         if _n_dist != n_satisfied:
             _extra = f" (distinct venues: {_n_dist})"
+    elif _distinct_diag:
+        _got, _need, _field, _sample = _distinct_diag
+        _op = "≥" if isinstance(agg, dict) and "count_distinct" in agg else "≤"
+        _sample_s = ", ".join(_sample) if _sample else "—"
+        _extra = (f" — found {_got} distinct {_field} ({_op} {_need} required): "
+                  f"[{_sample_s}]")
 
     return {"id": cid, "score": score,
             "reason": f"{description}: {n_satisfied}/{n_matching} matching{_extra} "
