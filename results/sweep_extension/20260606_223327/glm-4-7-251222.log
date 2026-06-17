@@ -1,0 +1,175 @@
+  Using evaluator DB: /Users/victoriajin/Documents/Career_related/TravelPlanningAgent/travelbench_Phase5.10/data/cities/new_york/runs/test_70/travelbench.db
+
+───────────────────────────────────────────────────────
+TOKEN BUDGET ESTIMATE — glm-4-7-251222
+───────────────────────────────────────────────────────
+  claude_sonnet_4_5_new_york_type1_20260521_1779375385 (medium) ~16,350 tokens  (~12 tool calls)
+  gemini_3_1_pro_preview_new_york_type2_20260521_1779375520 (medium) ~16,350 tokens  (~12 tool calls)
+  gemini_3_1_pro_preview_new_york_type3_20260521_1779375659 (hard  ) ~30,500 tokens  (~18 tool calls)
+  gpt_5_4_new_york_type4_20260521_1779375371 (medium) ~16,350 tokens  (~12 tool calls)
+  gemini_3_1_pro_preview_new_york_type5_20260521_1779375933 (hard  ) ~30,500 tokens  (~18 tool calls)
+  gpt_5_4_new_york_type6_20260521_1779375462 (medium) ~16,350 tokens  (~12 tool calls)
+  ──────────────────────────────────────────────────
+  Total input:  ~67,200
+  Total output: ~59,200
+  Total tokens: ~126,400
+  Est. cost:    unknown (model not in pricing table)
+───────────────────────────────────────────────────────
+
+[1/6] Running claude_sonnet_4_5_new_york_type1_20260521_1779375385  (medium)  → glm-4-7-251222
+
+  ┌─ claude_sonnet_4_5_new_york_type1_20260521_1779375385  (medium)  [161,664 tokens]
+  │  Tool calls: 36
+  │  Plan parsed: NO ← check raw output
+  │
+  │  C-score (process):  0.0%  ❌ deductions=1 warnings=0
+  │    −1.00  Hard gate: no <final_plan> produced or JSON parse failed
+  │  [C gate failed — F/P/B not evaluated]
+  │
+  │  ── Agent debug (36/45 tool rounds) ──
+  │  call 1: search_yelp(query=waterfront viewpoint skyl, city=new_york, category=attraction)
+  │  call 2: search_yelp(query=art museum contemporary, city=new_york, category=museum)
+  │  call 3: search_yelp(query=authentic italian restaur, city=new_york, category=restaurant)
+  │  call 4: search_yelp(query=authentic chinese restaur, city=new_york, category=restaurant)
+  │  call 5: search_yelp(query=authentic mexican restaur, city=new_york, category=restaurant)
+  │  call 6: search_yelp(query=authentic japanese restau, city=new_york, category=restaurant)
+  │  call 7: search_yelp(query=waterfront park photograp, city=new_york, category=park)
+  │  call 8: search_yelp(query=japanese sushi ramen, city=new_york, category=restaurant)
+  │  ── end debug ──
+  │
+  ⏱  131.9s  [155,655in + 6,009out = 161,664 tokens]
+  📝 Transcript: claude_sonnet_4_5_new_york_type1_20260521_1779375385_20260606_224308.json.gz (3KB)
+[2/6] Running gemini_3_1_pro_preview_new_york_type2_20260521_1779375520  (medium)  → glm-4-7-251222
+
+  ┌─ gemini_3_1_pro_preview_new_york_type2_20260521_1779375520  (medium)  [120,342 tokens]
+  │  Tool calls: 12
+  │  Plan parsed: yes
+  │
+  │  C-score (process): 96.0%  ✅ deductions=1 warnings=0
+  │    −0.04  Plan task_id 'saturday-afternoon-financial-district-2026-07-04' doesn't match task 'g
+  │  F-score (feasibility): 65.0%  ⚠
+  │    −0.05 [F4a] Day 1: 'Brooklyn Bridge' under-scheduled 30min (min 45, rec 90min
+  │    −0.30 [F2e] type2 contiguous time-ceiling overrun: 113min engaged (ceiling 90
+  │  P-score (preferences): 66.7%
+  │    ✗ [pc_001] score=0.00  All activities must be in Downtown Manhattan / Fin
+  │    ✓ [pc_002] score=1.00  At least 50% of activities must be free: 2/2 match
+  │    ✓ [pc_003] score=1.00  At least 2 attractions must be scheduled: 2/2 matc
+  │  B-score (bonus):       100.0%
+  │
+  ⏱  120.6s  [118,277in + 2,065out = 120,342 tokens]
+  📝 Transcript: gemini_3_1_pro_preview_new_york_type2_20260521_1779375520_20260606_224308.json.gz (1KB)
+[3/6] Running gemini_3_1_pro_preview_new_york_type3_20260521_1779375659  (hard)  → glm-4-7-251222
+    [rescue:openai] finish=stop out_tokens=2542 text_len=5451 has_tag=True
+
+  ┌─ gemini_3_1_pro_preview_new_york_type3_20260521_1779375659  (hard)  [331,177 tokens]
+  │  Tool calls: 30
+  │  Plan parsed: yes
+  │
+  │  C-score (process): 92.0%  ✅ deductions=2 warnings=1
+  │    −0.04  Plan task_id 'NYC_2day_July4_2026' doesn't match task 'gemini_3_1_pro_preview_new_yor
+  │    −0.04  Day 2: sparse — 4 activities, 100-min idle gap (expected ~5 in 10h budget)
+  │    ⚠  total_estimated_cost_local mismatch: stated=159 vs computed=132 (diff 27)
+  │  F-score (feasibility): 53.0%  ⚠
+  │    −0.15 [F2a] Day 1: 'Wave Hill' outside hours (windows: [('09:00', '16:30')]) 
+  │    −0.02 [F4a] Day 1: 'Central Park' over-scheduled 195min (max 180, rec 120min)
+  │    −0.15 [F1b] Day 1: transit leg 'Central Park'→'Wave Hill' allocated 30min, ne
+  │    ... +1 more
+  │  P-score (preferences): 66.7%
+  │    ~ [pc_001] score=0.75  At least 4 high-traffic venues: 3/8 matching (fail
+  │    ✗ [pc_002] score=0.25  At least 4 low-traffic venues: 2/8 matching (disti
+  │    ✓ [pc_003] score=1.00  At least 1 park per day: pass (per_day)
+  │    ~ [pc_004] score=0.67  At least 3 distinct cuisines at mid-priced venues:
+  │  B-score (bonus):       100.0%
+  │
+  ⏱  210.4s  [324,944in + 6,233out = 331,177 tokens]
+  📝 Transcript: gemini_3_1_pro_preview_new_york_type3_20260521_1779375659_20260606_224308.json.gz (3KB)
+[4/6] Running gpt_5_4_new_york_type4_20260521_1779375371  (medium)  → glm-4-7-251222
+    [rescue:openai] finish=stop out_tokens=2089 text_len=5389 has_tag=True
+
+  ┌─ gpt_5_4_new_york_type4_20260521_1779375371  (medium)  [152,160 tokens]
+  │  Tool calls: 31
+  │  Plan parsed: yes
+  │
+  │  C-score (process): 64.0%  ✅ deductions=9 warnings=0
+  │    −0.04  [call 10] search_yelp: missing required param 'query'
+  │    −0.04  [call 10] search_yelp: city='New_York<arg_key>query</arg_key><arg_value>Governors Isl
+  │    −0.04  [call 12] search_yelp: missing required param 'query'
+  │    −0.04  [call 12] search_yelp: city='New_York<arg_key>query</arg_key><arg_value>Staten Island
+  │    −0.04  [call 17] search_blogs_and_forums: city='New_York<arg_key>query</arg_key><arg_value>f
+  │  F-score (feasibility): 63.0%  ⚠
+  │    −0.05 [F2c] Day 1: 'The Halal Guys' has wrong info but agent never retrieved 
+  │    −0.02 [F4a] Day 1: 'The High Line' over-scheduled 190min (max 150, rec 90min)
+  │    −0.15 [F2a] Day 2: 'Nom Wah Tea Parlor' outside hours (windows: [('10:30', '2
+  │    ... +1 more
+  │  P-score (preferences): 50.0%
+  │    ✗ [pc_001] score=0.00  Total estimated cost per day must stay within the 
+  │    ✓ [pc_002] score=1.00  All visit activities must be at free-entry venues:
+  │    ✓ [pc_003] score=1.00  No venue in the plan may be tagged as a tourist tr
+  │    ✗ [pc_004] score=0.00  All meal activities must be at budget-priced venue
+  │  B-score (bonus):        0.0%
+  │
+  ⏱  119.6s  [147,545in + 4,615out = 152,160 tokens]
+  📝 Transcript: gpt_5_4_new_york_type4_20260521_1779375371_20260606_224308.json.gz (3KB)
+[5/6] Running gemini_3_1_pro_preview_new_york_type5_20260521_1779375933  (hard)  → glm-4-7-251222
+    [rescue:openai] finish=stop out_tokens=2632 text_len=4312 has_tag=True
+
+  ┌─ gemini_3_1_pro_preview_new_york_type5_20260521_1779375933  (hard)  [135,807 tokens]
+  │  Tool calls: 30
+  │  Plan parsed: yes
+  │
+  │  C-score (process): 96.0%  ✅ deductions=1 warnings=0
+  │    −0.04  Plan task_id 'wheelchair-budget-cafes-2day' doesn't match task 'gemini_3_1_pro_previe
+  │  F-score (feasibility): 70.0%  ⚠
+  │    −0.15 [F2a] Day 2: 'The Halal Guys' outside hours (windows: [('10:30', '23:00
+  │    −0.15 [F1b] Day 2: transit leg '9/11 Memorial & Museum'→'Central Park' alloca
+  │  P-score (preferences): 66.7%
+  │    ✗ [pc_001] score=0.00  All venues must be budget or free: 6/7 matching (f
+  │    ✓ [pc_002] score=1.00  All venues must be wheelchair accessible: 7/7 matc
+  │    ✓ [pc_003] score=1.00  Visit at least 1 cafe: 1/1 matching (pass)
+  │  B-score (bonus):       50.0%
+  │
+  ⏱  103.0s  [130,704in + 5,103out = 135,807 tokens]
+  📝 Transcript: gemini_3_1_pro_preview_new_york_type5_20260521_1779375933_20260606_224308.json.gz (3KB)
+[6/6] Running gpt_5_4_new_york_type6_20260521_1779375462  (medium)  → glm-4-7-251222
+    [rescue:openai] finish=stop out_tokens=1888 text_len=4389 has_tag=True
+
+  ┌─ gpt_5_4_new_york_type6_20260521_1779375462  (medium)  [198,759 tokens]
+  │  Tool calls: 32
+  │  Plan parsed: yes
+  │
+  │  C-score (process): 84.0%  ✅ deductions=3 warnings=0
+  │    −0.04  [call 30] Unknown tool: 'search_b_yelp'
+  │    −0.04  Plan task_id 'calm_july4_nyc_2026' doesn't match task 'gpt_5_4_new_york_type6_2026052
+  │    −0.08  Day 1: sparse — 3 activities, 120-min idle gap (expected ~5 in 10h budget)
+  │  F-score (feasibility): 70.0%  ⚠
+  │    −0.15 [F2a] Day 1: 'Wave Hill' outside hours (windows: [('09:00', '16:30')]) 
+  │    −0.15 [F1b] Day 1: transit leg 'Wave Hill'→'Café Loup' allocated 30min, needs
+  │  P-score (preferences): 80.0%
+  │    ✗ [pc_001] score=0.00  All activities should use low-traffic venues to ke
+  │    ✓ [pc_002] score=1.00  Avoid waterfront venues on fireworks night because
+  │    ✓ [pc_003] score=1.00  Do not include rooftop venues: 0/6 matching (pass)
+  │    ✓ [pc_004] score=1.00  Keep total travel time per day to 60 minutes or le
+  │    ✓ [pc_005] score=1.00  Include at least one mid-price or above evening me
+  │  B-score (bonus):       50.0%
+  │
+  ⏱  137.5s  [192,932in + 5,827out = 198,759 tokens]
+  📝 Transcript: gpt_5_4_new_york_type6_20260521_1779375462_20260606_224308.json.gz (3KB)
+
+════════════════════════════════════════════════════════════
+RUN SUMMARY — glm-4-7-251222
+════════════════════════════════════════════════════════════
+Task                      Diff        C      F      P   Tokens
+────────────────────────────────────────────────────────────
+  claude_sonnet_4_5_new_york_type1_20260521_1779375385 medium     0%    N/A    N/A  161,664
+  gemini_3_1_pro_preview_new_york_type2_20260521_1779375520 medium    96%    65%    67%  120,342
+  gemini_3_1_pro_preview_new_york_type3_20260521_1779375659 hard      92%    53%    67%  331,177
+  gpt_5_4_new_york_type4_20260521_1779375371 medium    64%    63%    50%  152,160
+  gemini_3_1_pro_preview_new_york_type5_20260521_1779375933 hard      96%    70%    67%  135,807
+  gpt_5_4_new_york_type6_20260521_1779375462 medium    84%    70%    80%  198,759
+────────────────────────────────────────────────────────────
+  TOTAL                                    1,099,909 tokens
+  Wall time: 823.2s
+════════════════════════════════════════════════════════════
+real 823.79
+user 1.89
+sys 0.29

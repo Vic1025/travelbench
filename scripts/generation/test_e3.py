@@ -1130,6 +1130,145 @@ check("P6-T9-A: deduction message uses summed 330min",
       _over_deds[0]["reason"] if _over_deds else "no deduction")
 
 
+# F2c is a binary per-venue check — same wrong-info venue scheduled multiple
+# times must not multiply the deduction (was bug: 3 visits → 3 × -0.05).
+_venues_wi = {
+    "lon_wi01": {
+        "venue_id": "lon_wi01",
+        "name": "Wrong-Info Cafe",
+        "category": "cafe",
+        "hours": {d: ["08:00-22:00"] for d in
+                  ("mon","tue","wed","thu","fri","sat","sun")},
+        "ticket_availability": {},
+        "recommended_visit_minutes": 60,
+        "regulations": {},
+        "tags": ["coffee"],
+        "has_wrong_info": True, "has_stale_hours": True,
+        "outdoor_sensitivity": "indoor",
+    }
+}
+_task_wi = {
+    "city": "london",
+    "days": 1,
+    "start_date": "2026-08-22",
+    "rubric": {"hard_constraints": [], "personal_constraints": [], "b_score_constraints": []},
+}
+# Same wrong-info venue scheduled 3 times in one day, agent never retrieved
+# truth carrier → ONE F2c deduction expected (not three).
+_result_wi = {
+    "parsed_plan": {"city": "london", "days": [{"day": 1, "activities": [
+        {"venue_id": "lon_wi01", "activity_type": "meal",
+         "time_start": "09:00", "time_end": "10:00"},
+        {"venue_id": "lon_wi01", "activity_type": "leisure",
+         "time_start": "13:00", "time_end": "14:00"},
+        {"venue_id": "lon_wi01", "activity_type": "meal",
+         "time_start": "18:00", "time_end": "19:00"},
+    ]}]},
+    "tool_call_log": [],
+}
+_f_wi = evaluate_f_score(_result_wi, _task_wi, _venues_wi, {}, truth_carriers={})
+_f2c_deds = [d for d in _f_wi["deductions"] if d["section"] == "F2c"]
+check("F2c no-double-deduct: same wrong-info venue 3× → 1 deduction",
+      len(_f2c_deds) == 1, f"got {len(_f2c_deds)} F2c deductions: {_f2c_deds}")
+
+# Across days: same wrong-info venue on day 1 AND day 2 → still ONE deduction.
+_task_wi2 = dict(_task_wi); _task_wi2["days"] = 2
+_result_wi_multiday = {
+    "parsed_plan": {"city": "london", "days": [
+        {"day": 1, "activities": [
+            {"venue_id": "lon_wi01", "activity_type": "meal",
+             "time_start": "09:00", "time_end": "10:00"}]},
+        {"day": 2, "activities": [
+            {"venue_id": "lon_wi01", "activity_type": "meal",
+             "time_start": "09:00", "time_end": "10:00"}]},
+    ]},
+    "tool_call_log": [],
+}
+_f_wi_md = evaluate_f_score(_result_wi_multiday, _task_wi2, _venues_wi, {}, truth_carriers={})
+_f2c_md_deds = [d for d in _f_wi_md["deductions"] if d["section"] == "F2c"]
+check("F2c no-double-deduct: same wrong-info venue across days → 1 deduction",
+      len(_f2c_md_deds) == 1, f"got {len(_f2c_md_deds)} F2c deductions: {_f2c_md_deds}")
+
+
+# F1b: travel-matrix values are floored to integers (estimates are approximate; agents
+# can only allocate integer minutes via HH:MM). Pre-fix: walk=10.3 stored as float;
+# agent allocates transport of 10min → evaluator fires F1b (10 < 10.3). Post-fix:
+# walk=10 stored as int; same allocation passes.
+_venues_f1b = {
+    "lon_a": {
+        "venue_id": "lon_a", "name": "Venue A", "category": "cafe",
+        "hours": {d: ["08:00-22:00"] for d in ("mon","tue","wed","thu","fri","sat","sun")},
+        "ticket_availability": {}, "recommended_visit_minutes": 60,
+        "regulations": {}, "tags": [], "has_wrong_info": False,
+        "outdoor_sensitivity": "indoor",
+    },
+    "lon_b": {
+        "venue_id": "lon_b", "name": "Venue B", "category": "cafe",
+        "hours": {d: ["08:00-22:00"] for d in ("mon","tue","wed","thu","fri","sat","sun")},
+        "ticket_availability": {}, "recommended_visit_minutes": 60,
+        "regulations": {}, "tags": [], "has_wrong_info": False,
+        "outdoor_sensitivity": "indoor",
+    },
+}
+_task_f1b = {
+    "city": "london", "days": 1, "start_date": "2026-08-22",
+    "rubric": {"hard_constraints": [], "personal_constraints": [], "b_score_constraints": []},
+}
+# Walk takes exactly 10 minutes (post-floor integer). Agent allocates 10min transport.
+# 10 < 10 → False → no F1b deduction (was the rounding-bug edge case).
+_matrix_int = {"lon_a_to_lon_b": {"walking": 10, "transit": 5, "cycling": 4}}
+_result_f1b_exact = {
+    "parsed_plan": {"city": "london", "days": [{"day": 1, "activities": [
+        {"venue_id": "lon_a", "activity_type": "meal",
+         "time_start": "09:00", "time_end": "10:00"},
+        {"activity_type": "transport", "mode": "walking",
+         "from_venue_id": "lon_a", "to_venue_id": "lon_b",
+         "time_start": "10:00", "time_end": "10:10"},   # 10min — exact match
+        {"venue_id": "lon_b", "activity_type": "meal",
+         "time_start": "10:10", "time_end": "11:00"},
+    ]}]},
+    "tool_call_log": [],
+}
+_f_exact = evaluate_f_score(_result_f1b_exact, _task_f1b, _venues_f1b, _matrix_int, truth_carriers={})
+_f1b_exact = [d for d in _f_exact["deductions"] if d["section"] == "F1b"]
+check("F1b round-down: transport=10min matches walk=10 → no F1b deduction",
+      len(_f1b_exact) == 0, f"got {len(_f1b_exact)} F1b deductions: {_f1b_exact}")
+
+# Real under-allocation still fires: allocate 5min for a 10min walk → F1b
+_result_f1b_short = {
+    "parsed_plan": {"city": "london", "days": [{"day": 1, "activities": [
+        {"venue_id": "lon_a", "activity_type": "meal",
+         "time_start": "09:00", "time_end": "10:00"},
+        {"activity_type": "transport", "mode": "walking",
+         "from_venue_id": "lon_a", "to_venue_id": "lon_b",
+         "time_start": "10:00", "time_end": "10:05"},   # only 5min for a 10min walk
+        {"venue_id": "lon_b", "activity_type": "meal",
+         "time_start": "10:05", "time_end": "11:00"},
+    ]}]},
+    "tool_call_log": [],
+}
+_f_short = evaluate_f_score(_result_f1b_short, _task_f1b, _venues_f1b, _matrix_int, truth_carriers={})
+_f1b_short = [d for d in _f_short["deductions"] if d["section"] == "F1b"]
+check("F1b round-down: transport=5min vs walk=10 still fires F1b (genuine under-alloc)",
+      len(_f1b_short) == 1, f"got {len(_f1b_short)} F1b deductions: {_f1b_short}")
+
+# Missing transport between venues with 0-min gap also still fires F1b
+_result_f1b_zerogap = {
+    "parsed_plan": {"city": "london", "days": [{"day": 1, "activities": [
+        {"venue_id": "lon_a", "activity_type": "meal",
+         "time_start": "09:00", "time_end": "10:00"},
+        # no transport activity here — gap = 0
+        {"venue_id": "lon_b", "activity_type": "meal",
+         "time_start": "10:00", "time_end": "11:00"},
+    ]}]},
+    "tool_call_log": [],
+}
+_f_zerogap = evaluate_f_score(_result_f1b_zerogap, _task_f1b, _venues_f1b, _matrix_int, truth_carriers={})
+_f1b_zerogap = [d for d in _f_zerogap["deductions"] if d["section"] == "F1b"]
+check("F1b round-down: no transport + 0-min gap vs 10min walk still fires F1b",
+      len(_f1b_zerogap) == 1, f"got {len(_f1b_zerogap)} F1b deductions: {_f1b_zerogap}")
+
+
 # ─────────────────────────────────────────────────────────────────────────────
 # [13] constraint_engine pool_as_activities + check_constraint_pool_satisfiability
 # ─────────────────────────────────────────────────────────────────────────────

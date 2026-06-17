@@ -1066,10 +1066,13 @@ def tool_COMMIT(page_id: str, db_path: Path = DB_PATH, **kwargs) -> dict:
 
     # P6-T1b: cuisine enforcement on venues.
     # - Restaurants MUST have cuisine, and the value must be in UNIVERSAL_CUISINES.
-    # - Cafes/bars/sites MAY set cuisine (e.g. a Japanese cafe); if set, value
-    #   must be on-vocab. NULL is fine for non-restaurants.
+    # - Cafes/bars MAY set cuisine (food/drink venues); if set, value must be on-vocab.
+    # - Everything else (museum/attraction/park/neighbourhood/etc.) must NOT have
+    #   cuisine — cuisine on a non-food venue is a data-quality bug that poisons
+    #   count_distinct + ratio constraints scoped to category=restaurant.
     if entity_type == "venue":
         from scripts.generation.handbook import UNIVERSAL_CUISINES
+        FOOD_CATEGORIES = {"restaurant", "cafe", "bar"}
         category = (record_dict.get("category") or "").strip().lower()
         cuisine_val = record_dict.get("cuisine")
         if isinstance(cuisine_val, str):
@@ -1096,15 +1099,27 @@ def tool_COMMIT(page_id: str, db_path: Path = DB_PATH, **kwargs) -> dict:
                         f"Valid values: {', '.join(sorted(UNIVERSAL_CUISINES))}."
                     ),
                 }
+        elif cuisine_val and category not in FOOD_CATEGORIES:
+            conn.close()
+            return {
+                "status": "error",
+                "page_id": page_id,
+                "message": (
+                    f"cuisine='{cuisine_val}' set on category='{category}', but cuisine "
+                    f"is only meaningful for food/drink venues "
+                    f"({', '.join(sorted(FOOD_CATEGORIES))}). "
+                    f"Clear the field (leave NULL) for {category} venues."
+                ),
+            }
         elif cuisine_val and cuisine_val not in UNIVERSAL_CUISINES:
-            # Optional everywhere else, but if set it must be on-vocab.
+            # cafe / bar with cuisine set — must be on-vocab.
             conn.close()
             return {
                 "status": "error",
                 "page_id": page_id,
                 "message": (
                     f"cuisine='{cuisine_val}' is not in the canonical cuisine vocabulary. "
-                    f"Either clear it (cafes/bars/sites don't require cuisine) "
+                    f"Either clear it (cafes/bars don't require cuisine) "
                     f"or set it to one of: {', '.join(sorted(UNIVERSAL_CUISINES))}."
                 ),
             }

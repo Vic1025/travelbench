@@ -164,8 +164,12 @@ def run_calibration(verbose=False):
 
     good_diverse = [act("v_cafe_lo","meal"), act("v_resto_local","meal"),
                     act("v_resto_thai","meal")]
-    bad_same = [act("v_cafe_lo","meal"), act("v_cafe_lo","meal"),
-                act("v_cafe_lo","meal")]
+    # Truly-bad case: no meal activities at all → 0 distinct cuisines.
+    # (After count_distinct gained proportional partial credit, 3× same venue would
+    # score 1/3 ≈ 0.33 — not "bad" enough vs 0.8 calibration target. Using
+    # non-meal activities forces a true 0 by failing the scope filter.)
+    bad_same = [act("v_park_lo","visit"), act("v_museum_hi","visit"),
+                act("v_park_lo","visit")]
     c_diversity = {"scope": "activity_type=meal",
                    "condition": {},
                    "aggregation": {"count_distinct": 3, "field": "cuisine_label"}}

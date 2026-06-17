@@ -616,6 +616,33 @@ check("P6-T1b: cafe with off-vocab cuisine → error",
       r6["status"] == "error" and "atlantis-cuisine" in r6.get("message", ""),
       str(r6))
 
+# Case 7: park with cuisine → error (cuisine on non-food category)
+pid_p1, _ = _make_venue("park", "italian", "T1b-ItalianPark")
+r7 = tool_COMMIT(pid_p1, **KW)
+check("P6-T1b: park with cuisine → rejected (non-food category)",
+      r7["status"] == "error" and "park" in r7.get("message", "")
+      and "cuisine" in r7.get("message", ""),
+      str(r7))
+
+# Case 8: attraction with cuisine → error
+pid_a1, _ = _make_venue("attraction", "american", "T1b-AmericanAttraction")
+r8 = tool_COMMIT(pid_a1, **KW)
+check("P6-T1b: attraction with cuisine → rejected (non-food category)",
+      r8["status"] == "error" and "cuisine" in r8.get("message", ""),
+      str(r8))
+
+# Case 9: park WITHOUT cuisine → committed (no cuisine is fine on non-food)
+pid_p2, _ = _make_venue("park", None, "T1b-NoCuisineParK")
+r9 = tool_COMMIT(pid_p2, **KW)
+check("P6-T1b: park without cuisine → committed",
+      r9["status"] == "committed", str(r9))
+
+# Case 10: bar with on-vocab cuisine → committed (bar is a food/drink category)
+pid_b1, _ = _make_venue("bar", "american", "T1b-AmericanBar")
+r10 = tool_COMMIT(pid_b1, **KW)
+check("P6-T1b: bar with on-vocab cuisine → committed (food/drink category)",
+      r10["status"] == "committed", str(r10))
+
 
 # ─── P6-T2-B: mentioned_tags COMMIT validation + _check_tag_visibility ───────
 print("\n[P6-T2-B] mentioned_tags + tag_visibility check")

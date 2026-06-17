@@ -71,9 +71,15 @@ def haversine_km(lat1: float, lng1: float, lat2: float, lng2: float) -> float:
     return R * 2 * math.asin(math.sqrt(a))
 
 
-def estimate_minutes(distance_km: float, speed_kmh: float) -> float:
-    """Estimate travel minutes from distance and speed."""
-    return round((distance_km / speed_kmh) * 60, 1)
+def estimate_minutes(distance_km: float, speed_kmh: float) -> int:
+    """Estimate travel minutes from distance and speed.
+
+    Returns an integer (floored). Travel times are estimates anyway, and the
+    agent can only allocate integer-minute durations via HH:MM. Floor avoids
+    impossible-to-satisfy F1b cases like "allocated 10min, needs 10.3min."
+    """
+    import math
+    return math.floor((distance_km / speed_kmh) * 60)
 
 
 def compute_fallback(venues: list) -> list[dict]:
@@ -183,8 +189,9 @@ def compute_ors(venues: list, api_key: str, verbose: bool = False) -> list[dict]
             walk_s = walk_matrix[i][j] if walk_matrix else None
             cycle_s = cycle_matrix[i][j] if cycle_matrix else None
 
-            walk_min = round(walk_s / 60, 1) if walk_s else estimate_minutes(road_dist, WALK_SPEED_KMH)
-            cycle_min = round(cycle_s / 60, 1) if cycle_s else estimate_minutes(road_dist, CYCLE_SPEED_KMH)
+            import math
+            walk_min = math.floor(walk_s / 60) if walk_s else estimate_minutes(road_dist, WALK_SPEED_KMH)
+            cycle_min = math.floor(cycle_s / 60) if cycle_s else estimate_minutes(road_dist, CYCLE_SPEED_KMH)
             transit_min = estimate_minutes(road_dist, TRANSIT_SPEED_KMH)
 
             rows.append({

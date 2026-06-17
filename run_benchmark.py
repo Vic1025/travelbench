@@ -64,7 +64,9 @@ from datetime import datetime
 ROOT = Path(__file__).parent
 sys.path.insert(0, str(ROOT))
 
-from server.mock_tools import TOOL_SCHEMAS, dispatch_tool, set_run_name
+from server.mock_tools import (
+    TOOL_SCHEMAS, dispatch_tool, set_run_name, set_clean_environment,
+)
 from eval.evaluator import evaluate, load_task
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -205,7 +207,7 @@ def print_token_budget(budget: dict, model: str):
 # SYSTEM PROMPT
 # ─────────────────────────────────────────────────────────────────────────────
 
-def _get_system_prompt(task: dict) -> str:
+def _get_system_prompt(task: dict, max_tool_calls: int = 30) -> str:
     """Build system prompt using the runner's city-aware builder."""
     from agents.runner import _build_system_prompt
     _city_config = None
@@ -223,7 +225,7 @@ def _get_system_prompt(task: dict) -> str:
             _conn.close()
     except Exception:
         pass
-    return _build_system_prompt(task, _city_config)
+    return _build_system_prompt(task, _city_config, max_tool_calls=max_tool_calls)
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -270,7 +272,7 @@ def run_anthropic(task: dict, model: str, api_key: str,
         response = client.messages.create(
             model=model,
             max_tokens=4096,
-            system=_get_system_prompt(task),
+            system=_get_system_prompt(task, max_tool_calls=max_tool_calls),
             tools=tools,
             messages=messages,
         )
@@ -281,13 +283,18 @@ def run_anthropic(task: dict, model: str, api_key: str,
         # Collect text and tool uses from response
         text_parts = []
         tool_uses  = []
+        block_types = []
         for block in response.content:
+            block_types.append(block.type)
             if block.type == "text":
                 text_parts.append(block.text)
             elif block.type == "tool_use":
                 tool_uses.append(block)
 
         final_text = "\n".join(text_parts)
+        # Debug: surface block-type composition + stop_reason per turn so we can see
+        # whether the model is emitting thinking/tool_use/text and in what mix.
+        print(f"    [turn {calls_made}] blocks={block_types} text_chars={len(final_text)} stop={response.stop_reason}")
 
         # Stop if no tool calls
         if not tool_uses or response.stop_reason == "end_turn":
@@ -344,19 +351,26 @@ def run_anthropic(task: dict, model: str, api_key: str,
             "Based on all the research gathered above, write your final plan "
             "now inside <final_plan> tags."})
         try:
-            final_resp = client.messages.create(
-                model=model, max_tokens=8192,  # doubled for final plan output
-                system=_get_system_prompt(task),
+            # Stream the rescue call: max_tokens > ~16k requires streaming per Anthropic SDK
+            # (avoid silent rejection on long final plans for annotated 3-day itineraries)
+            with client.messages.stream(
+                model=model, max_tokens=32768,
+                system=_get_system_prompt(task, max_tool_calls=max_tool_calls),
                 messages=messages,
-            )
+            ) as stream:
+                final_resp = stream.get_final_message()
             final_text = "\n".join(
                 b.text for b in final_resp.content if b.type == "text"
             )
             input_tokens  += final_resp.usage.input_tokens
             output_tokens += final_resp.usage.output_tokens
             transcript.append({"role": "assistant", "content": final_text})
-        except Exception:
-            pass
+            print(f"    [rescue] stop_reason={final_resp.stop_reason} "
+                  f"out_tokens={final_resp.usage.output_tokens} "
+                  f"text_len={len(final_text)} "
+                  f"has_tag={'<final_plan>' in final_text}")
+        except Exception as _e:
+            print(f"    [rescue FAILED] {type(_e).__name__}: {_e}")
 
     return {
         "task_id":      task["task_id"],
@@ -413,7 +427,7 @@ def run_openai(task: dict, model: str, api_key: str,
     ]
 
     messages      = [
-        {"role": "system", "content": _get_system_prompt(task)},
+        {"role": "system", "content": _get_system_prompt(task, max_tool_calls=max_tool_calls)},
         {"role": "user",   "content": user_content},
     ]
     tool_call_log = []
@@ -522,7 +536,7 @@ def run_openai(task: dict, model: str, api_key: str,
             "now inside <final_plan> tags."})
         try:
             final_resp = client.chat.completions.create(
-                model=model, messages=messages, max_completion_tokens=8192,
+                model=model, messages=messages, max_completion_tokens=32768,
                 tool_choice="none",  # hard-block tool use on final call
             )
             final_text = final_resp.choices[0].message.content or ""
@@ -531,8 +545,12 @@ def run_openai(task: dict, model: str, api_key: str,
                 input_tokens  += u2.prompt_tokens
                 output_tokens += u2.completion_tokens
             transcript.append({"role": "assistant", "content": final_text})
-        except Exception:
-            pass
+            print(f"    [rescue:openai] finish={final_resp.choices[0].finish_reason} "
+                  f"out_tokens={(u2.completion_tokens if u2 else 0)} "
+                  f"text_len={len(final_text)} "
+                  f"has_tag={'<final_plan>' in final_text}")
+        except Exception as _e:
+            print(f"    [rescue:openai FAILED] {type(_e).__name__}: {_e}")
 
     return {
         "task_id":      task["task_id"],
@@ -1005,6 +1023,12 @@ Examples:
     parser.add_argument("--inter-task-delay", type=float, default=0.0,
                         help="Seconds to wait between tasks (default 0; "
                              "set to ~3 for OpenRouter free tier)")
+    parser.add_argument("--clean-environment", action="store_true",
+                        help="Suppress wrong-info exposure (heals yelp_listings "
+                             "fields back to ground truth and drops "
+                             "incorrect_source blog/forum docs). Use for A/B "
+                             "comparison of model performance with vs without "
+                             "the cross-reference trap. Default: noisy.")
     args = parser.parse_args()
 
     # ── Resolve provider / base_url / api_key ────────────────────────────────
@@ -1081,6 +1105,9 @@ Examples:
             print(f"  Using evaluator DB: {eval_db_path}")
 
     set_run_name(args.run_name)
+    set_clean_environment(args.clean_environment)
+    if args.clean_environment:
+        print("  🧼 CLEAN-ENVIRONMENT MODE — wrong-info exposure suppressed")
 
     # ── Token budget estimate ─────────────────────────────────────────────────
     budget = estimate_tokens(tasks)
@@ -1248,7 +1275,7 @@ Examples:
             _usage2 = raw.get("usage", {})
             _sconn.execute("""
                 INSERT OR REPLACE INTO scores VALUES
-                (?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+                (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
             """, (
                 run_ts, tid, args.model, diff,
                 raw.get("calls_made", 0),

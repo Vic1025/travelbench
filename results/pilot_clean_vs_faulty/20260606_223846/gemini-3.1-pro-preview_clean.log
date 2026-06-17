@@ -1,0 +1,131 @@
+  Using evaluator DB: /Users/victoriajin/Documents/Career_related/TravelPlanningAgent/travelbench_Phase5.10/data/cities/new_york/runs/test_70_clean/travelbench.db
+  🧼 CLEAN-ENVIRONMENT MODE — wrong-info exposure suppressed
+
+───────────────────────────────────────────────────────
+TOKEN BUDGET ESTIMATE — gemini-3.1-pro-preview
+───────────────────────────────────────────────────────
+  claude_sonnet_4_5_new_york_type1_20260521_1779375385 (medium) ~16,350 tokens  (~12 tool calls)
+  gemini_3_1_pro_preview_new_york_type2_20260521_1779375520 (medium) ~16,350 tokens  (~12 tool calls)
+  gemini_3_1_pro_preview_new_york_type3_20260521_1779375659 (hard  ) ~30,500 tokens  (~18 tool calls)
+  gpt_5_4_new_york_type4_20260521_1779375371 (medium) ~16,350 tokens  (~12 tool calls)
+  gemini_3_1_pro_preview_new_york_type5_20260521_1779375933 (hard  ) ~30,500 tokens  (~18 tool calls)
+  ──────────────────────────────────────────────────
+  Total input:  ~58,250
+  Total output: ~51,800
+  Total tokens: ~110,050
+  Est. cost:    ~$0.3318
+───────────────────────────────────────────────────────
+
+[1/5] Running claude_sonnet_4_5_new_york_type1_20260521_1779375385  (medium)  → gemini-3.1-pro-preview
+
+  ┌─ claude_sonnet_4_5_new_york_type1_20260521_1779375385  (medium)  [14,251 tokens]
+  │  Tool calls: 9
+  │  Plan parsed: NO ← check raw output
+  │
+  │  ❌ SCORING ERROR: ValueError: City 'new_york' not found in DB. Run: python scripts/generation/generate_city_venues.py --city new_york
+  │  ── traceback ──
+  │      scored = evaluate(raw, db_path=eval_db_path)
+  │               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  │    File "/Users/victoriajin/Documents/Career_related/TravelPlanningAgent/travelbench_Phase5.10/eval/evaluator.py", line 2575, in evaluate
+  │      venues, matrix, truth_carriers = load_ground_truth(city, db_path=db_path)
+  │                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  │    File "/Users/victoriajin/Documents/Career_related/TravelPlanningAgent/travelbench_Phase5.10/eval/evaluator.py", line 260, in load_ground_truth
+  │      raise ValueError(
+  │  ValueError: City 'new_york' not found in DB. Run: python scripts/generation/generate_city_venues.py --city new_york
+  └─ COMPOSITE:   N/A   (evaluator raised — see traceback above)
+  ⏱  19.9s  [12,602in + 1,649out = 14,251 tokens]
+  📝 Transcript: claude_sonnet_4_5_new_york_type1_20260521_1779375385_20260606_225512.json.gz (1KB)
+[2/5] Running gemini_3_1_pro_preview_new_york_type2_20260521_1779375520  (medium)  → gemini-3.1-pro-preview
+
+  ┌─ gemini_3_1_pro_preview_new_york_type2_20260521_1779375520  (medium)  [15,282 tokens]
+  │  Tool calls: 4
+  │  Plan parsed: yes
+  │
+  │  ❌ SCORING ERROR: ValueError: City 'new_york' not found in DB. Run: python scripts/generation/generate_city_venues.py --city new_york
+  │  ── traceback ──
+  │      scored = evaluate(raw, db_path=eval_db_path)
+  │               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  │    File "/Users/victoriajin/Documents/Career_related/TravelPlanningAgent/travelbench_Phase5.10/eval/evaluator.py", line 2575, in evaluate
+  │      venues, matrix, truth_carriers = load_ground_truth(city, db_path=db_path)
+  │                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  │    File "/Users/victoriajin/Documents/Career_related/TravelPlanningAgent/travelbench_Phase5.10/eval/evaluator.py", line 260, in load_ground_truth
+  │      raise ValueError(
+  │  ValueError: City 'new_york' not found in DB. Run: python scripts/generation/generate_city_venues.py --city new_york
+  └─ COMPOSITE:   N/A   (evaluator raised — see traceback above)
+  ⏱  15.7s  [14,744in + 538out = 15,282 tokens]
+  📝 Transcript: gemini_3_1_pro_preview_new_york_type2_20260521_1779375520_20260606_225512.json.gz (1KB)
+[3/5] Running gemini_3_1_pro_preview_new_york_type3_20260521_1779375659  (hard)  → gemini-3.1-pro-preview
+
+  ┌─ gemini_3_1_pro_preview_new_york_type3_20260521_1779375659  (hard)  [17,748 tokens]
+  │  Tool calls: 10
+  │  Plan parsed: yes
+  │
+  │  ❌ SCORING ERROR: ValueError: City 'new_york' not found in DB. Run: python scripts/generation/generate_city_venues.py --city new_york
+  │  ── traceback ──
+  │      scored = evaluate(raw, db_path=eval_db_path)
+  │               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  │    File "/Users/victoriajin/Documents/Career_related/TravelPlanningAgent/travelbench_Phase5.10/eval/evaluator.py", line 2575, in evaluate
+  │      venues, matrix, truth_carriers = load_ground_truth(city, db_path=db_path)
+  │                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  │    File "/Users/victoriajin/Documents/Career_related/TravelPlanningAgent/travelbench_Phase5.10/eval/evaluator.py", line 260, in load_ground_truth
+  │      raise ValueError(
+  │  ValueError: City 'new_york' not found in DB. Run: python scripts/generation/generate_city_venues.py --city new_york
+  └─ COMPOSITE:   N/A   (evaluator raised — see traceback above)
+  ⏱  23.1s  [15,945in + 1,803out = 17,748 tokens]
+  📝 Transcript: gemini_3_1_pro_preview_new_york_type3_20260521_1779375659_20260606_225512.json.gz (1KB)
+[4/5] Running gpt_5_4_new_york_type4_20260521_1779375371  (medium)  → gemini-3.1-pro-preview
+
+  ┌─ gpt_5_4_new_york_type4_20260521_1779375371  (medium)  [15,217 tokens]
+  │  Tool calls: 8
+  │  Plan parsed: yes
+  │
+  │  ❌ SCORING ERROR: ValueError: City 'new_york' not found in DB. Run: python scripts/generation/generate_city_venues.py --city new_york
+  │  ── traceback ──
+  │      scored = evaluate(raw, db_path=eval_db_path)
+  │               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  │    File "/Users/victoriajin/Documents/Career_related/TravelPlanningAgent/travelbench_Phase5.10/eval/evaluator.py", line 2575, in evaluate
+  │      venues, matrix, truth_carriers = load_ground_truth(city, db_path=db_path)
+  │                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  │    File "/Users/victoriajin/Documents/Career_related/TravelPlanningAgent/travelbench_Phase5.10/eval/evaluator.py", line 260, in load_ground_truth
+  │      raise ValueError(
+  │  ValueError: City 'new_york' not found in DB. Run: python scripts/generation/generate_city_venues.py --city new_york
+  └─ COMPOSITE:   N/A   (evaluator raised — see traceback above)
+  ⏱  26.9s  [12,854in + 2,363out = 15,217 tokens]
+  📝 Transcript: gpt_5_4_new_york_type4_20260521_1779375371_20260606_225512.json.gz (2KB)
+[5/5] Running gemini_3_1_pro_preview_new_york_type5_20260521_1779375933  (hard)  → gemini-3.1-pro-preview
+
+  ┌─ gemini_3_1_pro_preview_new_york_type5_20260521_1779375933  (hard)  [16,373 tokens]
+  │  Tool calls: 9
+  │  Plan parsed: NO ← check raw output
+  │
+  │  ❌ SCORING ERROR: ValueError: City 'new_york' not found in DB. Run: python scripts/generation/generate_city_venues.py --city new_york
+  │  ── traceback ──
+  │      scored = evaluate(raw, db_path=eval_db_path)
+  │               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  │    File "/Users/victoriajin/Documents/Career_related/TravelPlanningAgent/travelbench_Phase5.10/eval/evaluator.py", line 2575, in evaluate
+  │      venues, matrix, truth_carriers = load_ground_truth(city, db_path=db_path)
+  │                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  │    File "/Users/victoriajin/Documents/Career_related/TravelPlanningAgent/travelbench_Phase5.10/eval/evaluator.py", line 260, in load_ground_truth
+  │      raise ValueError(
+  │  ValueError: City 'new_york' not found in DB. Run: python scripts/generation/generate_city_venues.py --city new_york
+  └─ COMPOSITE:   N/A   (evaluator raised — see traceback above)
+  ⏱  18.0s  [15,315in + 1,058out = 16,373 tokens]
+  📝 Transcript: gemini_3_1_pro_preview_new_york_type5_20260521_1779375933_20260606_225512.json.gz (1KB)
+
+════════════════════════════════════════════════════════════
+RUN SUMMARY — gemini-3.1-pro-preview
+════════════════════════════════════════════════════════════
+Task                      Diff        C      F      P   Tokens
+────────────────────────────────────────────────────────────
+  claude_sonnet_4_5_new_york_type1_20260521_1779375385 medium    N/A    N/A    N/A   14,251
+  gemini_3_1_pro_preview_new_york_type2_20260521_1779375520 medium    N/A    N/A    N/A   15,282
+  gemini_3_1_pro_preview_new_york_type3_20260521_1779375659 hard      N/A    N/A    N/A   17,748
+  gpt_5_4_new_york_type4_20260521_1779375371 medium    N/A    N/A    N/A   15,217
+  gemini_3_1_pro_preview_new_york_type5_20260521_1779375933 hard      N/A    N/A    N/A   16,373
+────────────────────────────────────────────────────────────
+  TOTAL                                      78,871 tokens
+  Wall time: 103.6s
+════════════════════════════════════════════════════════════
+real 104.13
+user 0.86
+sys 0.18

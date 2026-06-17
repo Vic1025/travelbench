@@ -32,7 +32,10 @@ class CityIndex:
         self.post_idx: "InvertedIndex | None" = None   # built after load
 
 
-_city_cache: dict[str, CityIndex] = {}
+# Cache key: (city, clean_environment_flag) → CityIndex.
+# Keying on the flag lets us A/B-toggle between noisy and clean modes within
+# a single process without recomputing the other mode's load.
+_city_cache: dict[tuple[str, bool], CityIndex] = {}
 
 # Per-city DB path — resolved dynamically per city lookup
 def _get_db_path(city: str):
@@ -42,20 +45,87 @@ def _get_db_path(city: str):
 # Module-level run_name — set by benchmark runner before first tool call
 _active_run_name = None
 
+# ─────────────────────────────────────────────────────────────────────────────
+# CLEAN-ENVIRONMENT MODE
+# ─────────────────────────────────────────────────────────────────────────────
+# When True, mock_tools suppresses wrong-info exposure so we can A/B-compare
+# model performance with vs without the cross-reference trap.
+#
+# Design (option C — both layers, applied at load time):
+#   1. Yelp structured fields: for every wrong_info row with source_type='yelp',
+#      overwrite the corresponding yelp_listings column (e.g. yelp_hours_fri,
+#      avg_cost_local) with correct_value BEFORE building the in-memory index.
+#   2. Source docs (blogs/forums): drop any source_doc that has at least one
+#      doc_venue_roles row with role='incorrect_source'. We keep truth_carrier
+#      and neutral docs — the goal is clean truth, not silence.
+#   3. Official-site docs are already authoritative by design, so untouched.
+#
+# Choice rationale: deterministic, no data regeneration, surgical. Filtering
+# at load time means search_blogs and search_yelp share one suppression path
+# instead of each tool re-running the same query. The (city, clean) cache key
+# guarantees a process can serve both modes from the same warm cache.
+# ─────────────────────────────────────────────────────────────────────────────
+_clean_environment = False
+
 def set_run_name(run_name: str | None):
     """Set the active run name for DB path resolution.
     Call before dispatching any tools so _load_city finds the right DB."""
     global _active_run_name
     _active_run_name = run_name
 
-def _load_city_from_db(city: str, db_path: Path) -> CityIndex:
-    """Load city data from SQLite DB (new cities: London, Hokkaido, Rio)."""
+def set_clean_environment(clean: bool) -> None:
+    """
+    Toggle clean-environment mode (suppresses wrong-info exposure).
+
+    When True:
+      - yelp_listings fields that have a wrong_info row are healed back to
+        the ground-truth correct_value.
+      - source_docs marked as incorrect_source for any venue are filtered out.
+    When False (default): noisy environment, as originally generated.
+
+    Call before dispatching any tools so _load_city builds the right index.
+    """
+    global _clean_environment
+    _clean_environment = bool(clean)
+
+def get_clean_environment() -> bool:
+    """Return current clean-environment flag (test helper)."""
+    return _clean_environment
+
+def _load_city_from_db(city: str, db_path: Path, clean: bool = False) -> CityIndex:
+    """Load city data from SQLite DB (new cities: London, Hokkaido, Rio).
+
+    When clean=True applies the wrong-info suppression strategy (see
+    set_clean_environment): heals yelp structured fields and drops source
+    docs flagged as incorrect_source.
+    """
     import sqlite3
 
     conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
 
     idx = CityIndex()
+
+    # Clean-mode preload: pull wrong_info corrections and incorrect-source doc
+    # IDs into in-memory lookups so the per-row loaders below stay simple.
+    yelp_corrections: dict[str, dict[str, str]] = {}   # vid -> {field: correct_value}
+    incorrect_source_doc_ids: set[str] = set()
+    if clean:
+        wi_rows = conn.execute("""
+            SELECT venue_id, affected_field, correct_value, source_type
+            FROM wrong_info
+            WHERE source_type = 'yelp'
+        """).fetchall()
+        for r in wi_rows:
+            d = dict(r)
+            yelp_corrections.setdefault(d["venue_id"], {})[d["affected_field"]] = d["correct_value"]
+
+        bad_doc_rows = conn.execute("""
+            SELECT DISTINCT doc_id
+            FROM doc_venue_roles
+            WHERE role = 'incorrect_source'
+        """).fetchall()
+        incorrect_source_doc_ids = {r["doc_id"] for r in bad_doc_rows}
 
     # ── Yelp listings from yelp_listings + venues + tags ─────────────────────
     yelp_rows = conn.execute("""
@@ -80,6 +150,35 @@ def _load_city_from_db(city: str, db_path: Path) -> CityIndex:
     for row in yelp_rows:
         r = dict(row)
         vid = r["venue_id"]
+
+        # Clean-mode: heal yelp_* fields back to correct_value before any
+        # downstream reads. wrong_info.affected_field uses the canonical venue
+        # column name (e.g. 'hours_fri'); yelp_listings prefixes it (e.g.
+        # 'yelp_hours_fri'). We try the prefixed column first, then the bare
+        # field, so the heal works for both hours_* and any future non-hour
+        # yelp-typed wrong-info entry.
+        if clean and vid in yelp_corrections:
+            for field, correct in yelp_corrections[vid].items():
+                target_col = None
+                if field.startswith("hours_") and f"yelp_{field}" in r:
+                    target_col = f"yelp_{field}"
+                elif field in r:
+                    target_col = field
+                if target_col is None:
+                    continue
+                # Cast numeric fields back from text since wrong_info stores
+                # all values as TEXT.
+                if field in ("avg_cost_local", "recommended_visit_minutes"):
+                    try:
+                        r[target_col] = (float(correct) if "." in str(correct)
+                                         else int(correct))
+                    except (TypeError, ValueError):
+                        r[target_col] = correct
+                elif field in ("booking_required", "reservation_required"):
+                    r[target_col] = (int(correct) if str(correct).isdigit() else
+                                     (1 if str(correct).lower() in ("true", "1", "yes") else 0))
+                else:
+                    r[target_col] = correct
 
         # Fetch tags for this venue
         tags = conn.execute(
@@ -142,6 +241,11 @@ def _load_city_from_db(city: str, db_path: Path) -> CityIndex:
 
     for row in posts:
         r = dict(row)
+        # Clean-mode: drop any post that is flagged as incorrect_source for
+        # at least one venue. Truth-carrier and neutral docs are retained, so
+        # the agent still sees ground-truth coverage of the venue.
+        if clean and r["doc_id"] in incorrect_source_doc_ids:
+            continue
         venue_ids = r["venue_ids"].split(",") if r["venue_ids"] else []
         post = {
             "doc_id":      r["doc_id"],
@@ -256,8 +360,9 @@ def _load_city_from_db(city: str, db_path: Path) -> CityIndex:
 
 def _load_city(city: str) -> CityIndex:
     city = city.lower()
-    if city in _city_cache:
-        return _city_cache[city]
+    cache_key = (city, _clean_environment)
+    if cache_key in _city_cache:
+        return _city_cache[cache_key]
 
     _city_db = _get_db_path(city)
     if not _city_db.exists():
@@ -265,14 +370,14 @@ def _load_city(city: str) -> CityIndex:
             f"No city DB for '{city}' at {_city_db}. "
             f"Run: python scripts/generation/generate_city_venues.py --city {city}"
         )
-    idx = _load_city_from_db(city, _city_db)
+    idx = _load_city_from_db(city, _city_db, clean=_clean_environment)
     if not idx.yelp:
         raise FileNotFoundError(
             f"City DB for '{city}' contains no verified venues at {_city_db}. "
             f"Re-run venue generation."
         )
     _build_indexes(idx)
-    _city_cache[city] = idx
+    _city_cache[cache_key] = idx
     return idx
 
 

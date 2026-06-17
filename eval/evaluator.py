@@ -196,7 +196,26 @@ def _apply_source_required(base_result: dict, constraint: dict,
 # ─────────────────────────────────────────────────────────────────────────────
 
 def hhmm_to_min(t: str) -> int:
-    h, m = map(int, t.split(":"))
+    """Parse a time string to minutes-since-midnight.
+
+    Accepts canonical "HH:MM" (24-hour). Also tolerates 12-hour suffixes
+    ("9:00 AM", "12:30 pm") by stripping the meridiem and adjusting hours —
+    some solver models emit times this way despite prompt instructions.
+    """
+    s = t.strip()
+    meridiem = None
+    upper = s.upper()
+    if upper.endswith(" AM") or upper.endswith(" PM"):
+        meridiem = upper[-2:]
+        s = s[:-3].strip()
+    elif upper.endswith("AM") or upper.endswith("PM"):
+        meridiem = upper[-2:]
+        s = s[:-2].strip()
+    h, m = map(int, s.split(":"))
+    if meridiem == "AM" and h == 12:
+        h = 0
+    elif meridiem == "PM" and h != 12:
+        h += 12
     return h * 60 + m
 
 def min_to_hhmm(m: int) -> str:
@@ -256,7 +275,7 @@ def load_ground_truth(city: str, db_path=None) -> tuple[dict, dict]:
                age_restriction, dress_code, photography_allowed,
                noise_level, reservation_required, outside_food_allowed,
                family_friendly, food_available,
-               has_wrong_info_planned, local_cuisine,
+               has_wrong_info_planned, local_cuisine, cuisine,
                window_flags
         FROM venues
         WHERE city = ? AND page_status = 'verified'
@@ -1052,6 +1071,12 @@ def evaluate_f_score(result: dict, task: dict, venues: dict, matrix: dict,
             return entry.get(mode) or entry.get("walking")
         return float(entry)
 
+    # F2c: per-venue (task-level) check — track venues already evaluated so
+    # that multi-day or multi-activity visits to the same wrong-info venue
+    # don't multiply the deduction. (The truth-carrier retrieval is a single
+    # binary action by the agent across the whole task.)
+    f2c_checked_task: set = set()
+
     for day_idx, day in enumerate(days):
         date_str, day_key = get_day_date(task, day_idx)
         activities = day.get("activities", [])
@@ -1089,6 +1114,8 @@ def evaluate_f_score(result: dict, task: dict, venues: dict, matrix: dict,
         # same venue on the same day are summed before bounds checking.
         from collections import defaultdict as _dd
         venue_total_minutes: dict = _dd(int)
+
+        # (F2c is tracked at task-level above via f2c_checked_task.)
 
         # ── Per-activity checks (F2a, F2b, F2c, F2d) ───────────────────────
         for _, act in venue_acts:
@@ -1137,8 +1164,13 @@ def evaluate_f_score(result: dict, task: dict, venues: dict, matrix: dict,
                 _ded("F2b", 0.15,
                      f"Day {day_idx+1}: '{vname}' SOLD OUT on {date_str}")
 
-            # F2c: Truth-carrier not retrieved
-            if venue.get("has_wrong_info") or venue.get("has_wrong_info_planned"):
+            # F2c: Truth-carrier not retrieved (per-venue, task-level).
+            # The agent's choice to retrieve happens once; same venue scheduled
+            # multiple times (same day or across days) should not multiply
+            # the deduction.
+            if (venue.get("has_wrong_info") or venue.get("has_wrong_info_planned")) \
+                    and vid not in f2c_checked_task:
+                f2c_checked_task.add(vid)
                 carrier_docs = truth_carriers.get(vid, [])
                 retrieved = False
                 for call in tool_log:
