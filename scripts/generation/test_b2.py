@@ -190,7 +190,9 @@ check("2 distinct cuisines, need 3 → score<1.0", r["score"] < 1.0, r)
 same_meals = [make_act("v_cafe_low","meal"), make_act("v_cafe_low","meal")]
 c_diversity2 = {**c_diversity, "aggregation": {"count_distinct": 2, "field": "cuisine_label"}}
 r = _evaluate_generic_constraint("c1", c_diversity2, [make_day(same_meals)], same_meals, VENUES)
-check("1 distinct cuisine, need 2 → score=0.0", r["score"] == 0.0, r)
+# count_distinct now gives proportional partial credit: 1 distinct out of 2 required → 0.5.
+# (Consistent with at_least's partial-credit behavior — both surface progress toward threshold.)
+check("1 distinct cuisine, need 2 → score=0.5 (partial)", r["score"] == 0.5, r)
 
 
 # ─────────────────────────────────────────────────────────────────────────────

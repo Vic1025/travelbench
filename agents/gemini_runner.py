@@ -235,14 +235,14 @@ def main():
     parser = argparse.ArgumentParser(description="TravelBench Gemini runner")
     parser.add_argument("--task",      required=True, help="Task ID e.g. par_easy_001")
     parser.add_argument("--model",     default=DEFAULT_MODEL, help=f"Gemini model (default: {DEFAULT_MODEL})")
-    parser.add_argument("--api-key",   default=None, help="Google AI API key (or set GOOGLE_API_KEY)")
+    parser.add_argument("--api-key",   default=None, help="Google AI API key (or set GEMINI_API_KEY / GOOGLE_API_KEY)")
     parser.add_argument("--dry-run",   action="store_true")
     parser.add_argument("--use-cache", action="store_true")
     parser.add_argument("--out-dir",   default=None)
     args = parser.parse_args()
 
     import os
-    api_key = args.api_key or os.environ.get("GOOGLE_API_KEY")
+    api_key = args.api_key or os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
 
     task = load_task(args.task)
     print(f"Task: {task['task_id']} | Model: {args.model} | Difficulty: {task['difficulty']}")
@@ -260,7 +260,7 @@ def main():
         result = run_dry(task, args.model)
     else:
         if not api_key:
-            print("Error: --api-key or GOOGLE_API_KEY required.")
+            print("Error: --api-key or GEMINI_API_KEY / GOOGLE_API_KEY required.")
             sys.exit(1)
         if not HAS_GEMINI:
             print("Error: google-generativeai not installed. Run: pip install google-generativeai")

@@ -33,9 +33,16 @@ from server.mock_tools import TOOL_SCHEMAS, dispatch_tool
 # SYSTEM PROMPT
 # ─────────────────────────────────────────────────────────────────────────────
 
-def _build_system_prompt(task: dict, city_config: dict = None) -> str:
-    """Build a city-aware system prompt for the solving agent."""
+def _build_system_prompt(task: dict, city_config: dict = None, max_tool_calls: int = 30) -> str:
+    """Build a city-aware system prompt for the solving agent.
+
+    `max_tool_calls` is the runner's actual cap; the prompt's budget section
+    is rendered from it so the model's expectation matches reality.
+    """
     city = task.get("city", "the city")
+    # Allocate the last ~2 calls (or 15% of budget, whichever larger) to plan-writing reserve
+    _reserve = max(2, max_tool_calls // 7)
+    _research_budget = max(1, max_tool_calls - _reserve)
 
     return f"""You are an expert travel planning assistant for {city}. Your task is to create a detailed, day-by-day travel itinerary using the available tools.
 
@@ -69,31 +76,36 @@ wrong, outdated, or incomplete. Your job is to cross-check and find the truth.
   tool call budget. Optional — use it freely whenever it helps you think clearly.
 
 ## Scoring Requirements — READ CAREFULLY
-Your plan will be scored to 0% (automatic fail) if ANY of these are missing:
+Two things will cause an automatic 0% (hard fail):
 
-1. You MUST call **search_yelp** at least once to discover venues
-2. You MUST call **search_blogs_and_forums** at least once to cross-check info
-3. You MUST call **get_official_site** for every venue in your plan that has one
-4. You MUST call **get_travel_time** for consecutive venue pairs in your plan
-5. You MUST wrap your final plan in **<final_plan>** tags with valid JSON
+1. You make zero tool calls.
+2. You do not emit your final plan inside `<final_plan>` ... `</final_plan>` tags
+   with valid JSON.
 
-Skipping any tool means your plan is based on incomplete or potentially wrong
-information — the benchmark treats this as a process failure.
+Everything else is scored as a deduction, NOT a hard fail. In particular:
+- `search_yelp` and `search_blogs_and_forums` ground your venue discovery; using
+  both raises the quality of your plan but missing one is a small deduction, not 0%.
+- `get_official_site` confirms hours, booking, and ticket info — call it for
+  booking-required and time-sensitive venues. Missing calls deduct partial credit.
+- `get_travel_time` between consecutive venues catches infeasibility — call it
+  for the pairs where timing matters most.
+
+**You will not have time to call every tool for every venue. Prioritise.**
+Research what's most likely to make or break the plan, then commit to your plan.
+The agent that always writes a plan beats the agent that runs out of budget mid-research.
 
 ## Tool Call Budget — PLAN CAREFULLY
-Your total tool call cap is **15 × number of trip days**. For example:
-- 1-day trip: 15 total calls
-- 2-day trip: 30 total calls
-- 3-day trip: 45 total calls
+Your total tool call cap is **{max_tool_calls} calls for this entire task** (all days combined).
 
-You should use MOST of your budget. A well-researched day needs 9-14 calls:
-- 2-3 search_yelp (venue discovery — each returns multiple results)
-- 1-2 search_blogs_and_forums (cross-check and find corrections)
-- 2-3 get_official_site (booking-required and key venues)
-- 3-4 get_travel_time (consecutive venue pairs)
+Allocate roughly:
+- ~{_research_budget} calls for research (search_yelp + search_blogs_and_forums + get_official_site + get_travel_time)
+- Reserve your final turn(s) to write the `<final_plan>` JSON
 
-If you're planning a 3-day trip with only 10-15 tool calls total, you are NOT doing
-enough research — you need 30-40+ calls to properly verify venues, hours, and travel.
+This is a hard cap. Once you reach it, the system will stop accepting tool calls and
+ask you for the final plan. **Do not exhaust the budget on research alone** — you must
+leave room to write the plan. A practical rhythm: discover venues first, verify the
+shortlist with official sites + travel times, then commit to a plan. Quality of
+selection matters more than breadth of search.
 
 
 ## Transport Activities
