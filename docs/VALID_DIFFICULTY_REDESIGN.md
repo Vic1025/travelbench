@@ -345,6 +345,21 @@ pipeline's empirical difficulty** — using only stored data, zero API.
   **LLM-as-certifier** (one cheap call per flaw — richer than the static number,
   far cheaper than two full agent runs); (d) richer constraint/source encoding.
 
+**Result (2026-06, retro on NYC test_70 — `results/certifier_retro_report.md`):**
+INCONCLUSIVE, as the power caveat predicted. Over 20 scheduled flaws, repairability
+did not predict the combined trip-rate (Spearman ρ=+0.08, p=0.73); the only
+significant signal (F2a, ρ=+0.48, p=0.03) had the *wrong sign*, traced to an
+outcome-geometry confound — a small planted hours-shift rarely creates a real
+scheduling conflict regardless of detectability. X spread was tiny (4 distinct
+repairability values, median 0.5), n small, 9/29 flaws never scheduled. The test
+**neither confirms nor refutes.** Decision: **demote the certifier to a validity
+GATE only** (`detectability ≥ 1 ∧ 0 < repairability < 1`) — do NOT use its number
+as a difficulty estimator yet. A definitive test needs the new flaw distribution
+(b1) with deliberate repairability spread, measured by the 3-arm ablation. Bonus
+finding (directly supports b1): trip-rate is governed by whether corruption is
+*load-bearing* — whether the wrong value would actually change the agent's action —
+not by detectability.
+
 The certifier stays a **plugin** throughout — nothing in the pipeline depends on
 it, so it can be adopted, swapped, or dropped without touching generation or
 scoring.
