@@ -329,6 +329,41 @@ def _load_city_from_db(city: str, db_path: Path, arm: str = "faulty") -> CityInd
         idx.posts.append(post)
 
     # ── Official site docs ────────────────────────────────────────────────────
+    # Authority-suppression preload (b2): wrong_info rows with
+    # suppress_authority=1 mean the official site must STOP being a free oracle
+    # for that venue's trapped field. We build a per-venue map of
+    #   field -> {"mode": "omit"|"stale", "incorrect_value": <str>}
+    # and apply it in tool_get_official_site. When suppress_authority=0
+    # everywhere (today's data) this map is empty and output is byte-identical.
+    #
+    # Mode rule (default = omit): a row is treated as "stale" (official site is
+    # itself out of date, return the incorrect_value) when its flaw structure /
+    # category signals staleness; otherwise the field is omitted entirely.
+    authority_suppression: dict[str, dict[str, dict]] = {}
+    try:
+        wi_cols = {c[1] for c in conn.execute("PRAGMA table_info(wrong_info)").fetchall()}
+    except Exception:
+        wi_cols = set()
+    if "suppress_authority" in wi_cols:
+        has_structure = "structure" in wi_cols
+        struct_sel = "structure" if has_structure else "NULL AS structure"
+        sup_rows = conn.execute(f"""
+            SELECT wi.venue_id, wi.affected_field, wi.incorrect_value,
+                   wi.wrong_info_category, {struct_sel}
+            FROM wrong_info wi
+            JOIN venues v ON wi.venue_id = v.venue_id
+            WHERE v.city = ? AND wi.suppress_authority = 1
+        """, (city,)).fetchall()
+        for sr in sup_rows:
+            d = dict(sr)
+            mode = "stale" if _authority_suppression_is_stale(
+                d.get("structure"), d.get("wrong_info_category")
+            ) else "omit"
+            authority_suppression.setdefault(d["venue_id"], {})[d["affected_field"]] = {
+                "mode":            mode,
+                "incorrect_value": d.get("incorrect_value"),
+            }
+
     official_rows = conn.execute("""
         SELECT o.*, v.name, v.category
         FROM official_site_docs o
@@ -398,6 +433,8 @@ def _load_city_from_db(city: str, db_path: Path, arm: str = "faulty") -> CityInd
             "avg_cost_local":         v.get("avg_cost_local"),
             # Event info (populated by A9)
             "active_event":           json.loads(v.get("active_event") or "null"),
+            # b2: authority-suppression spec for this venue (empty when none).
+            "_authority_suppression": authority_suppression.get(vid, {}),
         }
         idx.official[vid] = doc
 
@@ -894,6 +931,114 @@ def tool_search_blogs_and_forums(query: str, city: str,
 # TOOL 3: get_official_site
 # ─────────────────────────────────────────────────────────────────────────────
 
+# Set of full_regulations keys; an affected_field naming one of these is
+# suppressed inside the nested full_regulations dict rather than at top level.
+_REGULATION_FIELDS = frozenset({
+    "pet_friendly", "wheelchair_accessible", "parking_nearby", "age_restriction",
+    "dress_code", "photography_allowed", "noise_level", "reservation_required",
+    "outside_food_allowed", "family_friendly",
+})
+
+_HOURS_DAYS = ("mon", "tue", "wed", "thu", "fri", "sat", "sun")
+
+
+def _authority_suppression_is_stale(structure, category) -> bool:
+    """
+    Decide the suppression MODE for a wrong_info row.
+
+    Returns True  -> 'stale'  : the official site itself is out of date; it
+                                 still lists the field, but with the (wrong)
+                                 incorrect_value.
+    Returns False -> 'omit'   : the official site simply doesn't list the field.
+
+    Default is OMIT. We only treat a row as stale when its flaw structure /
+    category signals temporal staleness (the natural "site is out of date"
+    semantics): structure == 'stale_authority' or category == 'temporal_decay'.
+    """
+    s = (str(structure).strip().lower() if structure is not None else "")
+    c = (str(category).strip().lower() if category is not None else "")
+    return s == "stale_authority" or c == "temporal_decay"
+
+
+def _parse_official_hours_value(raw):
+    """Parse a stored 'HH:MM-HH:MM' hours string into the [open, close] list
+    form used by the official-site response (mirrors index-build parsing)."""
+    if not raw:
+        return None
+    parts = str(raw).split("-")
+    return parts if len(parts) == 2 else None
+
+
+def _apply_authority_suppression(response: dict, suppression: dict) -> None:
+    """
+    Apply b2 authority suppression to a get_official_site response in place.
+
+    `suppression` maps affected_field -> {"mode": "omit"|"stale",
+    "incorrect_value": <str>}. For each suppressed field:
+      - omit:  remove the field from the response (hours day dropped, nested
+               regulation key dropped, or top-level key dropped).
+      - stale: replace the authoritative value with incorrect_value.
+
+    Fields not present in `suppression` are untouched, so an empty map (today's
+    data) leaves the response byte-identical.
+    """
+    if not suppression:
+        return
+
+    for field, spec in suppression.items():
+        mode = spec.get("mode", "omit")
+        incorrect = spec.get("incorrect_value")
+
+        # Hours fields: hours_<day>
+        if isinstance(field, str) and field.startswith("hours_"):
+            day = field[len("hours_"):]
+            if day in _HOURS_DAYS and isinstance(response.get("hours"), dict):
+                if mode == "stale":
+                    response["hours"][day] = _parse_official_hours_value(incorrect)
+                else:  # omit — site doesn't list this day's hours
+                    response["hours"].pop(day, None)
+            continue
+
+        # Regulation fields live in the nested full_regulations dict
+        if field in _REGULATION_FIELDS and isinstance(response.get("full_regulations"), dict):
+            if mode == "stale":
+                response["full_regulations"][field] = _coerce_official_value(
+                    field, incorrect, response["full_regulations"].get(field)
+                )
+            else:
+                response["full_regulations"].pop(field, None)
+            continue
+
+        # Top-level scalar fields (booking_required, avg_cost_local,
+        # recommended_visit_minutes, ...)
+        if field in response:
+            if mode == "stale":
+                response[field] = _coerce_official_value(field, incorrect, response[field])
+            else:
+                response.pop(field, None)
+
+
+def _coerce_official_value(field: str, raw, current):
+    """Coerce a stored incorrect_value string toward the type of the field's
+    current authoritative value, so a stale value reads naturally (bool/int/
+    float/str). Falls back to the raw string when coercion is ambiguous."""
+    if raw is None:
+        return None
+    if isinstance(current, bool):
+        return str(raw).strip().lower() in ("1", "true", "yes", "y")
+    if isinstance(current, int):
+        try:
+            return int(float(str(raw).strip()))
+        except (ValueError, TypeError):
+            return raw
+    if isinstance(current, float):
+        try:
+            return float(str(raw).strip())
+        except (ValueError, TypeError):
+            return raw
+    return raw
+
+
 def tool_get_official_site(venue_id: str, city: str, date: str = None) -> dict:
     """
     Get official site data for a venue.
@@ -923,6 +1068,10 @@ def tool_get_official_site(venue_id: str, city: str, date: str = None) -> dict:
 
     doc = idx.official[venue_id]
 
+    # b2: copy the mutable sub-dicts so authority suppression (and date
+    # enrichment) can edit the response without corrupting the cached doc.
+    suppression = doc.get("_authority_suppression") or {}
+
     # Base response
     response = {
         "tool":           "get_official_site",
@@ -930,16 +1079,20 @@ def tool_get_official_site(venue_id: str, city: str, date: str = None) -> dict:
         "name":           name,
         "has_official_site": True,
         "url":            doc.get("url", ""),
-        "hours":          doc.get("hours", {}),
+        "hours":          dict(doc.get("hours", {})),
         "ticket_availability": doc.get("ticket_availability", {}),
         "booking_required": doc.get("booking_required", False),
         "avg_cost_local":   doc.get("avg_cost_local"),
-        "full_regulations": doc.get("full_regulations", {}),
+        "full_regulations": dict(doc.get("full_regulations", {})),
         "full_labels":    doc.get("full_labels", []),
         "recommended_visit_minutes": doc.get("recommended_visit_minutes"),
         "note": "This data is authoritative. "
                 "Check ticket_availability for your specific travel dates.",
     }
+
+    # b2: stop the official site from being a free oracle for trapped fields.
+    # No-op (and copies above are content-identical) when nothing is suppressed.
+    _apply_authority_suppression(response, suppression)
 
     # Date-specific enrichment
     if date:
