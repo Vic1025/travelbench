@@ -316,7 +316,28 @@ CREATE TABLE IF NOT EXISTS wrong_info (
     source_type         TEXT NOT NULL,  -- yelp|blog|forum
     wrong_info_category TEXT NOT NULL,  -- temporal_decay|propagation_error|conditional|subjective
     origin_story        TEXT NOT NULL,  -- one sentence explaining how this mistake entered this source
+    -- Corruption-pipeline metadata (additive; all nullable). Older rows have NULL.
+    seed_used           TEXT,           -- seed string used to generate this corruption
+    detectability       INTEGER,        -- difficulty signal: how hard to detect the flaw
+    repairability       REAL,           -- difficulty signal: how recoverable the truth is
+    structure           TEXT,           -- flaw-structure label: minority_truth|copying_bloc|omission|
+                                        --   entity_resolution|stale_authority|no_truth
+    profile_id          TEXT,           -- corruption profile that produced this entry
+    mask_id             TEXT,           -- mask identifier within the profile
+    suppress_authority  INTEGER DEFAULT 0,  -- 0/1: mock_tools.get_official_site drops/staleifies
+                                            --   the official value for this venue's trapped field
     FOREIGN KEY (venue_id) REFERENCES venues(venue_id)
+);
+
+-- Corruption pipeline run provenance. One row per corruption run.
+CREATE TABLE IF NOT EXISTS corruption_runs (
+    run_id              TEXT PRIMARY KEY,
+    master_seed         TEXT,
+    profile_id          TEXT,
+    profile_version     TEXT,
+    corruptor_version   TEXT,
+    gt_hash             TEXT,
+    created_at          TEXT
 );
 
 -- Official site documents. One-to-one with venues where has_official_site=true.
@@ -491,6 +512,37 @@ def _apply_migrations(conn: sqlite3.Connection) -> None:
             conn.execute("ALTER TABLE source_docs ADD COLUMN persona TEXT NOT NULL DEFAULT ''")
         if "tone" not in sd_cols:
             conn.execute("ALTER TABLE source_docs ADD COLUMN tone TEXT NOT NULL DEFAULT ''")
+
+    # Corruption pipeline: additive wrong_info columns + corruption_runs table.
+    # All columns nullable (suppress_authority defaults 0); existing inserts use
+    # explicit column lists and reads use SELECT *, so older rows are unaffected.
+    if "wrong_info" in tables:
+        wi_cols = {r[1] for r in conn.execute("PRAGMA table_info(wrong_info)").fetchall()}
+        for col, defn in [
+            ("seed_used",          "TEXT"),
+            ("detectability",      "INTEGER"),
+            ("repairability",      "REAL"),
+            ("structure",          "TEXT"),
+            ("profile_id",         "TEXT"),
+            ("mask_id",            "TEXT"),
+            ("suppress_authority", "INTEGER DEFAULT 0"),
+        ]:
+            if col not in wi_cols:
+                conn.execute(f"ALTER TABLE wrong_info ADD COLUMN {col} {defn}")
+
+    # corruption_runs — run provenance for the corruption pipeline.
+    if "corruption_runs" not in tables:
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS corruption_runs (
+                run_id              TEXT PRIMARY KEY,
+                master_seed         TEXT,
+                profile_id          TEXT,
+                profile_version     TEXT,
+                corruptor_version   TEXT,
+                gt_hash             TEXT,
+                created_at          TEXT
+            )
+        """)
 
     conn.commit()
 
