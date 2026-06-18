@@ -1121,64 +1121,17 @@ venues, but some are implicit (Smoking Goat: "I booked ahead" requires inference
 
 ---
 
-### Problem 2 — Retrieval signal quality varies by wrong-info field type
+### Problems 2 & 3 + F2c redesign — superseded by VALID_DIFFICULTY_REDESIGN.md (2026-06)
 
-Measured from 273 benchmark transcripts (268 readable):
-
-| Field type | Official site signal | Retrieval rate (has_official_site=True) |
-|------------|---------------------|-----------------------------------------|
-| `booking_required` | ✅ explicit (`booking_required` field) | 92–100% for popular venues |
-| `recommended_visit_minutes` | ✅ explicit (`recommended_visit_minutes` field) | ~55% |
-| `hours_*` | ✅ for some venues, ❌ null for others | varies |
-| `avg_cost_local` | 🟡 now included (was missing) | unmeasured |
-
-High miss-rate venues (agents skip official site call):
-- Columbia Road Flower Market: 71% miss
-- Mangal 2: 60% miss
-- Monmouth Coffee: 50%
-- Padella: 45%
-
-The runner prompt says "always call get_official_site for booking-required venues" —
-agents skip it for markets, cafés, and casual spots that don't feel booking-critical.
-
-**Open question:** Should the runner prompt be strengthened to require get_official_site
-for ALL venues in the plan (not just booking-required ones)?
-
----
-
-### Problem 3 — Application: does the agent USE the correct info?
-
-**Unmeasured.** Even when get_official_site returns `booking_required: False`:
-- The yelp `category_tags` previously included `reservation-required` (now fixed)
-- The model may have anchored on the yelp tag seen earlier in the conversation
-- Some models add booking-related flags anyway ("carnival weekend — prebooking recommended")
-
-We cannot measure this from stored transcripts (tool outputs not logged). To measure:
-- Would need to re-run evaluations logging all tool call outputs
-- Or parse agent plan flags/notes for booking-related language and compare to correct value
-
-**Research question:** How do we design wrong-info scenarios where:
-(a) the wrong information is detectable but not trivially so
-(b) the truth carrier provides a clear enough signal for models to resolve conflicts
-(c) the difficulty calibrates across model capability levels
-
-This requires consulting literature on fragile/adversarial information environments
-(misinformation detection, fact-checking benchmarks, conflicting source resolution).
-Not something that can be solved by simply cataloguing internet error types.
-
----
-
-### Current F2c scoring (what to change)
-
-**Current:** −0.05 if truth carrier not retrieved OR official site not called.  
-**Problem:** Does not check if agent APPLIED the correct info to the plan.
-
-**Proposed extension (after research):**
-- Keep retrieval check as baseline
-- Add plan-value check: for `booking_required` wrong-info venues, check if agent's plan
-  reflects the correct booking status (e.g. no booking activity for walk-in venues)
-- For `avg_cost_local`: check if estimated_cost_local in plan is within range of correct value
-- Three tiers: correct application (0) / retrieved but wrong application (−0.03) / not retrieved (−0.05)
+The open design questions that were here — retrieval signal varies by field type
+(Problem 2); does the agent USE the correct info (Problem 3); how to extend F2c into
+a plan-value check — are now resolved in `docs/VALID_DIFFICULTY_REDESIGN.md` (branch
+`valid-difficulty-redesign`). There: corruption is placed on the field a task's
+binding constraint reads (so it bites the GT-based score directly), recoverability is
+certified per-venue (detectability + repairability), and **F2c becomes a 3-tier
+credit** (retrieved / retrieved-but-corrupt-value-used / retrieved-and-true-value-applied).
+The "fragile/adversarial information environment" literature this called for is in
+`Books and Papers/Papers/Internet-Noise-Benchmark/`. Stripped here to avoid a stale duplicate.
 
 
 ---

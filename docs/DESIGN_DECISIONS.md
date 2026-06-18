@@ -218,6 +218,8 @@ total_results raw value, all venues table columns, tags.yelp_visible=0 rows.
 
 **Detection measurement** — evaluator checks whether planning agent's tool_call_log contains any call that returned a truth_carrier doc for that wrong-info entry. Three outcomes: found + used (full credit), found + ignored (partial), never found (lucky guess or error or correct uncertainty flag).
 
+**Redesign (2026-06, `valid-difficulty-redesign` branch) — see `docs/VALID_DIFFICULTY_REDESIGN.md`.** A pilot showed the faulty environment did not add difficulty (corruption missed the rubric; truth was free; resolution was off the scoring path). The redesign keeps the categories above but reframes flaws as reusable, venue-intrinsic **structures** authored by the venue-gen agent, placed on the fields a task's binding constraint reads, with two difficulty axes (detectability, repairability) and a cheap **certifier plugin** for validity. Notable changes to the above list: Category 2 (propagation) becomes **auto-generable** (copying bloc); the mandatory truth-carrier becomes **optional** (empirical recoverability via the certifier); new structures added (minority-truth conflict, multi-truth omission, entity-resolution, no-truth control). Detection measurement → a **3-tier F2c credit** (not-retrieved / retrieved-but-corrupt-value-used / retrieved-and-true-value-applied). Flaw-type taxonomy folded into `handbook.py` (wrong_info_rules → "REDESIGN TARGET" block).
+
 ---
 
 ## SEARCH & RETRIEVAL

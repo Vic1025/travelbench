@@ -1,11 +1,25 @@
 # Valid-Difficulty Redesign — making corruption actually add difficulty
 
 **Branch:** `valid-difficulty-redesign`
-**Status:** design contract for workstreams (a) this doc → (b) reusable flaw
-library + task binding → (c) controlled 3-arm ablation.
-**Grounding:** the literature review in `docs/PHASE7_FUTURE_WORK.md` (P7-I/J/K),
-PDFs in `~/Documents/Books and Papers/Papers/Internet-Noise-Benchmark/`, and the
-pilot result in `scripts/_pilot_analysis.md`.
+**Status:** design contract (v2). Workstreams: (a) this doc → (b) reusable flaw
+library + task binding → (c) controlled 3-arm ablation → (d) certifier plugin +
+its validation experiment.
+**Grounding:** the literature review (formerly P7-I/J/K in
+`docs/PHASE7_FUTURE_WORK.md`, now consolidated into this doc),
+PDFs in `~/Documents/Books and Papers/Papers/Internet-Noise-Benchmark/`, the pilot
+result in `scripts/_pilot_analysis.md`, and a 2026-06 theory pass over BART
+(repairability), truth discovery (copying / latent reliability), Ditto (entity
+resolution), and the 2024–26 RAG knowledge-conflict literature.
+
+> **v2 deltas vs v1** (so you can see what changed): the per-flaw LLM sandbox is
+> **demoted** — validity + difficulty are estimated by a cheap **certifier plugin**
+> (§4), and the LLM sandbox is kept only for *calibration* and task-wedge
+> measurement, not per-flaw. Difficulty is a **2-vector** (detectability,
+> repairability), not a single dial. Flaw taxonomy expanded with theory-grounded
+> structures incl. auto-generable propagation, multi-truth omission, and
+> entity-resolution traps (§3). Added a corpus-level **source model** (§5),
+> **disjoint-scope / inferability / parametric-knowledge** invariants (§6), and a
+> free **certifier validation experiment** on existing data (§9).
 
 ---
 
@@ -38,6 +52,11 @@ bugs, all confirmed in code — not model robustness:
 *worse* in clean mode (−0.25): removing docs starved the agent of triangulation
 context and shifted its venue selection.
 
+**Why minor faults can't help (the 2024–26 RAG literature):** strong models are
+increasingly robust to unstructured noise ("diminishing returns of complex robust
+RAG training in the era of powerful LLMs"). Difficulty must come from *structured*
+conflict — copying, omission, load-bearing placement — not sprinkled noise.
+
 **Realization that drives the whole redesign:** the scorer is already correct
 (GT-based). We do not change scoring. We (i) put corruption on the fields the
 scorer reads, (ii) remove the free shortcuts to truth, and (iii) make the clean
@@ -45,39 +64,47 @@ arm a true control.
 
 ---
 
-## 2. Core concept — two wedges
+## 2. Core concept — two wedges, two axes
 
-The benchmark difficulty is the gap between a **naive** agent (trusts the first
-source / the majority / the official site) and a **careful** agent (cross-checks,
-weighs recency & engagement, detects copied sources). That gap is *two distinct
-quantities at two granularities* — keeping them separate is the key insight.
+Difficulty = the gap between a **naive** agent (trusts first source / majority /
+official site = uniform-weight vote) and a **careful** agent (infers latent source
+reliability, weighs recency/authority, detects copied sources = weighted vote).
+This is exactly the truth-discovery "wisdom of minority"; BART gives the same gap
+as detection-vs-repair. The gap is *two quantities at two granularities*:
 
 **Wedge 1 — the flaw wedge (per venue + field).** Unit = "did you get the field
-value right?", not task score:
-`field_correct(careful) − field_correct(naive)`.
-A pure property of a flaw + that venue's served docs. **No task involved.** This
-is what we manufacture and validate.
+value right?". A property of a flaw + that venue's served docs. **No task
+involved.** This is what we manufacture and validate.
 
-**Wedge 2 — the task wedge (per task).** The flaw wedge propagates into task
-score, but *only through a binding constraint*:
-`task_score(careful) − task_score(naive)`.
+**Wedge 2 — the task wedge (per task).** The flaw wedge propagates into task score
+only through a **binding constraint**: `task_score(careful) − task_score(naive)`.
 
 The flaw wedge is the **reusable cause**; the task wedge is the **effect**,
 switched on when a task's binding constraint reads the flawed field.
 
+Each flaw carries **two difficulty axes** (BART), not one dial:
+- **Detectability** = how many independent claims *contradict* the lie. `0` →
+  undetectable → invalid (careful has no signal). Low-but-nonzero = naive won't
+  notice.
+- **Repairability** ∈ (0,1) = the true value's share of the candidate-value set =
+  can careful land back on GT, and how easily. `0` → detectable but unrecoverable
+  → invalid. `1` → trivial. **≈0.5 with a single competing plausible value = the
+  hardest fair regime** (naive coin-flips; careful must use a tiebreaker).
+
+The wedge is widest when **detectability is low-but-nonzero AND repairability is
+moderate.** Validity = `detectability ≥ 1 AND 0 < repairability < 1`.
+
 > **Worked example — one flaw, two tasks.**
 > Flaw: Veselka GT `avg_cost=$30` (over budget), Yelp shows `$12` (false-positive).
-> - *Sandbox (flaw wedge):* careful reads docs → $30 ✓; naive trusts top Yelp →
->   $12 ✗. Wedge exists → flaw admitted.
+> - *Flaw wedge:* careful reads docs → $30 ✓; naive trusts top Yelp → $12 ✗.
 > - *Task A "dinner ≤ $24/head" (budget binds avg_cost):* naive includes Veselka,
 >   thinks total $20, submits → scored vs GT → real $38 → over → P=0.4. Careful
->   recovers $30, swaps it out → real $22 → P=1.0. **Task wedge = 0.6.**
+>   recovers $30, swaps it out → P=1.0. **Task wedge = 0.6.**
 > - *Task B "find Italian restaurants" (cuisine binds, not cost):* cost flaw
 >   touches nothing the rubric reads → same picks → **task wedge = 0** (dormant).
 
-Consequences: a flaw lives on a venue (intrinsic, reusable across tasks and
-cities); difficulty is per-task; the same library serves everything; and a flaw
-that is dormant for one task is load-bearing for another with no change.
+Consequence: a flaw lives on a venue (intrinsic, reusable across tasks and
+cities); difficulty is per-task; the same library serves everything.
 
 ---
 
@@ -85,161 +112,190 @@ that is dormant for one task is load-bearing for another with no change.
 
 **Why F felt easy and P felt impossible — and why they're the same.** F-faults
 (hours, booking, visit_minutes) felt "universal" because they're *intrinsic venue
-properties* you could plant at venue-gen. But most P-constraints test **tags and
-categorical/numeric venue features** — `cuisine`, `wheelchair_accessible`,
-`local_cuisine`, `price_tier`, `waterfront`, `district`, `avg_cost`. Those are
-*also* intrinsic. So a P-flaw is exactly as venue-intrinsic and reusable as an
-F-flaw; we were only picturing P-flaws as bespoke.
+properties*. But most P-constraints test **tags and categorical/numeric features**
+— `cuisine`, `wheelchair_accessible`, `local_cuisine`, `price_tier`, `waterfront`,
+`district`, `avg_cost`. Those are *also* intrinsic. So a P-flaw is exactly as
+venue-intrinsic and reusable as an F-flaw.
 
 **Flaw mask** = `(predicate over venue features/tags, target field, direction,
-category, detectability)`. Examples:
-- `price_tier=upscale → flaw avg_cost DOWN (temporal_decay), detectability=0.4`
-- `category=restaurant ∧ ¬wheelchair → flaw wheelchair_accessible UP (subjective)`
-- `cuisine=Italian → flaw cuisine to a near-neighbor (propagation_error)`
+flaw-structure, target detectability+repairability)`. A **flaw** (concrete
+instance) = `{venue, field, incorrect_value, correct_value=GT, direction,
+structure, evidence_layout, recovery_paths}`. The library is a handful of masks; a
+seeded operator instantiates them into reusable per-venue flaws.
 
-A **flaw** (the concrete instance a mask produces on a matching venue) =
-`{venue, field, incorrect_value, correct_value=GT, direction, category,
-detectability, recovery_paths}`. The library is a handful of masks; the seeded
-operator applies them to produce concrete, reusable per-venue flaws. Each flaw is
-self-contained and recoverable on its own (§4), so it can be reused by any task
-and is portable across cities.
+**Direction — bias to false-positive.** Corrupt so a constraint-*violating* venue
+*looks satisfying* (cost down, hours wider, accessibility claimed) → the naive
+agent includes an infeasible venue → direct, attributable violation vs GT. The
+opposite direction only makes the agent skip a fine option → soft penalty.
 
-**Direction matters — bias to false-positive.** Corrupt so a constraint-
-*violating* venue *looks satisfying* (cost down, hours wider, accessibility
-claimed). The naive agent includes an infeasible venue → direct, attributable
-violation when scored vs GT. The opposite direction (good venue looks bad) only
-makes the agent skip a fine option → soft, hard-to-attribute penalty.
+**Flaw structures to build (theory-grounded; structure, not just value):**
+
+| Structure | Mechanism / source layout | Field examples | Truth type |
+|---|---|---|---|
+| **Minority-truth conflict** (BART FD-majority) | wrong value in *j* of *K* sources; truth present but not majority; repairability ≈ (K−j)/#distinct | `avg_cost`, `cuisine`, `price_tier` | single |
+| **Copying bloc** (truth discovery — *now auto-generable*) | majority share one copied wrong value **+ a shared fingerprint on another observable venue**; honest minority right. Topology dial: direct / co-copy / transitive (deeper = harder to detect) | `hours`, `cuisine`, `booking` | single |
+| **Omission / recall trap** (multi-truth) | majority *omit* a true list element rather than assert a false one; recall-blind merging drops it | amenities, `wheelchair`, per-day hours, payment types | **multi** |
+| **Entity-resolution trap** (Ditto) | over-merge two venues (manufactures conflict, mimics a copying bloc); under-merge (starves an object of sources → long-tail hard) | name variants, address | — |
+| **Stale + authority** (temporal_decay) | one stale source; recovery via an authoritative recent source → high repairability = the *easy floor* / calibration anchor | `hours`, `booking` | single |
+| **No-truth / ambiguous control** | venue mid-rename / disputed; correct careful answer = "unknown" — calibration, prevents over-trust | name, hours | — |
+
+This subsumes the existing `handbook.py` 5-category taxonomy (temporal_decay /
+propagation / conditional / subjective / adversarial) and **unlocks
+propagation_error for auto-generation** — truth-discovery theory specifies exactly
+how (copying topology + shared fingerprint + reliability margin), previously
+"hand-designed only" (`handbook.py:1142`).
 
 ---
 
-## 4. Validity — the per-venue sandbox (replaces the mandatory truth-carrier)
+## 4. Validity & difficulty — the certifier plugin (cheap) + sandbox (calibration)
 
-Validity is a **per-venue property**: *given this venue's served docs, can a
-strong reasoner recover GT, while a naive one trips?* We validate it empirically,
-in isolation, with two cheap passes over **only that venue's docs**:
+We do **not** run an LLM agent per flaw. Validity and difficulty are estimated by
+a cheap, swappable **certifier plugin** computed from the source structure; the
+LLM is reserved for *calibration* and task-wedge measurement.
 
-- **Careful sandbox** (strong/SOTA reference agent): must recover the GT field
-  value → proves the flaw is **fair / recoverable**.
-- **Naive sandbox** (trust-first-source agent, no cross-check): must get it wrong
-  → proves the flaw **has teeth**.
+**Certifier plugin — a pure function, no coupling:**
+```
+certify(flaw, evidence_claims, source_model) ->
+  { valid: bool,            # detectability >= 1 AND 0 < repairability < 1
+    detectability: int,     # # independent claims contradicting the lie
+    repairability: float,   # true value's share of the candidate set (0..1)
+    difficulty_bin }        # coarse easy/med/hard on the structured layer
+```
+Mechanics: (1) project evidence into claim tuples `(source, venue, field, value,
+timestamp)` — exact for structured fields, extracted for prose; (2) score
+**detectability** (count contradicting independent claims) and **repairability**
+(run a reference copy-aware truth-discovery solver, e.g. AccuCopy, over the
+claims; does it recover GT, and by what margin over a majority-vote baseline?);
+(3) **admit iff** `majority-vote → wrong` (teeth) **AND** `TD-solver → GT`
+(recoverable). Both numbers are computable in milliseconds.
 
-**Admit a flaw iff `careful recovers AND naive trips`.** Careful can't recover →
-unfair, reject. Naive also right → toothless, reject. This *is* the flaw wedge,
-measured directly.
+**What the certifier is — and is NOT (honest scope).** It is a *high-confidence
+validity gate* (it reliably rejects undetectable/unrecoverable flaws — structural,
+model-independent) and a *coarse rank-orderer*. It is **not** a calibrated
+predictor of LLM P-score, for four reasons:
+1. Half our evidence is **prose**; the number scores an idealized structured
+   projection, not the reading-comprehension the agent actually faces.
+2. The careful agent is an **LLM, not BART's uniform-repair model** — it exploits
+   world knowledge/authority/recency the number can't see ⇒ the number is a
+   *conservative ordering proxy*, not an absolute success rate.
+3. **"Naive" varies by model** (trust-official-site vs trust-first vs recency);
+   the certifier assumes one naive model.
+4. **Flaw-wedge ≠ task-wedge** (binding, substitutability, plan structure).
 
-**The truth-carrier becomes optional.** It was only a *structural guarantee* of
-recoverability; the sandbox is an *empirical, tested* guarantee — and more
-realistic, since real-internet recovery comes from corroboration, recency, and
-plausibility reasoning, not always a doc that says "actually it's X." A flaw may
-list one or more `recovery_paths` (corroborating sources / authority / a
-truth-carrier / pure plausibility); the sandbox just has to find one. Caveats
-that keep it valid: (a) recoverability is now defined *relative to the reference
-careful agent* — make it strong and pin its version; (b) if a flaw also removes
-the free authority (b2) and is a copying-majority flaw (b3), the sandbox must
-still find some path or it is correctly rejected as unrecoverable.
+So the certifier **pre-filters and ranks**; the LLM **sandbox** (careful + naive
+passes over a venue's docs) is kept to **calibrate the certifier's thresholds** on
+a sample and to measure the real task-wedge. This is BART's own philosophy:
+repairability is computed cheaply but validated empirically against the repair
+algorithm under test — here, the LLM.
+
+**Truth-carrier becomes optional.** It was a structural recoverability guarantee;
+the certifier replaces it with a tested one. A flaw lists `recovery_paths`
+(corroboration / authority / a truth-carrier / plausibility); the certifier just
+needs one. **Fairness keystone — inferability:** a source's unreliability must be
+evidenced on *other visible* venues (an anchor track record), not only on the
+hidden answer — else careful has no edge. (See the source model, §5.)
 
 ---
 
 ## 5. Architecture & components
 
 Post-hoc, seeded operator over the **clean canonical corpus** + the **tasks'
-binding constraints**. Canonical GT is immutable; corruption is an additive
-overlay; tools serve the overlay; the evaluator scores against GT only.
+binding constraints**. GT immutable; corruption is an additive overlay; tools
+serve the overlay; the evaluator scores against GT only.
 
 ```
-                       flaw-mask library
-                              │ seeded apply
-                              ▼
-  venues (GT, immutable) ─▶ concrete per-venue flaws ──┐
-                              ▲                         │ render
-        author-on-demand      │ (admitted flaws)        ▼
-        request ┌─────────────┘            served views (yelp_listings, source_docs)
-                │                                        │
-        task-gen agent                                   │  agent plans
+                       flaw-mask library          source model
+                              │ seeded apply        (w_s + copying graph,
+                              ▼                       anchored on clean venues)
+  venues (GT, immutable) ─▶ concrete per-venue flaws ──┐         │
+                              ▲          │ certify()    │ render  │
+        author-on-demand      │      ┌───▼──────────┐   ▼         │
+        request ┌─────────────┘      │ certifier    │ served views (yelp,docs)
+                │                     │ plugin (§4)  │   │
+        task-gen agent                └──────────────┘   │ agent plans
         - selects existing flaws (flaw-aware)            ▼
-        - emits "need flaw on field F                eval/evaluator.py
-          of venue V" ───────▶ flaw-gen sandbox     (scores vs GT `venues` only)
-                                - authors flaw (+opt truth-carrier)
-                                - runs careful+naive sandbox (§4)
-                                - admitted → library (reusable)
+        - emits "need flaw on field F          eval/evaluator.py
+          of venue V" ──▶ flaw-gen sandbox     (scores vs GT `venues` only)
+                          - authors flaw + evidence layout
+                          - certifier admits/rejects (cheap)
+                          - LLM sandbox only for calibration sample
+                          - admitted → library (reusable)
 ```
 
-Components:
-- **Flaw-mask library** — the reusable masks (§3); seeded operator instantiates
-  them. New: `scripts/generation/flaw_masks.py` + an operator
-  `scripts/generation/inject_flaws.py`.
-- **Flaw-gen sandbox** — an *isolated* agent/service that authors a single flaw
-  and runs the §4 careful+naive validation. **Task-gen never authors flaws
-  inline** (that would stack flaw-authoring + validation into the task agent's
-  one context window); it emits a *request* and the sandbox returns an admitted,
-  reusable flaw. New: `scripts/generation/flaw_sandbox.py`.
-- **Task-gen binding (hybrid)** — default **flaw-aware task-gen**: bias task
-  constraints to land on already-flawed fields of in-pool venues (pure reuse,
-  zero new corruption). Fallback **author-on-demand**: when no existing flaw
-  covers a needed field, request one from the flaw-gen sandbox. Touches
-  `scripts/generation/generate_task.py` (constraint schema: `scope`/`condition`/
-  `field`) + `compute_task_difficulty.py` (pool intersection).
-- **Storage (reuse, don't reinvent)** — `wrong_info` already holds
-  `incorrect_value`+`correct_value`+`source_type`+`category`; extend with
-  `seed_used`, `detectability`, `profile_id`, `mask_id`. `doc_venue_roles` keeps
-  reachability edges (now optional). New `corruption_runs` table for
-  reproducibility metadata.
-- **Validator** — `scripts/generation/validate_corruption.py` (mirrors
-  `validate_city.py`): checks the §6 invariants + reports, per task, whether ≥1
-  binding constraint is trapped (i.e., a live task wedge exists).
+Components (all new files unless noted):
+- **Flaw-mask library** (`scripts/generation/flaw_masks.py`) + seeded operator
+  (`scripts/generation/inject_flaws.py`).
+- **Certifier plugin** (`scripts/generation/flaw_certifier.py`) — the §4 pure
+  function; swappable (BART-static / TD-solver / learned / LLM-as-certifier).
+- **Source model** (`scripts/generation/source_model.py`) — per-source reliability
+  `w_s` + copying graph, with reliability *inferable* from anchor venues (clean,
+  uncontested fields). This is **corpus-level**: flaw *values* are venue-intrinsic,
+  but recoverability depends on each source's cross-venue track record.
+- **Flaw-gen sandbox** (`scripts/generation/flaw_sandbox.py`) — isolated; authors
+  one flaw, certifies it, returns it. **Task-gen never authors flaws inline.**
+- **Task-gen binding (hybrid)** — default **flaw-aware** (bias constraints onto
+  already-flawed in-pool fields); fallback **author-on-demand**. Touches
+  `generate_task.py` (constraint `scope`/`condition`/`field`) + `compute_task_difficulty.py`.
+- **Storage** — extend `wrong_info` with `seed_used`, `detectability`,
+  `repairability`, `structure`, `profile_id`, `mask_id`; `doc_venue_roles`
+  reachability edges now optional; new `corruption_runs` table.
+- **Validator** (`scripts/generation/validate_corruption.py`) — checks §6
+  invariants + reports per-task whether a live task wedge exists.
 
 ---
 
 ## 6. Invariants the operator must guarantee
 
-1. **Recoverable (per venue)** — the careful sandbox recovers GT via ≥1 recovery
-   path. (Empirical; supersedes the mandatory-truth-carrier rule / P7-G.)
-2. **Has teeth (per venue)** — the naive sandbox trips. A flaw that doesn't trip
-   naive is dead weight; reject.
-3. **GT valid & solvable (per task)** — GT is read-only; for every task whose
-   binding constraint hits a flawed in-pool venue, the GT-optimal plan still
-   satisfies all hard constraints against GT (the careful agent can still build a
-   valid plan, e.g. by excluding the over-budget venue). Separates *GT-feasible*
-   (always true) from *agent-discoverable* (the difficulty).
-4. **Plausible** — corrupted value is type-valid and in-domain (corrupt
-   `hours_fri` to another real time, never `99:99`). Implausible = trivially
-   detectable = no difficulty (BART detectability).
-5. **Reproducible** — same `(gt_hash, master_seed, profile)` ⇒ byte-identical
-   overlay. Per-`(venue, field)` sub-seed `= hash(master_seed, venue_id, field)`
-   (order-independent; adding a venue doesn't perturb others). `corruption_runs`
-   records `master_seed, profile_id, profile_version, corruptor_version, gt_hash`.
+1. **Recoverable (per venue)** — certifier `repairability > 0` (≥1 recovery path).
+   Supersedes the mandatory-truth-carrier rule / P7-G.
+2. **Has teeth (per venue)** — certifier `detectability ≥ 1` and majority-vote
+   trips. A flaw that doesn't trip naive is dead weight; reject.
+3. **GT valid & solvable (per task)** — GT read-only; for every task whose binding
+   constraint hits a flawed in-pool venue, the GT-optimal plan still satisfies all
+   hard constraints vs GT. Separates *GT-feasible* (always true) from
+   *agent-discoverable* (the difficulty).
+4. **Plausible** — corrupted value type-valid and in-domain (whitelist−blacklist,
+   à la BART): in the field's real domain and consistent with all *but* the
+   targeted relationship. Never `99:99`.
+5. **Disjoint evidence scopes** (BART NP-completeness lesson) — keep each flaw's
+   supporting/contradicting sources non-overlapping with other flaws', so per-flaw
+   difficulty stays independently computable. Keep error rate low.
+6. **Inferable (fairness)** — every source's reliability is estimable from visible
+   anchor venues, not only from the hidden answer.
+7. **Parametric-knowledge safe** — guard against the model overriding synthetic GT
+   from training memory (real venue names are a hole). Use fictional venues or
+   frame tasks as "according to these sources." (2024–26 RAG conflict literature.)
+8. **Reproducible** — same `(gt_hash, master_seed, profile)` ⇒ byte-identical
+   overlay; per-`(venue,field)` sub-seed `= hash(master_seed, venue_id, field)`;
+   `corruption_runs` records `master_seed, profile_id, profile_version,
+   corruptor_version, gt_hash`.
 
 ---
 
 ## 7. Workstream (b) — levers, by leverage
 
-**(b1) is the unblocker and is now the masked-library + binding design above.**
+**(b1) is the unblocker.**
 
 - **(b1) Reusable flaw-mask library + task binding (hybrid).** Manufacture flaw
-  wedges (§3), validate per-venue (§4), bind to tasks by constraint-targeting
-  (§5). Puts corruption on the fields the GT scorer reads ⇒ **trap bites with no
-  scorer change.** Fixes bugs #1 and #3.
-- **(b2) Kill the free authority for trapped fields.** Make `get_official_site`
-  absent (`has_official_site=0`) or itself stale (P7-J) for the trapped field, so
-  resolution isn't free. `server/mock_tools.py:641`. Fixes bug #2. *Minimal pair
-  with b1 to first prove the wedge.*
-- **(b3) Copying / propagation done right** (truth discovery). The *majority* of
-  sources share one copied wrong value; an independent/authoritative source is
-  right ⇒ naive majority-vote yields the wrong answer. Operator-generated (today
-  "hand-designed only", `handbook.py:1142`), with a discoverable copy-signal so
-  the careful sandbox can still recover.
-- **(b4) Omission** (Klinkhardt). Binding value absent from cheap sources,
-  present only in one hard-to-reach place / inferable — removes cross-check.
-  `listed_in_yelp`-style flag + `mock_tools.search_yelp` filtering.
-- **(b5) F2c → 3-tier credit** (from `_pilot_analysis.md` l.102): 0 = truth-carrier
-  not retrieved, 0.5 = retrieved but corrupt value still used, 1.0 = retrieved
-  AND true value applied. Rewards *resolution*, not just retrieval.
-  `eval/evaluator.py` F2c (~l.1193). Optional; b1's GT-scoring already bites.
+  wedges (§3), certify (§4), bind to tasks by constraint-targeting (§5). Puts
+  corruption on the fields the GT scorer reads ⇒ **trap bites with no scorer
+  change.** Fixes bugs #1 and #3.
+- **(b2) Kill the free authority for trapped fields.** `get_official_site` absent
+  or itself stale (P7-J) for the trapped field. `server/mock_tools.py:641`. Fixes
+  bug #2. *Minimal pair with b1 to first prove the wedge.*
+- **(b3) Copying / propagation done right** (truth discovery). Majority share a
+  copied wrong value + discoverable fingerprint; honest minority right ⇒ naive
+  majority-vote fails. Now operator-generated (was `handbook.py:1142` hand-only).
+- **(b4) Omission / multi-truth recall trap** (Klinkhardt + truth discovery).
+  Binding value/element absent from cheap sources. `listed_in_yelp`-style flag +
+  `mock_tools.search_yelp` filtering.
+- **(b5) F2c → 3-tier credit** (from `_pilot_analysis.md` l.102): 0 not retrieved,
+  0.5 retrieved-but-corrupt-value-used, 1.0 retrieved-and-true-value-applied.
+  `eval/evaluator.py` (~l.1193). Optional; b1's GT-scoring already bites.
 
-Each trap's difficulty is set by the **detectability dial** ∈ [0,1] (BART):
-number of corroborating truth sources, correction placement, truth-carrier
-engagement/recency. The dial is a `profile` setting ⇒ same seed + harder profile
-= a controlled-harder twin corpus.
+Difficulty per flaw is the **2-vector (detectability, repairability)** from the
+certifier, set by a `profile` ⇒ same seed + harder profile = a controlled-harder
+twin corpus.
 
 ---
 
@@ -248,38 +304,87 @@ engagement/recency. The dial is a `profile` setting ⇒ same seed + harder profi
 Fixes the confound so we can *measure* the wedge. The clean arm must hold
 doc-count/context constant — **heal, don't delete.**
 
-- **Arm A — clean (equal-volume control):** replace each incorrect-source doc
-  with a *neutral* doc of equal count/length, heal yelp fields to GT. Only
-  variable vs faulty = the lie itself. New mode in `mock_tools` beside the
-  existing `--clean-environment`.
-- **Arm B — current faulty:** today's corpus/behavior (regression baseline).
+- **Arm A — clean (equal-volume control):** replace each incorrect-source doc with
+  a *neutral* doc of equal count/length; heal yelp fields to GT. Only variable vs
+  faulty = the lie. New mode in `mock_tools` beside `--clean-environment`.
+- **Arm B — current faulty:** today's corpus (regression baseline).
 - **Arm C — load-bearing faulty:** the (b)-regenerated corpus.
 
 Run all three across the model panel on the same tasks. Primary metrics: P-score
-and the 3-tier F2c (b5). Report **C−A** and **B−A**. **Success = C−A shows a
-clear, significant difficulty increase on tasks whose binding constraints are
-trapped, with the careful-agent path verified reachable.** Touches
-`run_benchmark.py` (arm flag), a runner (cf. `scripts/_run_pilot_clean_vs_faulty.sh`),
-`results/scores.db`.
+and the 3-tier F2c. Report **C−A** and **B−A**. **Success = C−A shows a clear,
+significant difficulty increase on trapped-constraint tasks, careful-path
+reachable.** Touches `run_benchmark.py`, a runner (cf.
+`scripts/_run_pilot_clean_vs_faulty.sh`), `results/scores.db`.
 
 ---
 
-## 9. Execution plan & checkpoints
+## 9. Workstream (d) — certifier validation experiment (FREE, on existing data)
 
-`a (this doc) → (b ∥ c-infra) → regenerate corpus → run ablation → read deltas`
+Before betting on the certifier, **test whether its number agrees with the wedge
+pipeline's empirical difficulty** — using only stored data, zero API.
 
-- (b) (generation files) and (c-infrastructure) (measurement files) parallelize —
-  disjoint files. The measurement *run* is strictly gated on b + c + corpus regen.
-- Start with **b1 + b2** (the minimal pair to prove the wedge exists) before
-  building b3/b4/b5.
-- **Cost checkpoints (require explicit go — API keys + money):** (i) regenerating
-  a corpus with the operator; (ii) the careful/naive sandbox validation passes;
-  (iii) the 3-arm ablation. Start small: one city, the 6 task types, one strong +
-  one weak model before any full sweep.
+- **X (predictor):** certifier `(detectability, repairability)` for each of the 29
+  NYC flaws.
+- **Y (ground truth):** the *observed* per-flaw wedge mined from stored transcripts
+  + `scores.db` — per flaw, the fraction of model-runs that **tripped** (scheduled
+  the venue when GT says closed = F2a; or used it without the truth-carrier = F2c)
+  vs recovered. (F2c counts already partly extracted in `_pilot_analysis.md`.)
+- **Test:** Spearman rank-corr of `repairability` vs `1 − trip_rate`; AUC for the
+  valid/has-teeth classification.
+- **Decision rule:** strong correlation → adopt certifier as cheap pre-filter +
+  difficulty estimator (recalibrated periodically). Weak/null → demote to
+  validity-gate-only, or build a variation.
+- **Power caveat (asymmetric test):** existing flaws were engineered "clean" (one
+  truth-carrier; official site authoritative), so `repairability` has **limited
+  spread** — a null result is *inconclusive*, not a refutation. Natural variance
+  does exist (via `has_official_site`, `traffic_tier`, doc count), so the test can
+  **confirm** more strongly than it can **refute**. A definitive test needs the
+  new flaw distribution (§7) with deliberate repairability spread.
+- **Variations if it underperforms:** (a) validity-gate only, drop the difficulty
+  claim; (b) a small **learned** predictor (features → observed trip-rate); (c)
+  **LLM-as-certifier** (one cheap call per flaw — richer than the static number,
+  far cheaper than two full agent runs); (d) richer constraint/source encoding.
 
-## 10. References
-Levers catalogued in `docs/PHASE7_FUTURE_WORK.md` P7-I/J/K. Anchors: Klinkhardt
-2023 (omission), Arocena 2015 / BART (detectability, constraint-aware injection),
-Li 2016 truth discovery (copying / latent reliability), Li 2020 Ditto (entity
-resolution), Rahm & Do 2000 (taxonomy). PDFs in
-`~/Documents/Books and Papers/Papers/Internet-Noise-Benchmark/`.
+The certifier stays a **plugin** throughout — nothing in the pipeline depends on
+it, so it can be adopted, swapped, or dropped without touching generation or
+scoring.
+
+---
+
+## 10. Execution plan & checkpoints
+
+`a (this doc) → d (certifier retro test, FREE) → (b ∥ c-infra) → regenerate corpus → run ablation → read deltas`
+
+- **(d) first** — it's free, on stored data, and tells us how much to trust the
+  certifier before building on it. First confirm Y is cleanly extractable from the
+  transcript/scores schema, then build a lightweight certifier v0 (on old data it
+  reduces to "evidence distribution + authority weighting + repairability
+  fraction" — no copy-detection/TD machinery yet) + the analysis script.
+- (b) (generation files) and (c-infra) (measurement files) parallelize — disjoint
+  files. The measurement *run* is gated on b + c + corpus regen.
+- Start with **b1 + b2** (minimal pair to prove the wedge) before b3/b4/b5.
+- **Cost checkpoints (require explicit go — API keys + money):** (i) corpus regen;
+  (ii) LLM calibration / sandbox passes; (iii) the 3-arm ablation. Start small:
+  one city, the 6 task types, one strong + one weak model.
+
+---
+
+## 11. References
+Levers consolidated here from P7-I/J/K (now a tombstone in
+`docs/PHASE7_FUTURE_WORK.md`); current flaw taxonomy in `handbook.py:1032–1346`
+and `docs/DESIGN_DECISIONS.md`. Theory anchors:
+- **Arocena 2015 / BART** — *detectability* (violation count) vs *repairability*
+  (true-value share of candidate set), both computable statically; whitelist−
+  blacklist for plausibility; NP-completeness ⇒ disjoint scopes.
+- **Li 2016 truth discovery** — naive vote vs weighted vote ("wisdom of minority");
+  copying detected via shared *mistakes* on observable objects; inferability;
+  single- vs multi-truth (recall traps); reference solver (AccuCopy) as certifier.
+- **Li 2020 Ditto** — entity-matching hardness; wrong merge → downstream conflict.
+- **Klinkhardt 2023** — omission / visibility-conditioned completeness.
+- **Rahm & Do 2000** — single- vs multi-source dirty-data taxonomy.
+- **2024–26 RAG knowledge-conflict** — Astute RAG (arXiv 2410.07176), RAMDocs /
+  MADAM-RAG (arXiv 2504.13079), "diminishing returns of robust RAG" (arXiv
+  2502.11400): conflict types (context-memory / inter-context / intra-memory) and
+  the parametric-knowledge guard.
+
+PDFs in `~/Documents/Books and Papers/Papers/Internet-Noise-Benchmark/`.

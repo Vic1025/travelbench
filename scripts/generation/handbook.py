@@ -1171,6 +1171,34 @@ CATEGORY 5 — Adversarial / incentive-distorted
             listing during peak season, when it is actually booked out weeks ahead."
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+REDESIGN TARGET (valid-difficulty branch) — flaw STRUCTURES  [pending, not yet wired]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+See docs/VALID_DIFFICULTY_REDESIGN.md §3. The five categories above stay; the
+redesign adds STRUCTURE (how evidence is laid out across sources) and two difficulty
+axes, all authored HERE in the venue-gen agent (ADD_WRONG_INFO + the doc body you
+write). Target structures:
+
+  - Minority-truth conflict: wrong value in j of K sources; truth present but NOT
+    the majority. (single-truth fields: avg_cost, cuisine, price_tier)
+  - Copying bloc: the MAJORITY of sources share one COPIED wrong value + a shared
+    fingerprint on another venue; the honest minority is right. This UPGRADES
+    Category 2 (propagation) to auto-generable — naive majority-vote now fails,
+    yet a careful reader who spots the shared fingerprint recovers truth.
+  - Omission / recall trap (multi-truth): the majority OMIT a true list element
+    (amenity, wheelchair, a day's hours) rather than assert a false one.
+  - Entity-resolution trap: a near-duplicate venue / name variant the agent must
+    match — or two similar-named venues it must NOT conflate.
+  - Stale + authority: one stale source, recovery via an authoritative recent
+    source — the easy floor / calibration anchor.
+  - No-truth / ambiguous control: the correct careful answer is "unknown".
+
+  Direction: bias FALSE-POSITIVE (a violating venue looks satisfying).
+  Difficulty per flaw = (detectability = # independent sources contradicting the
+  lie; repairability = true value's share of the candidate set). Validity: a
+  certifier admits iff detectability >= 1 AND 0 < repairability < 1. The mandatory
+  truth-carrier becomes OPTIONAL (recoverability is tested, not structurally forced).
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 SOURCE-CONTENT FIT
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Each source type has a characteristic error profile. The wrong info must
