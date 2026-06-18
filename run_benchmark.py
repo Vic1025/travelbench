@@ -65,7 +65,7 @@ ROOT = Path(__file__).parent
 sys.path.insert(0, str(ROOT))
 
 from server.mock_tools import (
-    TOOL_SCHEMAS, dispatch_tool, set_run_name, set_clean_environment,
+    TOOL_SCHEMAS, dispatch_tool, set_run_name, set_clean_environment, set_arm,
 )
 from eval.evaluator import evaluate, load_task
 
@@ -1023,12 +1023,19 @@ Examples:
     parser.add_argument("--inter-task-delay", type=float, default=0.0,
                         help="Seconds to wait between tasks (default 0; "
                              "set to ~3 for OpenRouter free tier)")
+    parser.add_argument("--arm", choices=["faulty", "clean_delete", "clean_equalvol"],
+                        default="faulty",
+                        help="Ablation arm. 'faulty' (default): noisy "
+                             "environment as generated. 'clean_delete': heal "
+                             "yelp fields to ground truth + DROP incorrect_source "
+                             "blog/forum docs. 'clean_equalvol': heal yelp fields "
+                             "+ REPLACE incorrect_source doc bodies with "
+                             "length-matched neutral filler (holds doc count and "
+                             "text volume constant; removes only the lie).")
     parser.add_argument("--clean-environment", action="store_true",
-                        help="Suppress wrong-info exposure (heals yelp_listings "
-                             "fields back to ground truth and drops "
-                             "incorrect_source blog/forum docs). Use for A/B "
-                             "comparison of model performance with vs without "
-                             "the cross-reference trap. Default: noisy.")
+                        help="DEPRECATED alias for --arm clean_delete. Heals "
+                             "yelp fields back to ground truth and drops "
+                             "incorrect_source blog/forum docs.")
     args = parser.parse_args()
 
     # ── Resolve provider / base_url / api_key ────────────────────────────────
@@ -1105,9 +1112,21 @@ Examples:
             print(f"  Using evaluator DB: {eval_db_path}")
 
     set_run_name(args.run_name)
-    set_clean_environment(args.clean_environment)
+    # --clean-environment is a deprecated alias for --arm clean_delete. If it is
+    # set while --arm is left at the default, honour the alias; otherwise --arm
+    # wins (and we warn if they conflict).
+    _arm = args.arm
     if args.clean_environment:
-        print("  🧼 CLEAN-ENVIRONMENT MODE — wrong-info exposure suppressed")
+        if args.arm == "faulty":
+            _arm = "clean_delete"
+        elif args.arm != "clean_delete":
+            print(f"⚠  --clean-environment ignored (conflicts with --arm {args.arm})")
+    set_arm(_arm)
+    if _arm == "clean_delete":
+        print("  🧼 ARM=clean_delete — heal yelp fields + DROP incorrect_source docs")
+    elif _arm == "clean_equalvol":
+        print("  🧼 ARM=clean_equalvol — heal yelp fields + REPLACE incorrect_source "
+              "doc bodies with neutral filler (volume held constant)")
 
     # ── Token budget estimate ─────────────────────────────────────────────────
     budget = estimate_tokens(tasks)

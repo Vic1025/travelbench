@@ -32,10 +32,10 @@ class CityIndex:
         self.post_idx: "InvertedIndex | None" = None   # built after load
 
 
-# Cache key: (city, clean_environment_flag) → CityIndex.
-# Keying on the flag lets us A/B-toggle between noisy and clean modes within
-# a single process without recomputing the other mode's load.
-_city_cache: dict[tuple[str, bool], CityIndex] = {}
+# Cache key: (city, arm) → CityIndex.
+# Keying on the arm lets us A/B/C-toggle between ablation arms within
+# a single process without recomputing the other arm's load.
+_city_cache: dict[tuple[str, str], CityIndex] = {}
 
 # Per-city DB path — resolved dynamically per city lookup
 def _get_db_path(city: str):
@@ -46,26 +46,41 @@ def _get_db_path(city: str):
 _active_run_name = None
 
 # ─────────────────────────────────────────────────────────────────────────────
-# CLEAN-ENVIRONMENT MODE
+# ABLATION ARMS
 # ─────────────────────────────────────────────────────────────────────────────
-# When True, mock_tools suppresses wrong-info exposure so we can A/B-compare
-# model performance with vs without the cross-reference trap.
+# mock_tools supports a controlled 3-arm ablation so we can isolate the effect
+# of the cross-reference trap from the confound of "less context".
 #
-# Design (option C — both layers, applied at load time):
-#   1. Yelp structured fields: for every wrong_info row with source_type='yelp',
-#      overwrite the corresponding yelp_listings column (e.g. yelp_hours_fri,
-#      avg_cost_local) with correct_value BEFORE building the in-memory index.
-#   2. Source docs (blogs/forums): drop any source_doc that has at least one
-#      doc_venue_roles row with role='incorrect_source'. We keep truth_carrier
-#      and neutral docs — the goal is clean truth, not silence.
-#   3. Official-site docs are already authoritative by design, so untouched.
+#   faulty (default)
+#       Original noisy environment. incorrect_source docs present and yelp
+#       structured fields carry the wrong values. Nothing is touched.
 #
-# Choice rationale: deterministic, no data regeneration, surgical. Filtering
-# at load time means search_blogs and search_yelp share one suppression path
-# instead of each tool re-running the same query. The (city, clean) cache key
-# guarantees a process can serve both modes from the same warm cache.
+#   clean_delete (legacy "clean" mode)
+#       1. Yelp structured fields: for every wrong_info row with
+#          source_type='yelp', overwrite the corresponding yelp_listings column
+#          (e.g. yelp_hours_fri, avg_cost_local) with correct_value BEFORE
+#          building the in-memory index.
+#       2. Source docs: DROP any source_doc with at least one doc_venue_roles
+#          row of role='incorrect_source'. truth_carrier and neutral docs stay.
+#       Confound: dropping docs also lowers doc count + total text volume, so
+#       any score delta vs faulty mixes "trap removed" with "less context".
+#
+#   clean_equalvol (NEW — volume-controlled clean)
+#       1. Yelp structured fields: healed to ground truth (same as clean_delete).
+#       2. Source docs: instead of DROPPING each incorrect_source doc, REPLACE
+#          its body with a length-matched NEUTRAL paragraph that removes the
+#          false claim about the flawed field WITHOUT asserting the corrected
+#          value (stays content-neutral so the doc never becomes a truth
+#          carrier). doc_id, author, date, doc_type, title, and approximate
+#          length/count are preserved. Net effect: doc count + total text
+#          volume ≈ identical to faulty; the ONLY removed variable is the lie.
+#       3. Official-site docs are authoritative by design, so untouched.
+#
+# Both clean arms heal yelp fields identically. The (city, arm) cache key lets
+# one process serve all three arms from independently warmed caches.
 # ─────────────────────────────────────────────────────────────────────────────
-_clean_environment = False
+ARMS = ("faulty", "clean_delete", "clean_equalvol")
+_arm = "faulty"
 
 def set_run_name(run_name: str | None):
     """Set the active run name for DB path resolution.
@@ -73,31 +88,49 @@ def set_run_name(run_name: str | None):
     global _active_run_name
     _active_run_name = run_name
 
-def set_clean_environment(clean: bool) -> None:
+def set_arm(arm: str) -> None:
     """
-    Toggle clean-environment mode (suppresses wrong-info exposure).
-
-    When True:
-      - yelp_listings fields that have a wrong_info row are healed back to
-        the ground-truth correct_value.
-      - source_docs marked as incorrect_source for any venue are filtered out.
-    When False (default): noisy environment, as originally generated.
+    Select the ablation arm. One of:
+      - 'faulty'         : noisy environment, as originally generated (default).
+      - 'clean_delete'   : heal yelp fields + DROP incorrect_source docs.
+      - 'clean_equalvol' : heal yelp fields + REPLACE incorrect_source doc
+                           bodies with length-matched neutral filler (preserves
+                           doc count and text volume; removes only the lie).
 
     Call before dispatching any tools so _load_city builds the right index.
     """
-    global _clean_environment
-    _clean_environment = bool(clean)
+    global _arm
+    if arm not in ARMS:
+        raise ValueError(f"Unknown arm '{arm}'. Expected one of {ARMS}.")
+    _arm = arm
+
+def get_arm() -> str:
+    """Return current ablation arm (test helper)."""
+    return _arm
+
+def set_clean_environment(clean: bool) -> None:
+    """
+    DEPRECATED back-compat alias for set_arm.
+
+    set_clean_environment(True)  -> set_arm('clean_delete')
+    set_clean_environment(False) -> set_arm('faulty')
+
+    Prefer set_arm(...) directly; this keeps older callers working unchanged.
+    """
+    set_arm("clean_delete" if clean else "faulty")
 
 def get_clean_environment() -> bool:
-    """Return current clean-environment flag (test helper)."""
-    return _clean_environment
+    """Return True iff the active arm is a clean arm (test/back-compat helper)."""
+    return _arm in ("clean_delete", "clean_equalvol")
 
-def _load_city_from_db(city: str, db_path: Path, clean: bool = False) -> CityIndex:
-    """Load city data from SQLite DB (new cities: London, Hokkaido, Rio).
+def _load_city_from_db(city: str, db_path: Path, arm: str = "faulty") -> CityIndex:
+    """Load city data from SQLite DB.
 
-    When clean=True applies the wrong-info suppression strategy (see
-    set_clean_environment): heals yelp structured fields and drops source
-    docs flagged as incorrect_source.
+    Applies the wrong-info handling for the given ablation arm (see set_arm):
+      - faulty:         no changes.
+      - clean_delete:   heal yelp fields, drop incorrect_source docs.
+      - clean_equalvol: heal yelp fields, replace incorrect_source doc bodies
+                        with length-matched neutral filler.
     """
     import sqlite3
 
@@ -106,10 +139,15 @@ def _load_city_from_db(city: str, db_path: Path, clean: bool = False) -> CityInd
 
     idx = CityIndex()
 
+    clean = arm in ("clean_delete", "clean_equalvol")
+
     # Clean-mode preload: pull wrong_info corrections and incorrect-source doc
     # IDs into in-memory lookups so the per-row loaders below stay simple.
     yelp_corrections: dict[str, dict[str, str]] = {}   # vid -> {field: correct_value}
     incorrect_source_doc_ids: set[str] = set()
+    # For equalvol: doc_id -> list of {affected_field, incorrect_value,
+    # correct_value, source_type} so we can neutralise the right sentences.
+    doc_flaw_specs: dict[str, list[dict]] = {}
     if clean:
         wi_rows = conn.execute("""
             SELECT venue_id, affected_field, correct_value, source_type
@@ -126,6 +164,24 @@ def _load_city_from_db(city: str, db_path: Path, clean: bool = False) -> CityInd
             WHERE role = 'incorrect_source'
         """).fetchall()
         incorrect_source_doc_ids = {r["doc_id"] for r in bad_doc_rows}
+
+        if arm == "clean_equalvol":
+            flaw_rows = conn.execute("""
+                SELECT dvr.doc_id,
+                       wi.affected_field, wi.incorrect_value,
+                       wi.correct_value, wi.source_type
+                FROM doc_venue_roles dvr
+                JOIN wrong_info wi ON wi.wrong_info_id = dvr.wrong_info_id
+                WHERE dvr.role = 'incorrect_source'
+            """).fetchall()
+            for r in flaw_rows:
+                d = dict(r)
+                doc_flaw_specs.setdefault(d["doc_id"], []).append({
+                    "affected_field":  d["affected_field"],
+                    "incorrect_value": d["incorrect_value"],
+                    "correct_value":   d["correct_value"],
+                    "source_type":     d["source_type"],
+                })
 
     # ── Yelp listings from yelp_listings + venues + tags ─────────────────────
     yelp_rows = conn.execute("""
@@ -241,11 +297,20 @@ def _load_city_from_db(city: str, db_path: Path, clean: bool = False) -> CityInd
 
     for row in posts:
         r = dict(row)
-        # Clean-mode: drop any post that is flagged as incorrect_source for
-        # at least one venue. Truth-carrier and neutral docs are retained, so
-        # the agent still sees ground-truth coverage of the venue.
+        body = r["body"] or ""
         if clean and r["doc_id"] in incorrect_source_doc_ids:
-            continue
+            if arm == "clean_delete":
+                # Drop any post flagged as incorrect_source for at least one
+                # venue. Truth-carrier and neutral docs are retained, so the
+                # agent still sees ground-truth coverage of the venue.
+                continue
+            elif arm == "clean_equalvol":
+                # Keep the doc (preserve count + volume) but neutralise the
+                # body so it no longer carries the false claim — and does not
+                # assert the corrected value either.
+                body = _neutralise_doc_body(
+                    body, doc_flaw_specs.get(r["doc_id"], []), r["doc_id"]
+                )
         venue_ids = r["venue_ids"].split(",") if r["venue_ids"] else []
         post = {
             "doc_id":      r["doc_id"],
@@ -254,7 +319,7 @@ def _load_city_from_db(city: str, db_path: Path, clean: bool = False) -> CityInd
             "author":      r["author"] or "",
             "source":      r["source_name"] or "",
             "date":        r["date"] or "",
-            "content":     r["body"] or "",
+            "content":     body,
             "likes":       r.get("likes", 0) or 0,
             "saves":       r.get("saves", 0) or 0,
             "view_count":  r.get("view_count", 0) or 0,
@@ -360,7 +425,7 @@ def _load_city_from_db(city: str, db_path: Path, clean: bool = False) -> CityInd
 
 def _load_city(city: str) -> CityIndex:
     city = city.lower()
-    cache_key = (city, _clean_environment)
+    cache_key = (city, _arm)
     if cache_key in _city_cache:
         return _city_cache[cache_key]
 
@@ -370,7 +435,7 @@ def _load_city(city: str) -> CityIndex:
             f"No city DB for '{city}' at {_city_db}. "
             f"Run: python scripts/generation/generate_city_venues.py --city {city}"
         )
-    idx = _load_city_from_db(city, _city_db, clean=_clean_environment)
+    idx = _load_city_from_db(city, _city_db, arm=_arm)
     if not idx.yelp:
         raise FileNotFoundError(
             f"City DB for '{city}' contains no verified venues at {_city_db}. "
@@ -379,6 +444,197 @@ def _load_city(city: str) -> CityIndex:
     _build_indexes(idx)
     _city_cache[cache_key] = idx
     return idx
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# NEUTRAL DOC-BODY REPLACEMENT (clean_equalvol arm)
+# ─────────────────────────────────────────────────────────────────────────────
+# Goal: produce a body that (a) no longer carries the false claim about the
+# flawed field and (b) does NOT assert the corrected value either — while
+# keeping length within ±10% of the original so total text volume matches the
+# faulty arm. Fully deterministic (seeded from doc_id), no LLM, no DB writes.
+#
+# Strategy:
+#   1. Split into sentences.
+#   2. For each flaw, score every sentence on field-specific keyword cues
+#      (hours -> open/close/until/am/pm/hours; cost -> $/price/cost/cheap;
+#      booking/reservation -> reserve/walk-in/book) plus any literal occurrence
+#      of the incorrect or correct value. Drop the highest-scoring sentence(s)
+#      that actually carry a cue — these are the claim-bearing lines.
+#   3. Re-pad to the original character length (±10%) with neutral,
+#      venue-appropriate filler that never mentions the flawed field, picking
+#      filler deterministically from a seed derived from the doc_id.
+#   4. Final safety pass: if the incorrect or corrected value string still
+#      appears anywhere, drop those sentences too.
+
+_HOURS_CUES = re.compile(
+    r"\b(open|opens|opening|close|closes|closing|until|till|til|hours?|"
+    r"am|pm|a\.m\.|p\.m\.|o'?clock|midnight|noon|24[\s-]?hours?|"
+    r"\d{1,2}\s*(?::\d{2})?\s*(?:am|pm)|\d{1,2}\s*(?::\d{2}))\b",
+    re.IGNORECASE,
+)
+_COST_CUES = re.compile(
+    r"(\$\s?\d|\bdollars?\b|\bbucks?\b|\bprice[ds]?\b|\bpricing\b|\bcost[s]?\b|"
+    r"\bcheap\b|\bexpensive\b|\baffordable\b|\bvalue\b|\bspend\b|\bpay\b|"
+    r"\bbudget\b|\bcharge[ds]?\b)",
+    re.IGNORECASE,
+)
+_BOOKING_CUES = re.compile(
+    r"\b(reserv\w*|book\w*|walk[\s-]?in|no[\s-]?reservation\w*|"
+    r"first[\s-]?come|queue|line)\b",
+    re.IGNORECASE,
+)
+_VISITMIN_CUES = re.compile(
+    r"\b(minutes?|hours?|spend|takes?|allow|plan\w*|visit|tour|"
+    r"\d+\s*(?:min|minute|hour|hr))\b",
+    re.IGNORECASE,
+)
+
+_FIELD_CUES = {
+    "hours_mon": _HOURS_CUES, "hours_tue": _HOURS_CUES, "hours_wed": _HOURS_CUES,
+    "hours_thu": _HOURS_CUES, "hours_fri": _HOURS_CUES, "hours_sat": _HOURS_CUES,
+    "hours_sun": _HOURS_CUES,
+    "avg_cost_local": _COST_CUES,
+    "booking_required": _BOOKING_CUES, "reservation_required": _BOOKING_CUES,
+    "recommended_visit_minutes": _VISITMIN_CUES,
+}
+
+# Neutral, venue-appropriate filler. Deliberately says nothing about hours,
+# price, booking, or visit length — so it cannot become a truth-carrier for any
+# flawed field. Used to re-pad length after claim-bearing sentences are cut.
+_NEUTRAL_FILLER = [
+    "The atmosphere has that lived-in, unhurried quality you only find in places that have been around a while.",
+    "It is the kind of spot locals fold into their routine without making a fuss about it.",
+    "The staff move with an easy efficiency that comes from doing the same thing well, day after day.",
+    "There is a steady hum of conversation that makes the room feel comfortable rather than crowded.",
+    "Regulars and first-timers blend together here, and nobody seems out of place.",
+    "The details are understated, which somehow makes the whole experience feel more genuine.",
+    "You get the sense that the people here care more about getting it right than about appearances.",
+    "It rewards the kind of visitor who is happy to slow down and take the place on its own terms.",
+    "The neighbourhood around it adds to the charm, full of small shops and the ordinary rhythm of the day.",
+    "Word of mouth has clearly kept this place going, and it is easy to see why once you have been.",
+    "Nothing about it feels manufactured, and that authenticity is a big part of the appeal.",
+    "It is the sort of place you end up recommending to friends almost before you realise you are doing it.",
+]
+
+
+def _split_sentences(text: str) -> list[str]:
+    """Split text into sentences, preserving the trailing whitespace/newlines
+    that follow each one so re-joining reproduces the original spacing."""
+    # Keep the delimiter (.!?) and any following whitespace attached to the
+    # sentence so a join of the kept pieces reads naturally.
+    parts = re.findall(r".*?(?:[.!?]+\s*|\Z)", text, flags=re.DOTALL)
+    return [p for p in parts if p != ""]
+
+
+def _seeded_filler_order(doc_id: str) -> list[str]:
+    """Deterministic shuffle of the filler bank seeded from doc_id, so docs
+    don't all pad with the same opening sentence but reruns are reproducible."""
+    import random
+    rng = random.Random(doc_id)
+    pool = list(_NEUTRAL_FILLER)
+    rng.shuffle(pool)
+    return pool
+
+
+def _value_variants(value) -> list[str]:
+    """Plain-text forms of a structured value worth scanning a sentence for.
+    e.g. 18.0 -> ['18.0', '18'];  '06:00-18:00' -> the raw string + parts."""
+    out = []
+    if value is None:
+        return out
+    s = str(value).strip()
+    if not s:
+        return out
+    out.append(s)
+    # numeric: also try the int form (18.0 -> 18) since prose drops decimals
+    try:
+        f = float(s)
+        if f.is_integer():
+            out.append(str(int(f)))
+    except (TypeError, ValueError):
+        pass
+    return out
+
+
+def _neutralise_doc_body(body: str, flaw_specs: list[dict], doc_id: str) -> str:
+    """Return a length-matched neutral version of `body` with claim-bearing
+    sentences removed. Used only by the clean_equalvol arm.
+
+    Deterministic: same (body, flaw_specs, doc_id) always yields the same text.
+    """
+    if not body or not flaw_specs:
+        return body
+
+    orig_len = len(body)
+    sentences = _split_sentences(body)
+
+    # ── 1. Score each sentence against every flaw and pick the ones to drop ──
+    drop_idx: set[int] = set()
+    for spec in flaw_specs:
+        field = spec.get("affected_field", "")
+        cue = _FIELD_CUES.get(field)
+        literals = (_value_variants(spec.get("incorrect_value"))
+                    + _value_variants(spec.get("correct_value")))
+
+        scored = []
+        for i, sent in enumerate(sentences):
+            score = 0
+            low = sent.lower()
+            if cue and cue.search(sent):
+                score += 2
+            for lit in literals:
+                if lit and lit.lower() in low:
+                    score += 3
+            if score > 0:
+                scored.append((score, i))
+
+        if not scored:
+            continue
+        # Drop the single best claim-bearing sentence for this flaw. If several
+        # tie at the top score, drop all of them (the lie may be split across
+        # adjacent lines, e.g. "It's $7. The $7 platter...").
+        scored.sort(key=lambda x: (-x[0], x[1]))
+        top_score = scored[0][0]
+        for score, i in scored:
+            if score == top_score:
+                drop_idx.add(i)
+
+    kept = [s for i, s in enumerate(sentences) if i not in drop_idx]
+
+    # ── 2. Safety pass BEFORE padding: drop any kept sentence that still
+    # contains an incorrect/correct value literal, so a stray prose mention of
+    # the value can't survive. Done first so padding compensates for everything
+    # removed and the ±10% length target holds.
+    bad_literals = []
+    for spec in flaw_specs:
+        bad_literals += _value_variants(spec.get("incorrect_value"))
+        bad_literals += _value_variants(spec.get("correct_value"))
+    if bad_literals:
+        kept = [
+            s for s in kept
+            if not any(lit and lit.lower() in s.lower() for lit in bad_literals)
+        ]
+
+    new_body = "".join(kept)
+
+    # ── 3. Re-pad toward the original length with neutral filler ────────────
+    filler_pool = _seeded_filler_order(doc_id)
+    fi = 0
+    # Aim within -10% of the original length (don't overshoot past +10%).
+    target_lo = int(orig_len * 0.90)
+    while len(new_body) < target_lo and filler_pool:
+        sep = "" if (not new_body or new_body.endswith((" ", "\n"))) else " "
+        candidate = sep + filler_pool[fi % len(filler_pool)]
+        if len(new_body) + len(candidate) > int(orig_len * 1.10):
+            break
+        new_body += candidate
+        fi += 1
+        # Cycle the pool; after one full pass keep appending to reach length.
+        if fi % len(filler_pool) == 0:
+            filler_pool = _seeded_filler_order(doc_id + str(fi))
+
+    return new_body.strip() + ("\n" if body.endswith("\n") else "")
 
 
 def _build_indexes(idx: CityIndex) -> None:
