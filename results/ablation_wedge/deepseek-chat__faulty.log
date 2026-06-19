@@ -1,0 +1,184 @@
+  Using evaluator DB: /Users/victoriajin/Documents/Career_related/TravelPlanningAgent/travelbench_Phase5.10/data/cities/new_york/runs/test_lb/travelbench.db
+
+───────────────────────────────────────────────────────
+TOKEN BUDGET ESTIMATE — deepseek-chat
+───────────────────────────────────────────────────────
+  claude_sonnet_4_5_new_york_type1_20260521_1779375385 (medium) ~16,350 tokens  (~12 tool calls)
+  claude_sonnet_4_5_new_york_type2_20260521_1779375498 (medium) ~16,350 tokens  (~12 tool calls)
+  claude_sonnet_4_5_new_york_type3_20260521_1779375614 (medium) ~16,350 tokens  (~12 tool calls)
+  claude_sonnet_4_5_new_york_type4_20260521_1779375721 (medium) ~16,350 tokens  (~12 tool calls)
+  claude_sonnet_4_5_new_york_type5_20260521_1779375846 (hard  ) ~30,500 tokens  (~18 tool calls)
+  deepseek_reasoner_new_york_type6_20260521_1779375871 (medium) ~16,350 tokens  (~12 tool calls)
+  ──────────────────────────────────────────────────
+  Total input:  ~60,450
+  Total output: ~51,800
+  Total tokens: ~112,250
+  Est. cost:    ~$0.0733
+───────────────────────────────────────────────────────
+
+[1/6] Running claude_sonnet_4_5_new_york_type1_20260521_1779375385  (medium)  → deepseek-chat
+    [rescue:openai] finish=stop out_tokens=3465 text_len=12700 has_tag=True
+
+  ┌─ claude_sonnet_4_5_new_york_type1_20260521_1779375385  (medium)  [225,302 tokens]
+  │  Tool calls: 47
+  │  Plan parsed: yes
+  │
+  │  C-score (process): 96.0%  ✅ deductions=1 warnings=2
+  │    −0.04  Plan task_id 'new_york_architecture_photographer_july4' doesn't match task 'claude_so
+  │    ⚠  Day 1: venue_id 'IhQ1cao' appears 3 times. If this is a split visit (e.g. morning + aftern
+  │    ⚠  Day 3: venue_id 'IYmC84W' appears 2 times. If this is a split visit (e.g. morning + aftern
+  │  F-score (feasibility):  0.0%  ❌
+  │    −0.05 [F2c] Day 1: 'Ess-a-Bagel' has wrong info but agent never retrieved tru
+  │    −0.05 [F2c] Day 1: 'Veselka' has wrong info but agent never retrieved truth-c
+  │    −0.02 [F4a] Day 1: 'Brooklyn Bridge Park' over-scheduled 470min (max 180, rec
+  │    ... +11 more
+  │  P-score (preferences): 100.0%
+  │    ✓ [pc_001] score=1.00  At least 60% of meals at local cuisine restaurants
+  │    ✓ [pc_002] score=1.00  At least 3 distinct cuisines across meals: 6/6 mat
+  │    ✓ [pc_003] score=1.00  At least 1 art museum visit: 3/3 matching (pass)
+  │    ✓ [pc_004] score=1.00  At least 2 waterfront venues: 3/8 matching (pass)
+  │  B-score (bonus):        0.0%
+  │
+  ⏱  73.2s  [217,464in + 7,838out = 225,302 tokens]
+  📝 Transcript: claude_sonnet_4_5_new_york_type1_20260521_1779375385_20260618_200500.json.gz (7KB)
+  💾 Saved: 20260618_200500_claude_sonnet_4_5_new_york_type1_20260521_1779375385_deepseek-chat.json
+[2/6] Running claude_sonnet_4_5_new_york_type2_20260521_1779375498  (medium)  → deepseek-chat
+    [rescue:openai] finish=stop out_tokens=1874 text_len=6321 has_tag=True
+
+  ┌─ claude_sonnet_4_5_new_york_type2_20260521_1779375498  (medium)  [222,995 tokens]
+  │  Tool calls: 30
+  │  Plan parsed: yes
+  │
+  │  C-score (process): 92.0%  ✅ deductions=2 warnings=0
+  │    −0.04  Plan task_id 'new_york_trip_jul5_6' doesn't match task 'claude_sonnet_4_5_new_york_ty
+  │    −0.04  Day 2: sparse — 1 activities, 270-min idle gap (expected ~2 in 4h budget)
+  │  F-score (feasibility): 70.0%  ⚠
+  │    −0.30 [F2e] type2 spread time-ceiling overrun: 286min engaged (ceiling 270min
+  │  P-score (preferences): 83.4%
+  │    ~ [pc_001] score=0.67  At least 3 meal activities at venues with popular-
+  │    ✓ [pc_002] score=1.00  No venues tagged as tourist traps: 0/3 matching (p
+  │    ~ [pc_003] score=0.67  Visit activities span at least 3 distinct district
+  │    ✓ [pc_004] score=1.00  Include at least 1 neighbourhood-category venue: 1
+  │  B-score (bonus):       100.0%
+  │
+  ⏱  51.2s  [218,005in + 4,990out = 222,995 tokens]
+  📝 Transcript: claude_sonnet_4_5_new_york_type2_20260521_1779375498_20260618_200500.json.gz (4KB)
+  💾 Saved: 20260618_200500_claude_sonnet_4_5_new_york_type2_20260521_1779375498_deepseek-chat.json
+[3/6] Running claude_sonnet_4_5_new_york_type3_20260521_1779375614  (medium)  → deepseek-chat
+    [rescue:openai] finish=stop out_tokens=1092 text_len=3962 has_tag=False
+
+  ┌─ claude_sonnet_4_5_new_york_type3_20260521_1779375614  (medium)  [334,149 tokens]
+  │  Tool calls: 46
+  │  Plan parsed: NO ← check raw output
+  │
+  │  C-score (process):  0.0%  ❌ deductions=1 warnings=0
+  │    −1.00  Hard gate: no <final_plan> produced or JSON parse failed
+  │  [C gate failed — F/P/B not evaluated]
+  │
+  │  ── Agent debug (46/45 tool rounds) ──
+  │  call 1: search_yelp(query=major tourist attractions, city=new_york, category=attraction)
+  │  call 2: search_yelp(query=hidden gem off the beaten, city=new_york, category=attraction)
+  │  call 3: search_yelp(query=museums, city=new_york, category=museum)
+  │  call 4: search_yelp(query=parks outdoor, city=new_york, category=park)
+  │  call 5: search_yelp(query=iconic landmark must-see, city=new_york, category=attraction)
+  │  call 6: search_yelp(query=restaurants NYC, city=new_york, category=restaurant)
+  │  call 7: search_yelp(query=neighbourhood hidden gem, city=new_york, category=neighbourhood)
+  │  call 8: search_yelp(query=iconic must-see landmark, city=new_york, top_k=6)
+  │  ── end debug ──
+  │
+  ⏱  56.3s  [328,668in + 5,481out = 334,149 tokens]
+  📝 Transcript: claude_sonnet_4_5_new_york_type3_20260521_1779375614_20260618_200500.json.gz (4KB)
+  💾 Saved: 20260618_200500_claude_sonnet_4_5_new_york_type3_20260521_1779375614_deepseek-chat.json
+[4/6] Running claude_sonnet_4_5_new_york_type4_20260521_1779375721  (medium)  → deepseek-chat
+    [rescue:openai] finish=stop out_tokens=3935 text_len=11862 has_tag=False
+
+  ┌─ claude_sonnet_4_5_new_york_type4_20260521_1779375721  (medium)  [294,030 tokens]
+  │  Tool calls: 50
+  │  Plan parsed: NO ← check raw output
+  │
+  │  C-score (process):  0.0%  ❌ deductions=1 warnings=0
+  │    −1.00  Hard gate: no <final_plan> produced or JSON parse failed
+  │  [C gate failed — F/P/B not evaluated]
+  │
+  │  ── Agent debug (50/45 tool rounds) ──
+  │  call 1: search_yelp(query=Brooklyn Bridge Park, city=New_York, category=park)
+  │  call 2: search_yelp(query=iconic NYC attraction che, city=New_York, category=attraction)
+  │  call 3: search_yelp(query=budget friendly authentic, city=New_York, category=restaurant)
+  │  call 4: search_blogs_and_forums(query=4th of July fireworks Bro, city=New_York)
+  │  call 5: search_yelp(query=pizza by the slice cheap , city=New_York, category=restaurant)
+  │  call 6: search_yelp(query=bagel shop cheap authenti, city=New_York, category=restaurant)
+  │  call 7: search_yelp(query=Times Square, city=New_York, category=attraction)
+  │  call 8: search_yelp(query=Statue of Liberty, city=New_York, category=attraction)
+  │  ── end debug ──
+  │
+  ⏱  78.8s  [285,145in + 8,885out = 294,030 tokens]
+  📝 Transcript: claude_sonnet_4_5_new_york_type4_20260521_1779375721_20260618_200500.json.gz (6KB)
+  💾 Saved: 20260618_200500_claude_sonnet_4_5_new_york_type4_20260521_1779375721_deepseek-chat.json
+[5/6] Running claude_sonnet_4_5_new_york_type5_20260521_1779375846  (hard)  → deepseek-chat
+    [rescue:openai] finish=stop out_tokens=318 text_len=1177 has_tag=False
+
+  ┌─ claude_sonnet_4_5_new_york_type5_20260521_1779375846  (hard)  [132,555 tokens]
+  │  Tool calls: 32
+  │  Plan parsed: NO ← check raw output
+  │
+  │  C-score (process):  0.0%  ❌ deductions=1 warnings=0
+  │    −1.00  Hard gate: no <final_plan> produced or JSON parse failed
+  │  [C gate failed — F/P/B not evaluated]
+  │
+  │  ── Agent debug (32/30 tool rounds) ──
+  │  call 1: search_yelp(query=upscale cocktail bar, city=new_york, category=bar)
+  │  call 2: search_yelp(query=world class museum, city=new_york, category=museum)
+  │  call 3: search_yelp(query=fine dining romantic anni, city=new_york, category=restaurant)
+  │  call 4: search_yelp(query=iconic viewpoint observat, city=new_york, category=attraction)
+  │  call 5: search_yelp(query=romantic upscale cafe, city=new_york, category=cafe)
+  │  call 6: search_yelp(query=Michelin star romantic fi, city=new_york, category=restaurant)
+  │  call 7: search_yelp(query=speakeasy craft cocktail, city=new_york, category=bar)
+  │  call 8: search_yelp(query=upscale rooftop bar skyli, city=new_york, category=bar)
+  │  ── end debug ──
+  │
+  ⏱  28.6s  [129,261in + 3,294out = 132,555 tokens]
+  📝 Transcript: claude_sonnet_4_5_new_york_type5_20260521_1779375846_20260618_200500.json.gz (2KB)
+  💾 Saved: 20260618_200500_claude_sonnet_4_5_new_york_type5_20260521_1779375846_deepseek-chat.json
+[6/6] Running deepseek_reasoner_new_york_type6_20260521_1779375871  (medium)  → deepseek-chat
+    [rescue:openai] finish=stop out_tokens=579 text_len=2071 has_tag=False
+
+  ┌─ deepseek_reasoner_new_york_type6_20260521_1779375871  (medium)  [461,540 tokens]
+  │  Tool calls: 64
+  │  Plan parsed: NO ← check raw output
+  │
+  │  C-score (process):  0.0%  ❌ deductions=1 warnings=0
+  │    −1.00  Hard gate: no <final_plan> produced or JSON parse failed
+  │  [C gate failed — F/P/B not evaluated]
+  │
+  │  ── Agent debug (64/60 tool rounds) ──
+  │  call 1: search_yelp(query=Empire State Building, city=new_york, category=attraction)
+  │  call 2: search_yelp(query=Statue of Liberty, city=new_york, category=attraction)
+  │  call 3: search_yelp(query=family friendly restauran, city=new_york, category=restaurant)
+  │  call 4: search_yelp(query=family friendly casual di, category=restaurant, city=new_york)
+  │  call 5: search_yelp(query=kids friendly pizza burge, category=restaurant, city=new_york)
+  │  call 6: search_yelp(query=Central Park, category=park, city=new_york)
+  │  call 7: search_yelp(query=family friendly cafe brea, category=cafe, city=new_york)
+  │  call 8: get_official_site(venue_id=oROvMoN, city=new_york, date=2026-07-02)
+  │  ── end debug ──
+  │
+  ⏱  61.4s  [454,962in + 6,578out = 461,540 tokens]
+  📝 Transcript: deepseek_reasoner_new_york_type6_20260521_1779375871_20260618_200500.json.gz (4KB)
+  💾 Saved: 20260618_200500_deepseek_reasoner_new_york_type6_20260521_1779375871_deepseek-chat.json
+
+════════════════════════════════════════════════════════════
+RUN SUMMARY — deepseek-chat
+════════════════════════════════════════════════════════════
+Task                      Diff        C      F      P   Tokens
+────────────────────────────────────────────────────────────
+  claude_sonnet_4_5_new_york_type1_20260521_1779375385 medium    96%     0%   100%  225,302
+  claude_sonnet_4_5_new_york_type2_20260521_1779375498 medium    92%    70%    83%  222,995
+  claude_sonnet_4_5_new_york_type3_20260521_1779375614 medium     0%    N/A    N/A  334,149
+  claude_sonnet_4_5_new_york_type4_20260521_1779375721 medium     0%    N/A    N/A  294,030
+  claude_sonnet_4_5_new_york_type5_20260521_1779375846 hard       0%    N/A    N/A  132,555
+  deepseek_reasoner_new_york_type6_20260521_1779375871 medium     0%    N/A    N/A  461,540
+────────────────────────────────────────────────────────────
+  TOTAL                                    1,670,571 tokens
+  Wall time: 354.8s
+════════════════════════════════════════════════════════════
+
+💾 Summary saved: 20260618_200500_summary_deepseek-chat.json
