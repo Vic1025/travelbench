@@ -417,3 +417,106 @@ and `docs/DESIGN_DECISIONS.md`. Theory anchors:
   the parametric-knowledge guard.
 
 PDFs in `~/Documents/Books and Papers/Papers/Internet-Noise-Benchmark/`.
+
+---
+
+## 12. Investigation (2026-06-19) — isolation/sparsity is the bug; copying-bloc is the lever
+
+The b1/b1.5 wedge pilots were noise-dominated. Root cause (code + corpus + theory + a
+recovery probe): the corruption is in the **easy regime by construction**, at the corpus
+level, not just the operator.
+
+**Diagnosis.**
+- *Operator isolation:* one flaw per `(venue,field)`; a `consumed_docs` set forbids two flaws
+  sharing a source; the validity gate *requires* `detectability ≥ 1` ⇒ **every flaw ships with
+  a truth-carrier**, so truth is always recoverable by reading one more source.
+- *Corpus sparsity (verified on test_70):* 29 flaws / 70 venues — **60% of venues are clean,
+  27/28 flawed venues have exactly one flaw, no source is wrong on >1 venue** (no track record).
+  An agent can route around flawed venues, and a single cross-check resolves the rest.
+- *Theory (truth discovery §3.2.2):* independent sources scatter on errors, agree on truth ⇒
+  truth is the majority ⇒ trivial majority-vote recovery. We built exactly this.
+
+**Recovery probe (claude-sonnet-4-5, `results/recovery_probe/`).** Per-field recovery by evidence
+structure: CLEAN 100%, ISO (1 wrong vs 2 right) 75%, **BLOC (3 wrong vs 1 right) 0% (100% abstain)**,
+**BLOC+TELL (bloc + off-object copy signature) 88%**. Conclusions:
+1. **Copying-majority is the lever** — collapses recovery 75–100% → 0%; isolated faults barely matter.
+2. **The off-object "tell" restores recovery (0%→88%)** — hard-but-fair, not a coin flip.
+3. **Strong models don't get "misled" (0% adopt the lie) — they ABSTAIN.** ⇒ the metric is
+   **recovered vs. failed-to-recover**, not misled-rate.
+
+**Design shift (b3 onward).** From sparse isolated faults → a **correlated, dense corrupted
+environment**: copying-majorities (N wrong-copying sources + minority truth) with a discoverable
+off-object tell (shared idiosyncratic wrong claim across venues via reused copier source
+identities); raise flaw density; later, unreliable source identities wrong across many venues
+(reliability-model inference, Lever B). Relax the mandatory-truth-carrier gate (keep recoverability
+via the tell, not a free truth doc). **Metric:** per-contested-field recovery rate by trap type —
+in the planning benchmark, measured on flawed venues the agent actually scheduled (did the plan
+respect GT on the contested field), which is independent of venue-selection drift.
+
+---
+
+## 13. b3 design — the dense, correlated faulty corpus (one version all tests run on)
+
+**Goal:** produce a single deterministic corpus version, `runs/<city>/<run>_dense`, that replaces
+the sparse/isolated regime with a *correlated, dense* one — and that **every measurement tool
+consumes unchanged**: recovery probe, 3-arm ablation, certifier retro, `validate_corruption`.
+Canonical GT (`venues`) stays immutable; the lie lives in the served overlay + docs.
+
+### 13.1 The flaw model (correlated copying blocs)
+Per contested `(venue, field)` chosen by load-bearing binding (b1) + a density target:
+- **Copying bloc:** served `yelp_<field>` = wrong value; **N `incorrect_source` docs** (profile
+  `bloc_size`, default 3) carry the *same* wrong value in their bodies (deterministic templated
+  prose, no API for v1); truth is a **minority** — 0 or 1 independent `truth_carrier`.
+- **Off-object tell (fairness, the recovery path):** the bloc is authored from a small pool of
+  **copier source identities** (`author`/`source_name`) that recur as `incorrect_source` across
+  **≥2 bloc venues**, each repeating an identical idiosyncratic wrong claim. A careful agent that
+  cross-references can detect the copying and discount the bloc → recovers the minority truth.
+  (Probe: this off-object tell is what moved recovery 0%→88%.)
+- **No free authority:** for bloc fields, `suppress_authority=1` (or pick `has_official_site=0`);
+  **remove the auto-un-suppress fallback** (`inject_flaws.py:565-571`).
+- **Density:** flaw a large fraction of in-pool venues, several correlated flaws per venue, so the
+  agent cannot route around corruption (vs today's 60%-clean).
+
+### 13.2 Difficulty tiers (reproducible knobs in the `profile`)
+`bloc_size` (3/5), `tell_strength` (shared wrong fact on 1 vs ≥3 other venues), `truth_carrier`
+(present minority / absent), `authority` (suppressed / available). A profile fixes these → a named
+difficulty level; same `(gt_hash, seed, profile)` ⇒ identical overlay.
+
+### 13.3 Fairness invariants (validate_corruption extends to check)
+1. **Recovery path exists** for every flaw: a minority `truth_carrier`, OR a discoverable
+   off-object tell (copier identity recurs with a checkable wrong claim elsewhere), OR a
+   non-suppressed authority. (Replaces the old mandatory `detectability ≥ 1`.)
+2. **No bare wrong-majority:** a copying bloc with no tell is forbidden (unidentifiable → unfair);
+   the validator fails any bloc lacking a tell.
+3. GT immutable (hash vs `--src`), values plausible/in-domain, reproducible (seed).
+4. **Density + live-wedge report:** fraction of venues flawed, flaws/venue, and per-task live wedges.
+
+### 13.4 The recovery metric (two forms, same definition)
+Per contested field, classify the agent's effective belief as **recovered (=GT)** /
+**failed (abstained or wrong)** — relative to GT, *not* to which venues were chosen.
+- **Probe form** (`recovery_probe.py`, generalized): pull the venue's *actual served evidence* from
+  `<run>_dense` and ask the model the true field value. Reports recovery-rate by trap tier.
+- **In-plan form** (new analyzer): for each flawed venue the agent **scheduled**, did the plan
+  respect GT on the contested field (hours within GT-open; cost counted at GT within budget)?
+  recovered vs failed, by trap tier, per model. Venue-drift-invariant.
+Report **recovery-rate × trap-tier** as primary; aggregate C/F/P only as secondary context.
+
+### 13.5 Build steps (to produce the one corpus version)
+- **Operator (`inject_flaws.py`):** add a `dense` profile — relax `consumed_docs`/`(venue,field)`
+  disjointness enough for copier-identity reuse; bloc wiring (`bloc_size` incorrect_source +
+  ≤1 minority truth_carrier); copier-identity pool + templated wrong-value doc bodies + off-object
+  tell across venues; density target; drop the auto-un-suppress.
+- **Gate/certifier:** replace `detectability ≥ 1` with "recovery-path-exists"; keep `0<repairability<1`
+  only where a truth source exists (bloc-with-tell may have repairability→0 but is valid via tell).
+- **Validator (`validate_corruption.py`):** add invariants 1–2 + density report.
+- **Metric (`scripts/analysis/recovery_metric.py`, new):** the in-plan recovery analyzer; generalize
+  `recovery_probe.py` to read a corpus.
+- **Output:** `python inject_flaws.py --src <baseline> --dst runs/<city>/<run>_dense --profile dense
+  --seed s` → the version all tools target via `--run-name <run>_dense`.
+
+### 13.6 How each existing test runs on `<run>_dense` (the user's requirement)
+- **recovery probe:** `recovery_probe.py --run-name <run>_dense` → recovery-rate by tier (FREE-ish).
+- **3-arm ablation:** `run_benchmark --run-name <run>_dense --arm {faulty,clean_equalvol}` (API).
+- **certifier retro:** `certifier_retro.py` on `<run>_dense` + its transcripts (FREE).
+- **validate_corruption:** `--db <run>_dense` (FREE) — gates fairness before any API spend.
+- **in-plan recovery metric:** on `<run>_dense` ablation transcripts (FREE).

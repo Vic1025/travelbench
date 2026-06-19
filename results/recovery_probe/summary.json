@@ -1,0 +1,58 @@
+{
+  "CLEAN": {
+    "n": 16,
+    "recovered": 1.0,
+    "misled": 0.0,
+    "abstained": 0.0,
+    "other": 0.0,
+    "counts": {
+      "recovered": 16,
+      "misled": 0,
+      "abstained": 0,
+      "other": 0
+    },
+    "mean_conf_when_misled": null
+  },
+  "ISO": {
+    "n": 16,
+    "recovered": 0.75,
+    "misled": 0.0,
+    "abstained": 0.0,
+    "other": 0.25,
+    "counts": {
+      "recovered": 12,
+      "misled": 0,
+      "abstained": 0,
+      "other": 4
+    },
+    "mean_conf_when_misled": null
+  },
+  "BLOC": {
+    "n": 16,
+    "recovered": 0.0,
+    "misled": 0.0,
+    "abstained": 1.0,
+    "other": 0.0,
+    "counts": {
+      "recovered": 0,
+      "misled": 0,
+      "abstained": 16,
+      "other": 0
+    },
+    "mean_conf_when_misled": null
+  },
+  "BLOC_TELL": {
+    "n": 16,
+    "recovered": 0.875,
+    "misled": 0.0,
+    "abstained": 0.125,
+    "other": 0.0,
+    "counts": {
+      "recovered": 14,
+      "misled": 0,
+      "abstained": 2,
+      "other": 0
+    },
+    "mean_conf_when_misled": null
+  }
+}

@@ -1,0 +1,1154 @@
+[
+  {
+    "venue": "Katz's Delicatessen",
+    "field": "average cost per person (USD)",
+    "ftype": "cost",
+    "gt": 25,
+    "wrong": 12,
+    "condition": "CLEAN",
+    "repeat": 0,
+    "raw_text": "```json\n{\"value\": 25, \"confidence\": 0.6, \"why\": \"All three sources report the same $25 figure, but they lack independence as the blog and forum user may have derived their information from the Yelp listing rather than independent verification.\"}\n```",
+    "parsed": {
+      "value": 25,
+      "confidence": 0.6,
+      "why": "All three sources report the same $25 figure, but they lack independence as the blog and forum user may have derived their information from the Yelp listing rather than independent verification."
+    },
+    "label": "recovered",
+    "confidence": 0.6,
+    "why": "All three sources report the same $25 figure, but they lack independence as the blog and forum user may have derived their information from the Yelp listing rather than independent verification."
+  },
+  {
+    "venue": "Katz's Delicatessen",
+    "field": "average cost per person (USD)",
+    "ftype": "cost",
+    "gt": 25,
+    "wrong": 12,
+    "condition": "CLEAN",
+    "repeat": 1,
+    "raw_text": "```json\n{\"value\": 25, \"confidence\": 0.6, \"why\": \"All three sources report the same $25 figure, but they lack independence as the blog and forum user may have derived their information from the Yelp listing rather than independent verification.\"}\n```",
+    "parsed": {
+      "value": 25,
+      "confidence": 0.6,
+      "why": "All three sources report the same $25 figure, but they lack independence as the blog and forum user may have derived their information from the Yelp listing rather than independent verification."
+    },
+    "label": "recovered",
+    "confidence": 0.6,
+    "why": "All three sources report the same $25 figure, but they lack independence as the blog and forum user may have derived their information from the Yelp listing rather than independent verification."
+  },
+  {
+    "venue": "Katz's Delicatessen",
+    "field": "average cost per person (USD)",
+    "ftype": "cost",
+    "gt": 25,
+    "wrong": 12,
+    "condition": "ISO",
+    "repeat": 0,
+    "raw_text": "```json\n{\"value\": 25, \"confidence\": 0.6, \"why\": \"Two of three sources agree on $25 per person, with the most recent visitor confirming this price, though the blog's $12 estimate creates some uncertainty about whether prices vary significantly by what you order.\"}\n```",
+    "parsed": {
+      "value": 25,
+      "confidence": 0.6,
+      "why": "Two of three sources agree on $25 per person, with the most recent visitor confirming this price, though the blog's $12 estimate creates some uncertainty about whether prices vary significantly by what you order."
+    },
+    "label": "recovered",
+    "confidence": 0.6,
+    "why": "Two of three sources agree on $25 per person, with the most recent visitor confirming this price, though the blog's $12 estimate creates some uncertainty about whether prices vary significantly by what you order."
+  },
+  {
+    "venue": "Katz's Delicatessen",
+    "field": "average cost per person (USD)",
+    "ftype": "cost",
+    "gt": 25,
+    "wrong": 12,
+    "condition": "ISO",
+    "repeat": 1,
+    "raw_text": "```json\n{\"value\": 25, \"confidence\": 0.6, \"why\": \"Two of three sources agree on $25 per person, with the most recent visitor corroborating the Yelp listing, though the blog's $12 estimate creates some uncertainty about whether prices vary significantly by what you order.\"}\n```",
+    "parsed": {
+      "value": 25,
+      "confidence": 0.6,
+      "why": "Two of three sources agree on $25 per person, with the most recent visitor corroborating the Yelp listing, though the blog's $12 estimate creates some uncertainty about whether prices vary significantly by what you order."
+    },
+    "label": "recovered",
+    "confidence": 0.6,
+    "why": "Two of three sources agree on $25 per person, with the most recent visitor corroborating the Yelp listing, though the blog's $12 estimate creates some uncertainty about whether prices vary significantly by what you order."
+  },
+  {
+    "venue": "Katz's Delicatessen",
+    "field": "average cost per person (USD)",
+    "ftype": "cost",
+    "gt": 25,
+    "wrong": 12,
+    "condition": "BLOC",
+    "repeat": 0,
+    "raw_text": "```json\n{\"value\": \"unknown\", \"confidence\": 0.3, \"why\": \"Three sources report $12 while one reports $25, but the identical $12 figure across Yelp, blog, and forum suggests possible copying rather than independent verification, making the true average uncertain.\"}\n```",
+    "parsed": {
+      "value": "unknown",
+      "confidence": 0.3,
+      "why": "Three sources report $12 while one reports $25, but the identical $12 figure across Yelp, blog, and forum suggests possible copying rather than independent verification, making the true average uncertain."
+    },
+    "label": "abstained",
+    "confidence": 0.3,
+    "why": "Three sources report $12 while one reports $25, but the identical $12 figure across Yelp, blog, and forum suggests possible copying rather than independent verification, making the true average uncertain."
+  },
+  {
+    "venue": "Katz's Delicatessen",
+    "field": "average cost per person (USD)",
+    "ftype": "cost",
+    "gt": 25,
+    "wrong": 12,
+    "condition": "BLOC",
+    "repeat": 1,
+    "raw_text": "```json\n{\"value\": \"unknown\", \"confidence\": 0.3, \"why\": \"Three sources report $12 while one reports $25, but the identical $12 figure across multiple sources suggests possible copying rather than independent verification, making the true average uncertain.\"}\n```",
+    "parsed": {
+      "value": "unknown",
+      "confidence": 0.3,
+      "why": "Three sources report $12 while one reports $25, but the identical $12 figure across multiple sources suggests possible copying rather than independent verification, making the true average uncertain."
+    },
+    "label": "abstained",
+    "confidence": 0.3,
+    "why": "Three sources report $12 while one reports $25, but the identical $12 figure across multiple sources suggests possible copying rather than independent verification, making the true average uncertain."
+  },
+  {
+    "venue": "Katz's Delicatessen",
+    "field": "average cost per person (USD)",
+    "ftype": "cost",
+    "gt": 25,
+    "wrong": 12,
+    "condition": "BLOC_TELL",
+    "repeat": 0,
+    "raw_text": "```json\n{\"value\": 25, \"confidence\": 0.7, \"why\": \"The three sources claiming $12 contain identical suspicious text about an unrelated diner suggesting they copied from each other, while the independent first-hand visit log reporting $25 appears more credible.\"}\n```",
+    "parsed": {
+      "value": 25,
+      "confidence": 0.7,
+      "why": "The three sources claiming $12 contain identical suspicious text about an unrelated diner suggesting they copied from each other, while the independent first-hand visit log reporting $25 appears more credible."
+    },
+    "label": "recovered",
+    "confidence": 0.7,
+    "why": "The three sources claiming $12 contain identical suspicious text about an unrelated diner suggesting they copied from each other, while the independent first-hand visit log reporting $25 appears more credible."
+  },
+  {
+    "venue": "Katz's Delicatessen",
+    "field": "average cost per person (USD)",
+    "ftype": "cost",
+    "gt": 25,
+    "wrong": 12,
+    "condition": "BLOC_TELL",
+    "repeat": 1,
+    "raw_text": "```json\n{\"value\": 25, \"confidence\": 0.7, \"why\": \"The three sources claiming $12 contain identical suspicious text about an unrelated diner suggesting they copied from each other, while the independent first-hand visit log reporting $25 appears more credible.\"}\n```",
+    "parsed": {
+      "value": 25,
+      "confidence": 0.7,
+      "why": "The three sources claiming $12 contain identical suspicious text about an unrelated diner suggesting they copied from each other, while the independent first-hand visit log reporting $25 appears more credible."
+    },
+    "label": "recovered",
+    "confidence": 0.7,
+    "why": "The three sources claiming $12 contain identical suspicious text about an unrelated diner suggesting they copied from each other, while the independent first-hand visit log reporting $25 appears more credible."
+  },
+  {
+    "venue": "Blue Note Jazz Club",
+    "field": "average cost per person (USD)",
+    "ftype": "cost",
+    "gt": 65,
+    "wrong": 32,
+    "condition": "CLEAN",
+    "repeat": 0,
+    "raw_text": "```json\n{\"value\": 65, \"confidence\": 0.9, \"why\": \"All three independent sources consistently report the same price of $65 per person, though they may be citing each other or a common source.\"}\n```",
+    "parsed": {
+      "value": 65,
+      "confidence": 0.9,
+      "why": "All three independent sources consistently report the same price of $65 per person, though they may be citing each other or a common source."
+    },
+    "label": "recovered",
+    "confidence": 0.9,
+    "why": "All three independent sources consistently report the same price of $65 per person, though they may be citing each other or a common source."
+  },
+  {
+    "venue": "Blue Note Jazz Club",
+    "field": "average cost per person (USD)",
+    "ftype": "cost",
+    "gt": 65,
+    "wrong": 32,
+    "condition": "CLEAN",
+    "repeat": 1,
+    "raw_text": "```json\n{\"value\": 65, \"confidence\": 0.9, \"why\": \"All three independent sources consistently report the same price of $65 per person, though they may be citing each other or a common source.\"}\n```",
+    "parsed": {
+      "value": 65,
+      "confidence": 0.9,
+      "why": "All three independent sources consistently report the same price of $65 per person, though they may be citing each other or a common source."
+    },
+    "label": "recovered",
+    "confidence": 0.9,
+    "why": "All three independent sources consistently report the same price of $65 per person, though they may be citing each other or a common source."
+  },
+  {
+    "venue": "Blue Note Jazz Club",
+    "field": "average cost per person (USD)",
+    "ftype": "cost",
+    "gt": 65,
+    "wrong": 32,
+    "condition": "ISO",
+    "repeat": 0,
+    "raw_text": "```json\n{\n  \"value\": 54,\n  \"confidence\": 0.5,\n  \"why\": \"The mathematical average of the three reported values ($32, $65, $65) is $54, but the single outlier blog report versus two consistent $65 reports creates uncertainty about whether simple averaging is appropriate.\"\n}\n```",
+    "parsed": {
+      "value": 54,
+      "confidence": 0.5,
+      "why": "The mathematical average of the three reported values ($32, $65, $65) is $54, but the single outlier blog report versus two consistent $65 reports creates uncertainty about whether simple averaging is appropriate."
+    },
+    "label": "other",
+    "confidence": 0.5,
+    "why": "The mathematical average of the three reported values ($32, $65, $65) is $54, but the single outlier blog report versus two consistent $65 reports creates uncertainty about whether simple averaging is appropriate."
+  },
+  {
+    "venue": "Blue Note Jazz Club",
+    "field": "average cost per person (USD)",
+    "ftype": "cost",
+    "gt": 65,
+    "wrong": 32,
+    "condition": "ISO",
+    "repeat": 1,
+    "raw_text": "```json\n{\n  \"value\": 54,\n  \"confidence\": 0.5,\n  \"why\": \"The mathematical average of the three reported values ($32, $65, $65) is $54, but the single outlier blog report versus two consistent $65 reports creates uncertainty about whether simple averaging is appropriate.\"\n}\n```",
+    "parsed": {
+      "value": 54,
+      "confidence": 0.5,
+      "why": "The mathematical average of the three reported values ($32, $65, $65) is $54, but the single outlier blog report versus two consistent $65 reports creates uncertainty about whether simple averaging is appropriate."
+    },
+    "label": "other",
+    "confidence": 0.5,
+    "why": "The mathematical average of the three reported values ($32, $65, $65) is $54, but the single outlier blog report versus two consistent $65 reports creates uncertainty about whether simple averaging is appropriate."
+  },
+  {
+    "venue": "Blue Note Jazz Club",
+    "field": "average cost per person (USD)",
+    "ftype": "cost",
+    "gt": 65,
+    "wrong": 32,
+    "condition": "BLOC",
+    "repeat": 0,
+    "raw_text": "```json\n{\n  \"value\": \"unknown\",\n  \"confidence\": 0.3,\n  \"why\": \"Three sources report $32 while one reports $65, creating ambiguity about whether these reflect different experiences (e.g., cover charge vs. total cost including food/drinks) rather than a clear average.\"\n}\n```",
+    "parsed": {
+      "value": "unknown",
+      "confidence": 0.3,
+      "why": "Three sources report $32 while one reports $65, creating ambiguity about whether these reflect different experiences (e.g., cover charge vs. total cost including food/drinks) rather than a clear average."
+    },
+    "label": "abstained",
+    "confidence": 0.3,
+    "why": "Three sources report $32 while one reports $65, creating ambiguity about whether these reflect different experiences (e.g., cover charge vs. total cost including food/drinks) rather than a clear average."
+  },
+  {
+    "venue": "Blue Note Jazz Club",
+    "field": "average cost per person (USD)",
+    "ftype": "cost",
+    "gt": 65,
+    "wrong": 32,
+    "condition": "BLOC",
+    "repeat": 1,
+    "raw_text": "```json\n{\n  \"value\": \"unknown\",\n  \"confidence\": 0.3,\n  \"why\": \"Three sources report $32 while one reports $65, creating ambiguity about whether these reflect different experiences (e.g., cover charge vs. total cost including food/drinks) rather than a clear average.\"\n}\n```",
+    "parsed": {
+      "value": "unknown",
+      "confidence": 0.3,
+      "why": "Three sources report $32 while one reports $65, creating ambiguity about whether these reflect different experiences (e.g., cover charge vs. total cost including food/drinks) rather than a clear average."
+    },
+    "label": "abstained",
+    "confidence": 0.3,
+    "why": "Three sources report $32 while one reports $65, creating ambiguity about whether these reflect different experiences (e.g., cover charge vs. total cost including food/drinks) rather than a clear average."
+  },
+  {
+    "venue": "Blue Note Jazz Club",
+    "field": "average cost per person (USD)",
+    "ftype": "cost",
+    "gt": 65,
+    "wrong": 32,
+    "condition": "BLOC_TELL",
+    "repeat": 0,
+    "raw_text": "```json\n{\"value\": 65, \"confidence\": 0.7, \"why\": \"Three sources share identical text including an irrelevant detail about a diner, suggesting copied content, while the independent first-hand account reports $65.\"}\n```",
+    "parsed": {
+      "value": 65,
+      "confidence": 0.7,
+      "why": "Three sources share identical text including an irrelevant detail about a diner, suggesting copied content, while the independent first-hand account reports $65."
+    },
+    "label": "recovered",
+    "confidence": 0.7,
+    "why": "Three sources share identical text including an irrelevant detail about a diner, suggesting copied content, while the independent first-hand account reports $65."
+  },
+  {
+    "venue": "Blue Note Jazz Club",
+    "field": "average cost per person (USD)",
+    "ftype": "cost",
+    "gt": 65,
+    "wrong": 32,
+    "condition": "BLOC_TELL",
+    "repeat": 1,
+    "raw_text": "```json\n{\"value\": 65, \"confidence\": 0.7, \"why\": \"Three sources share identical text including an irrelevant detail about a diner, suggesting copied content, while the independent first-hand account reports $65.\"}\n```",
+    "parsed": {
+      "value": 65,
+      "confidence": 0.7,
+      "why": "Three sources share identical text including an irrelevant detail about a diner, suggesting copied content, while the independent first-hand account reports $65."
+    },
+    "label": "recovered",
+    "confidence": 0.7,
+    "why": "Three sources share identical text including an irrelevant detail about a diner, suggesting copied content, while the independent first-hand account reports $65."
+  },
+  {
+    "venue": "Guggenheim Museum",
+    "field": "average cost per person (USD)",
+    "ftype": "cost",
+    "gt": 25,
+    "wrong": 13,
+    "condition": "CLEAN",
+    "repeat": 0,
+    "raw_text": "```json\n{\"value\": 25, \"confidence\": 0.9, \"why\": \"All three independent sources consistently report the same price of $25 per person, though they don't specify if this is admission cost rather than a restaurant price.\"}\n```",
+    "parsed": {
+      "value": 25,
+      "confidence": 0.9,
+      "why": "All three independent sources consistently report the same price of $25 per person, though they don't specify if this is admission cost rather than a restaurant price."
+    },
+    "label": "recovered",
+    "confidence": 0.9,
+    "why": "All three independent sources consistently report the same price of $25 per person, though they don't specify if this is admission cost rather than a restaurant price."
+  },
+  {
+    "venue": "Guggenheim Museum",
+    "field": "average cost per person (USD)",
+    "ftype": "cost",
+    "gt": 25,
+    "wrong": 13,
+    "condition": "CLEAN",
+    "repeat": 1,
+    "raw_text": "```json\n{\"value\": 25, \"confidence\": 0.9, \"why\": \"All three independent sources consistently report the same price of $25 per person, though they don't specify if this is admission cost rather than a restaurant price.\"}\n```",
+    "parsed": {
+      "value": 25,
+      "confidence": 0.9,
+      "why": "All three independent sources consistently report the same price of $25 per person, though they don't specify if this is admission cost rather than a restaurant price."
+    },
+    "label": "recovered",
+    "confidence": 0.9,
+    "why": "All three independent sources consistently report the same price of $25 per person, though they don't specify if this is admission cost rather than a restaurant price."
+  },
+  {
+    "venue": "Guggenheim Museum",
+    "field": "average cost per person (USD)",
+    "ftype": "cost",
+    "gt": 25,
+    "wrong": 13,
+    "condition": "ISO",
+    "repeat": 0,
+    "raw_text": "```json\n{\"value\": 21, \"confidence\": 0.6, \"why\": \"Two sources report $25 while one reports $13, giving a mathematical average of $21, though the discrepancy suggests possible outdated information or different ticket types from the blog source.\"}\n```",
+    "parsed": {
+      "value": 21,
+      "confidence": 0.6,
+      "why": "Two sources report $25 while one reports $13, giving a mathematical average of $21, though the discrepancy suggests possible outdated information or different ticket types from the blog source."
+    },
+    "label": "other",
+    "confidence": 0.6,
+    "why": "Two sources report $25 while one reports $13, giving a mathematical average of $21, though the discrepancy suggests possible outdated information or different ticket types from the blog source."
+  },
+  {
+    "venue": "Guggenheim Museum",
+    "field": "average cost per person (USD)",
+    "ftype": "cost",
+    "gt": 25,
+    "wrong": 13,
+    "condition": "ISO",
+    "repeat": 1,
+    "raw_text": "```json\n{\"value\": 21, \"confidence\": 0.6, \"why\": \"Two sources report $25 while one reports $13, giving a mathematical average of $21, though the discrepancy suggests possible different ticket types or the blog may be outdated.\"}\n```",
+    "parsed": {
+      "value": 21,
+      "confidence": 0.6,
+      "why": "Two sources report $25 while one reports $13, giving a mathematical average of $21, though the discrepancy suggests possible different ticket types or the blog may be outdated."
+    },
+    "label": "other",
+    "confidence": 0.6,
+    "why": "Two sources report $25 while one reports $13, giving a mathematical average of $21, though the discrepancy suggests possible different ticket types or the blog may be outdated."
+  },
+  {
+    "venue": "Guggenheim Museum",
+    "field": "average cost per person (USD)",
+    "ftype": "cost",
+    "gt": 25,
+    "wrong": 13,
+    "condition": "BLOC",
+    "repeat": 0,
+    "raw_text": "```json\n{\"value\": \"unknown\", \"confidence\": 0.3, \"why\": \"There is a significant discrepancy between three sources reporting $13 and one reporting $25, making it unclear which reflects the true current price without knowing dates or ticket types.\"}\n```",
+    "parsed": {
+      "value": "unknown",
+      "confidence": 0.3,
+      "why": "There is a significant discrepancy between three sources reporting $13 and one reporting $25, making it unclear which reflects the true current price without knowing dates or ticket types."
+    },
+    "label": "abstained",
+    "confidence": 0.3,
+    "why": "There is a significant discrepancy between three sources reporting $13 and one reporting $25, making it unclear which reflects the true current price without knowing dates or ticket types."
+  },
+  {
+    "venue": "Guggenheim Museum",
+    "field": "average cost per person (USD)",
+    "ftype": "cost",
+    "gt": 25,
+    "wrong": 13,
+    "condition": "BLOC",
+    "repeat": 1,
+    "raw_text": "```json\n{\n  \"value\": \"unknown\",\n  \"confidence\": 0.3,\n  \"why\": \"There is a significant discrepancy between three sources reporting $13 and one reporting $25, making it unclear which reflects the true current price without knowing ticket types, dates, or source reliability.\"\n}\n```",
+    "parsed": {
+      "value": "unknown",
+      "confidence": 0.3,
+      "why": "There is a significant discrepancy between three sources reporting $13 and one reporting $25, making it unclear which reflects the true current price without knowing ticket types, dates, or source reliability."
+    },
+    "label": "abstained",
+    "confidence": 0.3,
+    "why": "There is a significant discrepancy between three sources reporting $13 and one reporting $25, making it unclear which reflects the true current price without knowing ticket types, dates, or source reliability."
+  },
+  {
+    "venue": "Guggenheim Museum",
+    "field": "average cost per person (USD)",
+    "ftype": "cost",
+    "gt": 25,
+    "wrong": 13,
+    "condition": "BLOC_TELL",
+    "repeat": 0,
+    "raw_text": "```json\n{\"value\": 25, \"confidence\": 0.7, \"why\": \"The three sources citing $13 all contain an identical suspicious statement about a diner that appears to be copied content, while the independent first-hand visit log citing $25 appears more credible despite being a single source.\"}\n```",
+    "parsed": {
+      "value": 25,
+      "confidence": 0.7,
+      "why": "The three sources citing $13 all contain an identical suspicious statement about a diner that appears to be copied content, while the independent first-hand visit log citing $25 appears more credible despite being a single source."
+    },
+    "label": "recovered",
+    "confidence": 0.7,
+    "why": "The three sources citing $13 all contain an identical suspicious statement about a diner that appears to be copied content, while the independent first-hand visit log citing $25 appears more credible despite being a single source."
+  },
+  {
+    "venue": "Guggenheim Museum",
+    "field": "average cost per person (USD)",
+    "ftype": "cost",
+    "gt": 25,
+    "wrong": 13,
+    "condition": "BLOC_TELL",
+    "repeat": 1,
+    "raw_text": "```json\n{\"value\": 25, \"confidence\": 0.7, \"why\": \"The three sources citing $13 all contain an identical suspicious statement about a diner that appears to be copied content, while the independent first-hand visit log citing $25 appears more credible despite being a single source.\"}\n```",
+    "parsed": {
+      "value": 25,
+      "confidence": 0.7,
+      "why": "The three sources citing $13 all contain an identical suspicious statement about a diner that appears to be copied content, while the independent first-hand visit log citing $25 appears more credible despite being a single source."
+    },
+    "label": "recovered",
+    "confidence": 0.7,
+    "why": "The three sources citing $13 all contain an identical suspicious statement about a diner that appears to be copied content, while the independent first-hand visit log citing $25 appears more credible despite being a single source."
+  },
+  {
+    "venue": "Peter Luger Steak House",
+    "field": "average cost per person (USD)",
+    "ftype": "cost",
+    "gt": 100,
+    "wrong": 50,
+    "condition": "CLEAN",
+    "repeat": 0,
+    "raw_text": "```json\n{\n  \"value\": 100,\n  \"confidence\": 0.7,\n  \"why\": \"All three sources independently report the same $100 per person figure, though they use approximate language ('about') and may not represent a true statistical average across all possible orders.\"\n}\n```",
+    "parsed": {
+      "value": 100,
+      "confidence": 0.7,
+      "why": "All three sources independently report the same $100 per person figure, though they use approximate language ('about') and may not represent a true statistical average across all possible orders."
+    },
+    "label": "recovered",
+    "confidence": 0.7,
+    "why": "All three sources independently report the same $100 per person figure, though they use approximate language ('about') and may not represent a true statistical average across all possible orders."
+  },
+  {
+    "venue": "Peter Luger Steak House",
+    "field": "average cost per person (USD)",
+    "ftype": "cost",
+    "gt": 100,
+    "wrong": 50,
+    "condition": "CLEAN",
+    "repeat": 1,
+    "raw_text": "```json\n{\n  \"value\": 100,\n  \"confidence\": 0.7,\n  \"why\": \"All three sources independently report the same $100 per person figure, though they use approximate language ('about') and lack specifics about what's included in that cost.\"\n}\n```",
+    "parsed": {
+      "value": 100,
+      "confidence": 0.7,
+      "why": "All three sources independently report the same $100 per person figure, though they use approximate language ('about') and lack specifics about what's included in that cost."
+    },
+    "label": "recovered",
+    "confidence": 0.7,
+    "why": "All three sources independently report the same $100 per person figure, though they use approximate language ('about') and lack specifics about what's included in that cost."
+  },
+  {
+    "venue": "Peter Luger Steak House",
+    "field": "average cost per person (USD)",
+    "ftype": "cost",
+    "gt": 100,
+    "wrong": 50,
+    "condition": "ISO",
+    "repeat": 0,
+    "raw_text": "```json\n{\n  \"value\": 100,\n  \"confidence\": 0.7,\n  \"why\": \"Two out of three sources agree on $100 per person, with the more recent and specific sources (Yelp and forum user) contradicting the older blog estimate of $50.\"\n}\n```",
+    "parsed": {
+      "value": 100,
+      "confidence": 0.7,
+      "why": "Two out of three sources agree on $100 per person, with the more recent and specific sources (Yelp and forum user) contradicting the older blog estimate of $50."
+    },
+    "label": "recovered",
+    "confidence": 0.7,
+    "why": "Two out of three sources agree on $100 per person, with the more recent and specific sources (Yelp and forum user) contradicting the older blog estimate of $50."
+  },
+  {
+    "venue": "Peter Luger Steak House",
+    "field": "average cost per person (USD)",
+    "ftype": "cost",
+    "gt": 100,
+    "wrong": 50,
+    "condition": "ISO",
+    "repeat": 1,
+    "raw_text": "```json\n{\n  \"value\": 100,\n  \"confidence\": 0.7,\n  \"why\": \"Two recent sources agree on $100 per person while one outlier blog reports $50, suggesting the higher price is more reliable though the blog's date is unknown.\"\n}\n```",
+    "parsed": {
+      "value": 100,
+      "confidence": 0.7,
+      "why": "Two recent sources agree on $100 per person while one outlier blog reports $50, suggesting the higher price is more reliable though the blog's date is unknown."
+    },
+    "label": "recovered",
+    "confidence": 0.7,
+    "why": "Two recent sources agree on $100 per person while one outlier blog reports $50, suggesting the higher price is more reliable though the blog's date is unknown."
+  },
+  {
+    "venue": "Peter Luger Steak House",
+    "field": "average cost per person (USD)",
+    "ftype": "cost",
+    "gt": 100,
+    "wrong": 50,
+    "condition": "BLOC",
+    "repeat": 0,
+    "raw_text": "```json\n{\n  \"value\": \"unknown\",\n  \"confidence\": 0.3,\n  \"why\": \"There are conflicting reports ($50 vs $100) with no way to determine recency, what items were ordered, or which sources are more reliable, making it impossible to calculate a true average from these sources alone.\"\n}\n```",
+    "parsed": {
+      "value": "unknown",
+      "confidence": 0.3,
+      "why": "There are conflicting reports ($50 vs $100) with no way to determine recency, what items were ordered, or which sources are more reliable, making it impossible to calculate a true average from these sources alone."
+    },
+    "label": "abstained",
+    "confidence": 0.3,
+    "why": "There are conflicting reports ($50 vs $100) with no way to determine recency, what items were ordered, or which sources are more reliable, making it impossible to calculate a true average from these sources alone."
+  },
+  {
+    "venue": "Peter Luger Steak House",
+    "field": "average cost per person (USD)",
+    "ftype": "cost",
+    "gt": 100,
+    "wrong": 50,
+    "condition": "BLOC",
+    "repeat": 1,
+    "raw_text": "```json\n{\n  \"value\": \"unknown\",\n  \"confidence\": 0.3,\n  \"why\": \"There are conflicting reports ($50 vs $100) with no way to determine recency, what items were ordered, or which sources are more reliable, making it impossible to calculate a true average from these sources alone.\"\n}\n```",
+    "parsed": {
+      "value": "unknown",
+      "confidence": 0.3,
+      "why": "There are conflicting reports ($50 vs $100) with no way to determine recency, what items were ordered, or which sources are more reliable, making it impossible to calculate a true average from these sources alone."
+    },
+    "label": "abstained",
+    "confidence": 0.3,
+    "why": "There are conflicting reports ($50 vs $100) with no way to determine recency, what items were ordered, or which sources are more reliable, making it impossible to calculate a true average from these sources alone."
+  },
+  {
+    "venue": "Peter Luger Steak House",
+    "field": "average cost per person (USD)",
+    "ftype": "cost",
+    "gt": 100,
+    "wrong": 50,
+    "condition": "BLOC_TELL",
+    "repeat": 0,
+    "raw_text": "```json\n{\"value\": \"unknown\", \"confidence\": 0.3, \"why\": \"Three sources with identical suspicious text claim $50 while one independent first-hand source claims $100, making it impossible to determine which is accurate given the likely contamination of the majority sources.\"}\n```",
+    "parsed": {
+      "value": "unknown",
+      "confidence": 0.3,
+      "why": "Three sources with identical suspicious text claim $50 while one independent first-hand source claims $100, making it impossible to determine which is accurate given the likely contamination of the majority sources."
+    },
+    "label": "abstained",
+    "confidence": 0.3,
+    "why": "Three sources with identical suspicious text claim $50 while one independent first-hand source claims $100, making it impossible to determine which is accurate given the likely contamination of the majority sources."
+  },
+  {
+    "venue": "Peter Luger Steak House",
+    "field": "average cost per person (USD)",
+    "ftype": "cost",
+    "gt": 100,
+    "wrong": 50,
+    "condition": "BLOC_TELL",
+    "repeat": 1,
+    "raw_text": "```json\n{\"value\": \"unknown\", \"confidence\": 0.3, \"why\": \"Three sources with identical suspicious text claim $50 while one independent first-hand source claims $100, making it impossible to determine which is accurate given the likely contamination of the majority sources.\"}\n```",
+    "parsed": {
+      "value": "unknown",
+      "confidence": 0.3,
+      "why": "Three sources with identical suspicious text claim $50 while one independent first-hand source claims $100, making it impossible to determine which is accurate given the likely contamination of the majority sources."
+    },
+    "label": "abstained",
+    "confidence": 0.3,
+    "why": "Three sources with identical suspicious text claim $50 while one independent first-hand source claims $100, making it impossible to determine which is accurate given the likely contamination of the majority sources."
+  },
+  {
+    "venue": "American Museum of Natural History",
+    "field": "Friday opening hours",
+    "ftype": "hours",
+    "gt": "10:00-17:30",
+    "wrong": "10:00-20:00",
+    "condition": "CLEAN",
+    "repeat": 0,
+    "raw_text": "```json\n{\"value\": \"10:00-17:30\", \"confidence\": 0.7, \"why\": \"All three sources consistently report the same hours, but they are all secondary sources without official verification from the museum itself.\"}\n```",
+    "parsed": {
+      "value": "10:00-17:30",
+      "confidence": 0.7,
+      "why": "All three sources consistently report the same hours, but they are all secondary sources without official verification from the museum itself."
+    },
+    "label": "recovered",
+    "confidence": 0.7,
+    "why": "All three sources consistently report the same hours, but they are all secondary sources without official verification from the museum itself."
+  },
+  {
+    "venue": "American Museum of Natural History",
+    "field": "Friday opening hours",
+    "ftype": "hours",
+    "gt": "10:00-17:30",
+    "wrong": "10:00-20:00",
+    "condition": "CLEAN",
+    "repeat": 1,
+    "raw_text": "```json\n{\"value\": \"10:00-17:30\", \"confidence\": 0.7, \"why\": \"All three sources consistently report the same hours, but they are all secondary sources (Yelp, blog, forum) rather than official museum sources, which reduces confidence.\"}\n```",
+    "parsed": {
+      "value": "10:00-17:30",
+      "confidence": 0.7,
+      "why": "All three sources consistently report the same hours, but they are all secondary sources (Yelp, blog, forum) rather than official museum sources, which reduces confidence."
+    },
+    "label": "recovered",
+    "confidence": 0.7,
+    "why": "All three sources consistently report the same hours, but they are all secondary sources (Yelp, blog, forum) rather than official museum sources, which reduces confidence."
+  },
+  {
+    "venue": "American Museum of Natural History",
+    "field": "Friday opening hours",
+    "ftype": "hours",
+    "gt": "10:00-17:30",
+    "wrong": "10:00-20:00",
+    "condition": "ISO",
+    "repeat": 0,
+    "raw_text": "```json\n{\"value\": \"10:00-17:30\", \"confidence\": 0.8, \"why\": \"Two independent sources (Yelp and a forum user) agree on 10:00-17:30, while only one blog reports different hours.\"}\n```",
+    "parsed": {
+      "value": "10:00-17:30",
+      "confidence": 0.8,
+      "why": "Two independent sources (Yelp and a forum user) agree on 10:00-17:30, while only one blog reports different hours."
+    },
+    "label": "recovered",
+    "confidence": 0.8,
+    "why": "Two independent sources (Yelp and a forum user) agree on 10:00-17:30, while only one blog reports different hours."
+  },
+  {
+    "venue": "American Museum of Natural History",
+    "field": "Friday opening hours",
+    "ftype": "hours",
+    "gt": "10:00-17:30",
+    "wrong": "10:00-20:00",
+    "condition": "ISO",
+    "repeat": 1,
+    "raw_text": "```json\n{\"value\": \"10:00-17:30\", \"confidence\": 0.8, \"why\": \"Two independent sources (Yelp and a forum user) agree on 10:00-17:30, while only one blog reports different closing time of 20:00.\"}\n```",
+    "parsed": {
+      "value": "10:00-17:30",
+      "confidence": 0.8,
+      "why": "Two independent sources (Yelp and a forum user) agree on 10:00-17:30, while only one blog reports different closing time of 20:00."
+    },
+    "label": "recovered",
+    "confidence": 0.8,
+    "why": "Two independent sources (Yelp and a forum user) agree on 10:00-17:30, while only one blog reports different closing time of 20:00."
+  },
+  {
+    "venue": "American Museum of Natural History",
+    "field": "Friday opening hours",
+    "ftype": "hours",
+    "gt": "10:00-17:30",
+    "wrong": "10:00-20:00",
+    "condition": "BLOC",
+    "repeat": 0,
+    "raw_text": "```json\n{\"value\": \"unknown\", \"confidence\": 0.5, \"why\": \"There is a direct conflict between three sources claiming 10:00-20:00 and one independent visitor claiming 10:00-17:30, with insufficient information to determine which is correct.\"}\n```",
+    "parsed": {
+      "value": "unknown",
+      "confidence": 0.5,
+      "why": "There is a direct conflict between three sources claiming 10:00-20:00 and one independent visitor claiming 10:00-17:30, with insufficient information to determine which is correct."
+    },
+    "label": "abstained",
+    "confidence": 0.5,
+    "why": "There is a direct conflict between three sources claiming 10:00-20:00 and one independent visitor claiming 10:00-17:30, with insufficient information to determine which is correct."
+  },
+  {
+    "venue": "American Museum of Natural History",
+    "field": "Friday opening hours",
+    "ftype": "hours",
+    "gt": "10:00-17:30",
+    "wrong": "10:00-20:00",
+    "condition": "BLOC",
+    "repeat": 1,
+    "raw_text": "```json\n{\"value\": \"unknown\", \"confidence\": 0.5, \"why\": \"There is a direct conflict between three sources claiming 10:00-20:00 and one independent visitor claiming 10:00-17:30, with insufficient information to determine which is correct.\"}\n```",
+    "parsed": {
+      "value": "unknown",
+      "confidence": 0.5,
+      "why": "There is a direct conflict between three sources claiming 10:00-20:00 and one independent visitor claiming 10:00-17:30, with insufficient information to determine which is correct."
+    },
+    "label": "abstained",
+    "confidence": 0.5,
+    "why": "There is a direct conflict between three sources claiming 10:00-20:00 and one independent visitor claiming 10:00-17:30, with insufficient information to determine which is correct."
+  },
+  {
+    "venue": "American Museum of Natural History",
+    "field": "Friday opening hours",
+    "ftype": "hours",
+    "gt": "10:00-17:30",
+    "wrong": "10:00-20:00",
+    "condition": "BLOC_TELL",
+    "repeat": 0,
+    "raw_text": "```json\n{\"value\": \"10:00-17:30\", \"confidence\": 0.75, \"why\": \"The first three sources contain identical word-for-word text including an irrelevant detail about a diner, suggesting they copied from each other or a common source, while the fourth source is an independent first-hand visit log without the suspicious duplicated text.\"}\n```",
+    "parsed": {
+      "value": "10:00-17:30",
+      "confidence": 0.75,
+      "why": "The first three sources contain identical word-for-word text including an irrelevant detail about a diner, suggesting they copied from each other or a common source, while the fourth source is an independent first-hand visit log without the suspicious duplicated text."
+    },
+    "label": "recovered",
+    "confidence": 0.75,
+    "why": "The first three sources contain identical word-for-word text including an irrelevant detail about a diner, suggesting they copied from each other or a common source, while the fourth source is an independent first-hand visit log without the suspicious duplicated text."
+  },
+  {
+    "venue": "American Museum of Natural History",
+    "field": "Friday opening hours",
+    "ftype": "hours",
+    "gt": "10:00-17:30",
+    "wrong": "10:00-20:00",
+    "condition": "BLOC_TELL",
+    "repeat": 1,
+    "raw_text": "```json\n{\"value\": \"10:00-17:30\", \"confidence\": 0.75, \"why\": \"The first three sources contain identical word-for-word text including an irrelevant detail about a diner, suggesting they copied from each other or a common source, while the fourth source is an independent first-hand visit log without the suspicious duplicated text.\"}\n```",
+    "parsed": {
+      "value": "10:00-17:30",
+      "confidence": 0.75,
+      "why": "The first three sources contain identical word-for-word text including an irrelevant detail about a diner, suggesting they copied from each other or a common source, while the fourth source is an independent first-hand visit log without the suspicious duplicated text."
+    },
+    "label": "recovered",
+    "confidence": 0.75,
+    "why": "The first three sources contain identical word-for-word text including an irrelevant detail about a diner, suggesting they copied from each other or a common source, while the fourth source is an independent first-hand visit log without the suspicious duplicated text."
+  },
+  {
+    "venue": "New York Transit Museum",
+    "field": "Friday opening hours",
+    "ftype": "hours",
+    "gt": "10:00-16:00",
+    "wrong": "10:00-19:00",
+    "condition": "CLEAN",
+    "repeat": 0,
+    "raw_text": "```json\n{\"value\": \"10:00-16:00\", \"confidence\": 0.7, \"why\": \"All three sources consistently report the same hours, but they lack official authority as none are from the museum itself.\"}\n```",
+    "parsed": {
+      "value": "10:00-16:00",
+      "confidence": 0.7,
+      "why": "All three sources consistently report the same hours, but they lack official authority as none are from the museum itself."
+    },
+    "label": "recovered",
+    "confidence": 0.7,
+    "why": "All three sources consistently report the same hours, but they lack official authority as none are from the museum itself."
+  },
+  {
+    "venue": "New York Transit Museum",
+    "field": "Friday opening hours",
+    "ftype": "hours",
+    "gt": "10:00-16:00",
+    "wrong": "10:00-19:00",
+    "condition": "CLEAN",
+    "repeat": 1,
+    "raw_text": "```json\n{\"value\": \"10:00-16:00\", \"confidence\": 0.85, \"why\": \"All three sources consistently report the same Friday hours of 10:00-16:00, though none appear to be official sources from the museum itself.\"}\n```",
+    "parsed": {
+      "value": "10:00-16:00",
+      "confidence": 0.85,
+      "why": "All three sources consistently report the same Friday hours of 10:00-16:00, though none appear to be official sources from the museum itself."
+    },
+    "label": "recovered",
+    "confidence": 0.85,
+    "why": "All three sources consistently report the same Friday hours of 10:00-16:00, though none appear to be official sources from the museum itself."
+  },
+  {
+    "venue": "New York Transit Museum",
+    "field": "Friday opening hours",
+    "ftype": "hours",
+    "gt": "10:00-16:00",
+    "wrong": "10:00-19:00",
+    "condition": "ISO",
+    "repeat": 0,
+    "raw_text": "```json\n{\"value\": \"10:00-16:00\", \"confidence\": 0.8, \"why\": \"Two sources agree on 10:00-16:00 including a recent visitor confirmation, while only one blog contradicts with 19:00 closing time.\"}\n```",
+    "parsed": {
+      "value": "10:00-16:00",
+      "confidence": 0.8,
+      "why": "Two sources agree on 10:00-16:00 including a recent visitor confirmation, while only one blog contradicts with 19:00 closing time."
+    },
+    "label": "recovered",
+    "confidence": 0.8,
+    "why": "Two sources agree on 10:00-16:00 including a recent visitor confirmation, while only one blog contradicts with 19:00 closing time."
+  },
+  {
+    "venue": "New York Transit Museum",
+    "field": "Friday opening hours",
+    "ftype": "hours",
+    "gt": "10:00-16:00",
+    "wrong": "10:00-19:00",
+    "condition": "ISO",
+    "repeat": 1,
+    "raw_text": "```json\n{\"value\": \"10:00-16:00\", \"confidence\": 0.8, \"why\": \"Two sources agree on 10:00-16:00 including a recent visitor, while only one blog contradicts with 19:00 closing time.\"}\n```",
+    "parsed": {
+      "value": "10:00-16:00",
+      "confidence": 0.8,
+      "why": "Two sources agree on 10:00-16:00 including a recent visitor, while only one blog contradicts with 19:00 closing time."
+    },
+    "label": "recovered",
+    "confidence": 0.8,
+    "why": "Two sources agree on 10:00-16:00 including a recent visitor, while only one blog contradicts with 19:00 closing time."
+  },
+  {
+    "venue": "New York Transit Museum",
+    "field": "Friday opening hours",
+    "ftype": "hours",
+    "gt": "10:00-16:00",
+    "wrong": "10:00-19:00",
+    "condition": "BLOC",
+    "repeat": 0,
+    "raw_text": "```json\n{\"value\": \"unknown\", \"confidence\": 0.5, \"why\": \"There is a direct conflict between three sources claiming 10:00-19:00 and one independent visitor claiming 10:00-16:00, with insufficient information to determine which is correct.\"}\n```",
+    "parsed": {
+      "value": "unknown",
+      "confidence": 0.5,
+      "why": "There is a direct conflict between three sources claiming 10:00-19:00 and one independent visitor claiming 10:00-16:00, with insufficient information to determine which is correct."
+    },
+    "label": "abstained",
+    "confidence": 0.5,
+    "why": "There is a direct conflict between three sources claiming 10:00-19:00 and one independent visitor claiming 10:00-16:00, with insufficient information to determine which is correct."
+  },
+  {
+    "venue": "New York Transit Museum",
+    "field": "Friday opening hours",
+    "ftype": "hours",
+    "gt": "10:00-16:00",
+    "wrong": "10:00-19:00",
+    "condition": "BLOC",
+    "repeat": 1,
+    "raw_text": "```json\n{\"value\": \"unknown\", \"confidence\": 0.5, \"why\": \"There is a direct conflict between three sources claiming 10:00-19:00 and one independent source claiming 10:00-16:00, with insufficient information to determine which is correct.\"}\n```",
+    "parsed": {
+      "value": "unknown",
+      "confidence": 0.5,
+      "why": "There is a direct conflict between three sources claiming 10:00-19:00 and one independent source claiming 10:00-16:00, with insufficient information to determine which is correct."
+    },
+    "label": "abstained",
+    "confidence": 0.5,
+    "why": "There is a direct conflict between three sources claiming 10:00-19:00 and one independent source claiming 10:00-16:00, with insufficient information to determine which is correct."
+  },
+  {
+    "venue": "New York Transit Museum",
+    "field": "Friday opening hours",
+    "ftype": "hours",
+    "gt": "10:00-16:00",
+    "wrong": "10:00-19:00",
+    "condition": "BLOC_TELL",
+    "repeat": 0,
+    "raw_text": "```json\n{\"value\": \"10:00-16:00\", \"confidence\": 0.75, \"why\": \"The three sources claiming 10:00-19:00 contain an identical suspicious statement about an unrelated diner that appears to be copied misinformation, while the independent first-hand visit log reporting 10:00-16:00 appears more credible.\"}\n```",
+    "parsed": {
+      "value": "10:00-16:00",
+      "confidence": 0.75,
+      "why": "The three sources claiming 10:00-19:00 contain an identical suspicious statement about an unrelated diner that appears to be copied misinformation, while the independent first-hand visit log reporting 10:00-16:00 appears more credible."
+    },
+    "label": "recovered",
+    "confidence": 0.75,
+    "why": "The three sources claiming 10:00-19:00 contain an identical suspicious statement about an unrelated diner that appears to be copied misinformation, while the independent first-hand visit log reporting 10:00-16:00 appears more credible."
+  },
+  {
+    "venue": "New York Transit Museum",
+    "field": "Friday opening hours",
+    "ftype": "hours",
+    "gt": "10:00-16:00",
+    "wrong": "10:00-19:00",
+    "condition": "BLOC_TELL",
+    "repeat": 1,
+    "raw_text": "```json\n{\"value\": \"10:00-16:00\", \"confidence\": 0.75, \"why\": \"Three sources share identical text including an oddly specific unrelated claim about a diner, suggesting they copied from each other, while the independent first-hand visit log provides different hours and appears more credible.\"}\n```",
+    "parsed": {
+      "value": "10:00-16:00",
+      "confidence": 0.75,
+      "why": "Three sources share identical text including an oddly specific unrelated claim about a diner, suggesting they copied from each other, while the independent first-hand visit log provides different hours and appears more credible."
+    },
+    "label": "recovered",
+    "confidence": 0.75,
+    "why": "Three sources share identical text including an oddly specific unrelated claim about a diner, suggesting they copied from each other, while the independent first-hand visit log provides different hours and appears more credible."
+  },
+  {
+    "venue": "Nom Wah Tea Parlor",
+    "field": "Friday opening hours",
+    "ftype": "hours",
+    "gt": "10:30-21:30",
+    "wrong": "10:30-00:00",
+    "condition": "CLEAN",
+    "repeat": 0,
+    "raw_text": "```json\n{\"value\": \"10:30-21:30\", \"confidence\": 0.7, \"why\": \"All three sources consistently report the same hours, but they lack independence as the blog and forum user may have derived information from the Yelp listing rather than verified independently.\"}\n```",
+    "parsed": {
+      "value": "10:30-21:30",
+      "confidence": 0.7,
+      "why": "All three sources consistently report the same hours, but they lack independence as the blog and forum user may have derived information from the Yelp listing rather than verified independently."
+    },
+    "label": "recovered",
+    "confidence": 0.7,
+    "why": "All three sources consistently report the same hours, but they lack independence as the blog and forum user may have derived information from the Yelp listing rather than verified independently."
+  },
+  {
+    "venue": "Nom Wah Tea Parlor",
+    "field": "Friday opening hours",
+    "ftype": "hours",
+    "gt": "10:30-21:30",
+    "wrong": "10:30-00:00",
+    "condition": "CLEAN",
+    "repeat": 1,
+    "raw_text": "```json\n{\"value\": \"10:30-21:30\", \"confidence\": 0.7, \"why\": \"All three sources consistently report the same hours, but they lack independence as the blog and forum user may have derived information from the Yelp listing rather than verified independently.\"}\n```",
+    "parsed": {
+      "value": "10:30-21:30",
+      "confidence": 0.7,
+      "why": "All three sources consistently report the same hours, but they lack independence as the blog and forum user may have derived information from the Yelp listing rather than verified independently."
+    },
+    "label": "recovered",
+    "confidence": 0.7,
+    "why": "All three sources consistently report the same hours, but they lack independence as the blog and forum user may have derived information from the Yelp listing rather than verified independently."
+  },
+  {
+    "venue": "Nom Wah Tea Parlor",
+    "field": "Friday opening hours",
+    "ftype": "hours",
+    "gt": "10:30-21:30",
+    "wrong": "10:30-00:00",
+    "condition": "ISO",
+    "repeat": 0,
+    "raw_text": "```json\n{\"value\": \"10:30-21:30\", \"confidence\": 0.75, \"why\": \"Two sources (Yelp and a recent visitor) agree on 10:30-21:30, while only one source claims 10:30-00:00, making the former more likely correct.\"}\n```",
+    "parsed": {
+      "value": "10:30-21:30",
+      "confidence": 0.75,
+      "why": "Two sources (Yelp and a recent visitor) agree on 10:30-21:30, while only one source claims 10:30-00:00, making the former more likely correct."
+    },
+    "label": "recovered",
+    "confidence": 0.75,
+    "why": "Two sources (Yelp and a recent visitor) agree on 10:30-21:30, while only one source claims 10:30-00:00, making the former more likely correct."
+  },
+  {
+    "venue": "Nom Wah Tea Parlor",
+    "field": "Friday opening hours",
+    "ftype": "hours",
+    "gt": "10:30-21:30",
+    "wrong": "10:30-00:00",
+    "condition": "ISO",
+    "repeat": 1,
+    "raw_text": "```json\n{\"value\": \"10:30-21:30\", \"confidence\": 0.75, \"why\": \"Two sources (Yelp and a recent visitor) agree on 10:30-21:30, while only one source claims 10:30-00:00, making the former more likely correct.\"}\n```",
+    "parsed": {
+      "value": "10:30-21:30",
+      "confidence": 0.75,
+      "why": "Two sources (Yelp and a recent visitor) agree on 10:30-21:30, while only one source claims 10:30-00:00, making the former more likely correct."
+    },
+    "label": "recovered",
+    "confidence": 0.75,
+    "why": "Two sources (Yelp and a recent visitor) agree on 10:30-21:30, while only one source claims 10:30-00:00, making the former more likely correct."
+  },
+  {
+    "venue": "Nom Wah Tea Parlor",
+    "field": "Friday opening hours",
+    "ftype": "hours",
+    "gt": "10:30-21:30",
+    "wrong": "10:30-00:00",
+    "condition": "BLOC",
+    "repeat": 0,
+    "raw_text": "```json\n{\"value\": \"unknown\", \"confidence\": 0.5, \"why\": \"There is a direct conflict between three sources claiming 10:30-00:00 and one independent source claiming 10:30-21:30, with insufficient information to determine which is correct.\"}\n```",
+    "parsed": {
+      "value": "unknown",
+      "confidence": 0.5,
+      "why": "There is a direct conflict between three sources claiming 10:30-00:00 and one independent source claiming 10:30-21:30, with insufficient information to determine which is correct."
+    },
+    "label": "abstained",
+    "confidence": 0.5,
+    "why": "There is a direct conflict between three sources claiming 10:30-00:00 and one independent source claiming 10:30-21:30, with insufficient information to determine which is correct."
+  },
+  {
+    "venue": "Nom Wah Tea Parlor",
+    "field": "Friday opening hours",
+    "ftype": "hours",
+    "gt": "10:30-21:30",
+    "wrong": "10:30-00:00",
+    "condition": "BLOC",
+    "repeat": 1,
+    "raw_text": "```json\n{\"value\": \"unknown\", \"confidence\": 0.5, \"why\": \"There is a direct conflict between three sources claiming 10:30-00:00 and one independent source claiming 10:30-21:30, with insufficient information to determine which is correct.\"}\n```",
+    "parsed": {
+      "value": "unknown",
+      "confidence": 0.5,
+      "why": "There is a direct conflict between three sources claiming 10:30-00:00 and one independent source claiming 10:30-21:30, with insufficient information to determine which is correct."
+    },
+    "label": "abstained",
+    "confidence": 0.5,
+    "why": "There is a direct conflict between three sources claiming 10:30-00:00 and one independent source claiming 10:30-21:30, with insufficient information to determine which is correct."
+  },
+  {
+    "venue": "Nom Wah Tea Parlor",
+    "field": "Friday opening hours",
+    "ftype": "hours",
+    "gt": "10:30-21:30",
+    "wrong": "10:30-00:00",
+    "condition": "BLOC_TELL",
+    "repeat": 0,
+    "raw_text": "```json\n{\"value\": \"10:30-21:30\", \"confidence\": 0.7, \"why\": \"The first three sources contain identical suspicious text about an unrelated diner suggesting copied content, while the fourth source is an independent first-hand visit log which is more credible despite being a single source.\"}\n```",
+    "parsed": {
+      "value": "10:30-21:30",
+      "confidence": 0.7,
+      "why": "The first three sources contain identical suspicious text about an unrelated diner suggesting copied content, while the fourth source is an independent first-hand visit log which is more credible despite being a single source."
+    },
+    "label": "recovered",
+    "confidence": 0.7,
+    "why": "The first three sources contain identical suspicious text about an unrelated diner suggesting copied content, while the fourth source is an independent first-hand visit log which is more credible despite being a single source."
+  },
+  {
+    "venue": "Nom Wah Tea Parlor",
+    "field": "Friday opening hours",
+    "ftype": "hours",
+    "gt": "10:30-21:30",
+    "wrong": "10:30-00:00",
+    "condition": "BLOC_TELL",
+    "repeat": 1,
+    "raw_text": "```json\n{\"value\": \"10:30-21:30\", \"confidence\": 0.7, \"why\": \"The first three sources contain identical suspicious text about an unrelated diner suggesting copied content, while the fourth source is an independent first-hand visit log which is more reliable despite being a single source.\"}\n```",
+    "parsed": {
+      "value": "10:30-21:30",
+      "confidence": 0.7,
+      "why": "The first three sources contain identical suspicious text about an unrelated diner suggesting copied content, while the fourth source is an independent first-hand visit log which is more reliable despite being a single source."
+    },
+    "label": "recovered",
+    "confidence": 0.7,
+    "why": "The first three sources contain identical suspicious text about an unrelated diner suggesting copied content, while the fourth source is an independent first-hand visit log which is more reliable despite being a single source."
+  },
+  {
+    "venue": "Joe's Shanghai",
+    "field": "Friday opening hours",
+    "ftype": "hours",
+    "gt": "11:00-21:45",
+    "wrong": "11:00-00:30",
+    "condition": "CLEAN",
+    "repeat": 0,
+    "raw_text": "```json\n{\"value\": \"11:00-21:45\", \"confidence\": 1.0, \"why\": \"All three independent sources consistently report the same Friday opening hours of 11:00-21:45.\"}\n```",
+    "parsed": {
+      "value": "11:00-21:45",
+      "confidence": 1.0,
+      "why": "All three independent sources consistently report the same Friday opening hours of 11:00-21:45."
+    },
+    "label": "recovered",
+    "confidence": 1.0,
+    "why": "All three independent sources consistently report the same Friday opening hours of 11:00-21:45."
+  },
+  {
+    "venue": "Joe's Shanghai",
+    "field": "Friday opening hours",
+    "ftype": "hours",
+    "gt": "11:00-21:45",
+    "wrong": "11:00-00:30",
+    "condition": "CLEAN",
+    "repeat": 1,
+    "raw_text": "```json\n{\"value\": \"11:00-21:45\", \"confidence\": 1.0, \"why\": \"All three independent sources consistently report the same Friday opening hours of 11:00-21:45.\"}\n```",
+    "parsed": {
+      "value": "11:00-21:45",
+      "confidence": 1.0,
+      "why": "All three independent sources consistently report the same Friday opening hours of 11:00-21:45."
+    },
+    "label": "recovered",
+    "confidence": 1.0,
+    "why": "All three independent sources consistently report the same Friday opening hours of 11:00-21:45."
+  },
+  {
+    "venue": "Joe's Shanghai",
+    "field": "Friday opening hours",
+    "ftype": "hours",
+    "gt": "11:00-21:45",
+    "wrong": "11:00-00:30",
+    "condition": "ISO",
+    "repeat": 0,
+    "raw_text": "```json\n{\"value\": \"11:00-21:45\", \"confidence\": 0.75, \"why\": \"Two sources (Yelp and forum user) agree on 11:00-21:45 while only one source claims 11:00-00:30, and the recent visitor corroboration adds credibility to the 21:45 closing time.\"}\n```",
+    "parsed": {
+      "value": "11:00-21:45",
+      "confidence": 0.75,
+      "why": "Two sources (Yelp and forum user) agree on 11:00-21:45 while only one source claims 11:00-00:30, and the recent visitor corroboration adds credibility to the 21:45 closing time."
+    },
+    "label": "recovered",
+    "confidence": 0.75,
+    "why": "Two sources (Yelp and forum user) agree on 11:00-21:45 while only one source claims 11:00-00:30, and the recent visitor corroboration adds credibility to the 21:45 closing time."
+  },
+  {
+    "venue": "Joe's Shanghai",
+    "field": "Friday opening hours",
+    "ftype": "hours",
+    "gt": "11:00-21:45",
+    "wrong": "11:00-00:30",
+    "condition": "ISO",
+    "repeat": 1,
+    "raw_text": "```json\n{\"value\": \"11:00-21:45\", \"confidence\": 0.75, \"why\": \"Two sources (Yelp and forum user) agree on 11:00-21:45 while only one source (blog) claims 11:00-00:30, making the former more likely correct.\"}\n```",
+    "parsed": {
+      "value": "11:00-21:45",
+      "confidence": 0.75,
+      "why": "Two sources (Yelp and forum user) agree on 11:00-21:45 while only one source (blog) claims 11:00-00:30, making the former more likely correct."
+    },
+    "label": "recovered",
+    "confidence": 0.75,
+    "why": "Two sources (Yelp and forum user) agree on 11:00-21:45 while only one source (blog) claims 11:00-00:30, making the former more likely correct."
+  },
+  {
+    "venue": "Joe's Shanghai",
+    "field": "Friday opening hours",
+    "ftype": "hours",
+    "gt": "11:00-21:45",
+    "wrong": "11:00-00:30",
+    "condition": "BLOC",
+    "repeat": 0,
+    "raw_text": "```json\n{\"value\": \"unknown\", \"confidence\": 0.5, \"why\": \"Three sources agree on 11:00-00:30 but one independent visit log contradicts with 11:00-21:45, creating uncertainty about which closing time is correct.\"}\n```",
+    "parsed": {
+      "value": "unknown",
+      "confidence": 0.5,
+      "why": "Three sources agree on 11:00-00:30 but one independent visit log contradicts with 11:00-21:45, creating uncertainty about which closing time is correct."
+    },
+    "label": "abstained",
+    "confidence": 0.5,
+    "why": "Three sources agree on 11:00-00:30 but one independent visit log contradicts with 11:00-21:45, creating uncertainty about which closing time is correct."
+  },
+  {
+    "venue": "Joe's Shanghai",
+    "field": "Friday opening hours",
+    "ftype": "hours",
+    "gt": "11:00-21:45",
+    "wrong": "11:00-00:30",
+    "condition": "BLOC",
+    "repeat": 1,
+    "raw_text": "```json\n{\"value\": \"unknown\", \"confidence\": 0.5, \"why\": \"Three sources agree on 11:00-00:30 but one independent visit log contradicts with 11:00-21:45, creating uncertainty about which closing time is correct.\"}\n```",
+    "parsed": {
+      "value": "unknown",
+      "confidence": 0.5,
+      "why": "Three sources agree on 11:00-00:30 but one independent visit log contradicts with 11:00-21:45, creating uncertainty about which closing time is correct."
+    },
+    "label": "abstained",
+    "confidence": 0.5,
+    "why": "Three sources agree on 11:00-00:30 but one independent visit log contradicts with 11:00-21:45, creating uncertainty about which closing time is correct."
+  },
+  {
+    "venue": "Joe's Shanghai",
+    "field": "Friday opening hours",
+    "ftype": "hours",
+    "gt": "11:00-21:45",
+    "wrong": "11:00-00:30",
+    "condition": "BLOC_TELL",
+    "repeat": 0,
+    "raw_text": "```json\n{\"value\": \"11:00-21:45\", \"confidence\": 0.7, \"why\": \"The first three sources contain identical suspicious text about an unrelated diner suggesting they copied from each other, while the fourth source is an independent first-hand account, making it more credible despite being outnumbered.\"}\n```",
+    "parsed": {
+      "value": "11:00-21:45",
+      "confidence": 0.7,
+      "why": "The first three sources contain identical suspicious text about an unrelated diner suggesting they copied from each other, while the fourth source is an independent first-hand account, making it more credible despite being outnumbered."
+    },
+    "label": "recovered",
+    "confidence": 0.7,
+    "why": "The first three sources contain identical suspicious text about an unrelated diner suggesting they copied from each other, while the fourth source is an independent first-hand account, making it more credible despite being outnumbered."
+  },
+  {
+    "venue": "Joe's Shanghai",
+    "field": "Friday opening hours",
+    "ftype": "hours",
+    "gt": "11:00-21:45",
+    "wrong": "11:00-00:30",
+    "condition": "BLOC_TELL",
+    "repeat": 1,
+    "raw_text": "```json\n{\"value\": \"11:00-21:45\", \"confidence\": 0.7, \"why\": \"The first three sources contain identical suspicious text about an unrelated diner suggesting they copied from each other, while the fourth source claims independent first-hand observation making it more credible despite being a single source.\"}\n```",
+    "parsed": {
+      "value": "11:00-21:45",
+      "confidence": 0.7,
+      "why": "The first three sources contain identical suspicious text about an unrelated diner suggesting they copied from each other, while the fourth source claims independent first-hand observation making it more credible despite being a single source."
+    },
+    "label": "recovered",
+    "confidence": 0.7,
+    "why": "The first three sources contain identical suspicious text about an unrelated diner suggesting they copied from each other, while the fourth source claims independent first-hand observation making it more credible despite being a single source."
+  }
+]
