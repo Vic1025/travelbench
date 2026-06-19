@@ -316,6 +316,20 @@ significant difficulty increase on trapped-constraint tasks, careful-path
 reachable.** Touches `run_benchmark.py`, a runner (cf.
 `scripts/_run_pilot_clean_vs_faulty.sh`), `results/scores.db`.
 
+**Result (2026-06 wedge pilot — `results/ablation_wedge/wedge_report.md`):** First
+measurement of the load-bearing wedge on the `test_lb` corpus (130 hours flaws),
+`faulty` vs `clean_equalvol` (same corpus, volume held constant, only the served
+hours lie differs). **claude-sonnet-4-5 over 6 tasks: mean ΔF (faulty − clean) =
+−0.17** — feasibility is measurably *harder* under the lie (4/6 tasks clearly
+negative: type4 −0.60, type1 −0.35, type6 −0.34, type3 −0.32; F-violation counts
+drop on healing, e.g. type6 14→9, type4 6→2). **mean ΔP = +0.07 (flat)** — exactly
+as designed, since hours bind F, not P. This is the difficulty the *old* corruption
+failed to produce (§1). Caveats: small n (6 tasks, one usable model); 2/6 tasks
+reversed (residual venue-selection drift on the identical corpus); deepseek-chat too
+tool-brittle to score (most plans unparsed). **Directionally confirms the wedge**; a
+fuller run (more tasks/models, + b2 authority suppression, + b3/b4 NL structures) is
+needed for statistical significance.
+
 ---
 
 ## 9. Workstream (d) — certifier validation experiment (FREE, on existing data)
