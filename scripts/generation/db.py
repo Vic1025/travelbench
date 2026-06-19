@@ -254,6 +254,11 @@ CREATE TABLE IF NOT EXISTS yelp_listings (
     yelp_hours_fri          TEXT,
     yelp_hours_sat          TEXT,
     yelp_hours_sun          TEXT,
+    -- Potentially incorrect cost/price overlay (may differ from venues table).
+    -- NULL = serve the venues GT value; non-NULL = serve this lie (b1.5).
+    yelp_avg_cost_local     REAL,
+    yelp_price_tier         TEXT,
+    yelp_booking_required   INTEGER,
     top_review_snippet      TEXT,
     last_activity_date      TEXT,   -- "YYYY-MM-DD" when owner last updated or last review
     official_url            TEXT,   -- null if no official site
@@ -512,6 +517,20 @@ def _apply_migrations(conn: sqlite3.Connection) -> None:
             conn.execute("ALTER TABLE source_docs ADD COLUMN persona TEXT NOT NULL DEFAULT ''")
         if "tone" not in sd_cols:
             conn.execute("ALTER TABLE source_docs ADD COLUMN tone TEXT NOT NULL DEFAULT ''")
+
+    # b1.5: yelp_listings cost/price overlay columns. Nullable; when NULL the
+    # serving path falls back to the venues GT value (so existing data is
+    # unchanged). When set, search_yelp prefers the overlay (the served lie),
+    # mirroring how yelp_hours_* overlays the GT hours.
+    if "yelp_listings" in tables:
+        yl_cols = {r[1] for r in conn.execute("PRAGMA table_info(yelp_listings)").fetchall()}
+        for col, defn in [
+            ("yelp_avg_cost_local",   "REAL"),
+            ("yelp_price_tier",       "TEXT"),
+            ("yelp_booking_required", "INTEGER"),
+        ]:
+            if col not in yl_cols:
+                conn.execute(f"ALTER TABLE yelp_listings ADD COLUMN {col} {defn}")
 
     # Corruption pipeline: additive wrong_info columns + corruption_runs table.
     # All columns nullable (suppress_authority defaults 0); existing inserts use

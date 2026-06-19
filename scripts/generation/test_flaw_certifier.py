@@ -88,6 +88,43 @@ def test_relative_repairability(ess, west):
     assert west["repairability"] > ess["repairability"], (west, ess)
 
 
+def test_b15_cost_flaw():
+    """b1.5: a cost flaw (served from the yelp_avg_cost_local overlay) yields a
+    well-posed certification: detectability>=1 and 0<repairability<1. Runs the
+    operator on a /tmp copy so the real corpus DB is never mutated."""
+    import shutil, tempfile
+    _root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    if _root not in sys.path:
+        sys.path.insert(0, _root)
+    from scripts.generation.inject_flaws import inject, DEFAULT_PROFILE
+
+    tmp = tempfile.mkdtemp(prefix="fc_b15_")
+    try:
+        dst = os.path.join(tmp, "dst.db")
+        plan = inject(DB_PATH, dst, "b1-seed-001", DEFAULT_PROFILE,
+                      created_at="2026-01-01T00:00:00Z", write_plan=False)
+        cost_kept = [k for k in plan["kept"] if k["field"] == "avg_cost_local"]
+        assert cost_kept, "b1.5: expected >=1 kept avg_cost_local flaw"
+        dconn = sqlite3.connect(dst); dconn.row_factory = sqlite3.Row
+        try:
+            k = cost_kept[0]
+            row = _flaw(dconn, k["wrong_info_id"])
+            claims = load_flaw_evidence(dconn, row)
+            cert = certify(claims)
+            # The yelp overlay carries the lie -> at least one wrong claim.
+            yelp = [c for c in claims if c["surface"] == "yelp"]
+            assert yelp and yelp[0]["is_correct"] is False, \
+                ("yelp overlay must carry the cost lie", yelp)
+            assert cert["detectability"] >= 1, cert
+            assert 0.0 < cert["repairability"] < 1.0, cert
+            assert cert["valid"] is True, cert
+            return cert
+        finally:
+            dconn.close()
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+
+
 def main():
     if not os.path.exists(DB_PATH):
         print(f"SKIP: corpus DB missing at {DB_PATH}")
@@ -103,6 +140,8 @@ def main():
         test_relative_repairability(ess, west)
         print(f"PASS test_relative_repairability "
               f"(west={west['repairability']} > ess={ess['repairability']})")
+        cost = test_b15_cost_flaw()
+        print(f"PASS test_b15_cost_flaw -> {cost}")
     finally:
         conn.close()
     print("\nALL TESTS PASSED")

@@ -64,6 +64,24 @@ _STRUCTURED_FIELDS = {
 
 _HOURS_FIELDS = set(fm.HOURS_FIELDS)
 
+# b1.5: non-hours structured fields served from a yelp_<field> overlay column
+# on yelp_listings (preferred over the immutable venues GT in search_yelp).
+_COST_PRICE_OVERLAY = {"avg_cost_local", "price_tier", "booking_required"}
+
+
+def _overlay_typed(field: str, wrong_value):
+    """Coerce a (TEXT) wrong value to the type the yelp_<field> overlay column
+    expects: REAL for cost, INTEGER for booking, TEXT for price_tier."""
+    if field == "avg_cost_local":
+        try:
+            return float(wrong_value)
+        except (TypeError, ValueError):
+            return wrong_value
+    if field == "booking_required":
+        s = str(wrong_value).strip().lower()
+        return 1 if s in ("1", "true", "yes") else 0
+    return str(wrong_value)
+
 
 # ─────────────────────────────────────────────────────────────────────────────
 # PROFILES
@@ -334,11 +352,20 @@ def _served_yelp_value(city: str, dst_db_path: str, venue_id: str,
             return str(parts)
 
         # Non-hours structured fields (avg_cost_local / price_tier /
-        # booking_required) are NOT surfaced by tool_search_yelp — the agent
-        # never sees a served value distinct from GT. Treat as not servable.
-        if field in match:
-            return str(match.get(field))
-        return None
+        # booking_required) are surfaced by tool_search_yelp (b1.5), served from
+        # the yelp_* overlay when set else the venues GT. Normalise the served
+        # value to the GT string convention so the gate compares like-for-like:
+        #   - booking_required: served as bool True/False; GT is INTEGER 0/1.
+        #   - avg_cost_local:   served as float; GT is REAL (float).
+        #   - price_tier:       plain string.
+        if field not in match:
+            return None
+        served = match.get(field)
+        if served is None:
+            return None
+        if field == "booking_required":
+            return "1" if bool(served) else "0"
+        return str(served)
     finally:
         mock_tools._get_db_path = orig_get_db_path
         mock_tools.set_arm(orig_arm)
@@ -512,8 +539,18 @@ def inject(src_db_path: str, dst_db_path: str, master_seed: str,
                 if not has_official:
                     _assign_truth_carrier(conn, venue_id, wrong_info_id, consumed_docs)
             else:
-                # Certifier reads only doc claims for non-hours fields:
-                # wire one incorrect_source (the lie) + one truth_carrier.
+                # b1.5: served lie on the yelp_* cost/price overlay column so
+                # search_yelp serves the lie (preferred over the immutable
+                # venues GT). Analogous to hours writing yelp_hours_*.
+                if field in _COST_PRICE_OVERLAY:
+                    overlay_col = f"yelp_{field}"
+                    conn.execute(
+                        f"UPDATE yelp_listings SET {overlay_col} = ? WHERE venue_id = ?",
+                        (_overlay_typed(field, wrong_value), venue_id),
+                    )
+                # Certifier reads the yelp overlay claim + doc claims for these
+                # fields: wire one incorrect_source (the lie) + one
+                # truth_carrier so detectability/repairability are well-posed.
                 _assign_doc_evidence(conn, venue_id, wrong_info_id, consumed_docs)
 
             # --- VALIDITY GATE ------------------------------------------------
@@ -660,15 +697,14 @@ def inject(src_db_path: str, dst_db_path: str, master_seed: str,
         "n_rejected": len(rejected),
         "not_servable_by_field": not_servable_by_field,
         "servability_note": (
-            "DEFERRED: cost/price/booking servability is NOT implemented in v1. "
-            "tool_search_yelp sources avg_cost_local/price_tier/booking_required "
-            "from the immutable `venues` GT (and does not surface them), so those "
-            "lies have no teeth and are rejected as not_servable. To give them "
-            "teeth, add a served-cost overlay in mock_tools (PREFER a "
-            "yelp_avg_cost_local / yelp_price_tier column on yelp_listings over "
-            "the venues value) OR carry the lie as NL evidence in the b3 corpus. "
-            "Only hours_* flaws are servable in v1 (search_yelp serves "
-            "yelp_hours_* via its `hours` dict)."
+            "b1.5: cost/price/booking servability IS implemented. The operator "
+            "writes the lie into a yelp_<field> overlay column on yelp_listings "
+            "(yelp_avg_cost_local / yelp_price_tier / yelp_booking_required) and "
+            "search_yelp serves the overlay (preferred over the immutable venues "
+            "GT) and surfaces avg_cost_local/price_tier/booking_required in its "
+            "results. hours_* remain served from yelp_hours_*. A flaw is still "
+            "rejected as not_servable only if its served value happens to equal "
+            "GT (e.g. value_fn produced no effective change at serve time)."
         ),
         "kept": kept,
         "rejected": rejected,
@@ -698,8 +734,10 @@ def _rollback_flaw(conn: sqlite3.Connection, wrong_info_id: str,
         "WHERE wrong_info_id = ?",
         (wrong_info_id,),
     )
-    # Restore the served yelp value from GT for hours fields (the only served
-    # column the operator overwrites).
+    # Restore the served yelp value for the columns the operator overwrites.
+    # hours_*: write GT back onto yelp_hours_* (hours are served from that cell).
+    # cost/price/booking: NULL the yelp_<field> overlay so the serve path falls
+    # back to the immutable venues GT value.
     if field in _HOURS_FIELDS:
         gt = conn.execute(
             f"SELECT {field} AS v FROM venues WHERE venue_id = ?", (venue_id,)
@@ -709,6 +747,11 @@ def _rollback_flaw(conn: sqlite3.Connection, wrong_info_id: str,
                 f"UPDATE yelp_listings SET yelp_{field} = ? WHERE venue_id = ?",
                 (gt["v"], venue_id),
             )
+    elif field in _COST_PRICE_OVERLAY:
+        conn.execute(
+            f"UPDATE yelp_listings SET yelp_{field} = NULL WHERE venue_id = ?",
+            (venue_id,),
+        )
     conn.execute(
         "DELETE FROM wrong_info WHERE wrong_info_id = ?", (wrong_info_id,)
     )
@@ -789,7 +832,9 @@ def _overlay_hash(conn: sqlite3.Connection) -> str:
         h.update(("|".join(str(x) for x in tuple(r))).encode("utf-8"))
         h.update(b"\n")
 
-    yelp_cols = ", ".join(f"yelp_{f}" for f in sorted(_HOURS_FIELDS))
+    yelp_cols = ", ".join(
+        f"yelp_{f}" for f in sorted(_HOURS_FIELDS | _COST_PRICE_OVERLAY)
+    )
     yl = conn.execute(
         f"SELECT venue_id, {yelp_cols} FROM yelp_listings ORDER BY venue_id"
     ).fetchall()

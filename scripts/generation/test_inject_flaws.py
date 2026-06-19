@@ -196,6 +196,26 @@ def run_integration():
     assert str(gt) == k["correct_value"], (gt, k["correct_value"])
     print(f"  ✓ (c) yelp serves the lie ({k['field']}={served}) while venues GT={gt}")
 
+    # (c2) b1.5: cost/price lie written to the yelp_<field> overlay column while
+    # venues GT is unchanged.
+    overlay_kept = [k for k in plan["kept"]
+                    if k["field"] in ("avg_cost_local", "price_tier",
+                                      "booking_required")]
+    assert overlay_kept, "b1.5: expected >=1 cost/price/booking flaw kept"
+    for k in overlay_kept[:5]:
+        ov = dconn.execute(
+            f"SELECT yelp_{k['field']} AS v FROM yelp_listings WHERE venue_id = ?",
+            (k["venue_id"],),
+        ).fetchone()["v"]
+        assert ov is not None, (k, "overlay must be set for a kept cost/price flaw")
+        gt = dconn.execute(
+            f"SELECT {k['field']} AS v FROM venues WHERE venue_id = ?",
+            (k["venue_id"],),
+        ).fetchone()["v"]
+        assert str(ov) != str(gt), (k["field"], "overlay", ov, "gt", gt)
+    print(f"  ✓ (c2) {len(overlay_kept)} cost/price/booking lies in yelp_<field> "
+          f"overlay; venues GT intact")
+
     # (d) every kept flaw passes the certifier gate
     from scripts.generation import flaw_certifier as fc
     for k in plan["kept"]:
@@ -228,26 +248,26 @@ def run_integration():
     print(f"  ✓ (d2) all {plan['n_kept']} kept flaws are SERVABLE "
           f"(search_yelp value != GT venues value)")
 
-    # (d3) v1 KNOWN LIMITATION: cost/price flaws are rejected as not_servable.
-    # search_yelp sources avg_cost_local/price_tier from the immutable venues GT
-    # (and does not surface them), so those lies have no teeth in v1.
+    # (d3) b1.5: cost/price flaws are now SERVABLE (served from the yelp_<field>
+    # overlay, preferred over GT) and therefore KEPT, not rejected.
     kept_fields = {k["field"] for k in plan["kept"]}
-    assert "avg_cost_local" not in kept_fields, "cost flaw must not survive v1"
-    assert "price_tier" not in kept_fields, "price flaw must not survive v1"
-    assert all(k["field"].startswith("hours_") for k in plan["kept"]), \
-        "only hours_* flaws are servable in v1"
+    assert "avg_cost_local" in kept_fields or "price_tier" in kept_fields, \
+        "b1.5: at least cost OR price flaws must now survive"
+    # no cost/price flaw should be dropped as not_servable any more.
     ns_reasons = [r for r in plan["rejected"]
                   if str(r.get("reason", "")).startswith("not_servable")]
     ns_fields = {r["field"] for r in ns_reasons}
-    assert ns_fields, "expected some not_servable rejections in v1"
-    assert ns_fields <= {"avg_cost_local", "price_tier", "booking_required"}, ns_fields
-    # at least cost OR price is among them (the documented v1 case)
-    assert ns_fields & {"avg_cost_local", "price_tier"}, ns_fields
+    assert not (ns_fields & {"avg_cost_local", "price_tier", "booking_required"}), \
+        ("b1.5: cost/price/booking must not be not_servable any more", ns_fields)
     nsbf = plan.get("not_servable_by_field", {})
+    assert nsbf.get("avg_cost_local", 0) == 0, nsbf
+    assert nsbf.get("price_tier", 0) == 0, nsbf
     assert sum(nsbf.values()) == len(ns_reasons), (nsbf, len(ns_reasons))
-    assert plan.get("servability_note") and "DEFERRED" in plan["servability_note"]
-    print(f"  ✓ (d3) cost/price rejected as not_servable "
-          f"(by field: {nsbf}); hours survive — v1 limitation documented")
+    assert plan.get("servability_note") and "b1.5" in plan["servability_note"]
+    from collections import Counter
+    by_field = dict(Counter(k["field"] for k in plan["kept"]))
+    print(f"  ✓ (d3) b1.5: cost/price now servable & kept "
+          f"(not_servable_by_field={nsbf}); kept-by-field={by_field}")
 
     # (e) reproducible — second run yields identical overlay hash
     dst2 = os.path.join(tmp, "dst2.db")

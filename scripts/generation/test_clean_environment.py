@@ -511,6 +511,121 @@ _reset_state()
 set_arm("faulty")
 
 # ─────────────────────────────────────────────────────────────────────────────
+# [9] b1.5 — cost/price/booking yelp overlay served + healed
+# A venue with a yelp_avg_cost_local / yelp_price_tier / yelp_booking_required
+# overlay set serves the OVERLAY (lie) in faulty, and the venues GT under BOTH
+# clean arms. Uses a /tmp COPY so the real corpus DB is never mutated.
+# ─────────────────────────────────────────────────────────────────────────────
+print("\n[9] b1.5 cost/price/booking overlay: faulty serves lie, clean arms serve GT")
+
+import shutil, tempfile
+
+def _served_yelp_fields(vid, fields):
+    """Return {field: served value} from search_yelp results for venue vid."""
+    res = tool_search_yelp("", CITY, top_k=10_000)
+    for r in res.get("results", []):
+        if r["venue_id"] == vid:
+            return {f: r.get(f) for f in fields}
+    return {f: "VENUE_NOT_FOUND" for f in fields}
+
+from scripts.generation.db import get_connection
+
+_tmpdir = tempfile.mkdtemp(prefix="b15clean_")
+TMP_DB = Path(_tmpdir) / "travelbench.db"
+shutil.copyfile(DB_PATH, TMP_DB)
+for ext in ("-wal", "-shm"):
+    side = Path(str(DB_PATH) + ext)
+    if side.exists():
+        shutil.copyfile(str(side), str(TMP_DB) + ext)
+# Apply migrations so the tmp copy has the b1.5 overlay columns.
+get_connection(TMP_DB).close()
+
+# Pick a verified venue with a GT cost/price and no wrong_info collision.
+conn = sqlite3.connect(str(TMP_DB)); conn.row_factory = sqlite3.Row
+target = conn.execute("""
+    SELECT v.venue_id, v.avg_cost_local, v.price_tier, v.booking_required
+    FROM venues v JOIN yelp_listings y ON y.venue_id = v.venue_id
+    LEFT JOIN wrong_info wi ON wi.venue_id = v.venue_id
+    WHERE LOWER(v.city)=? AND v.page_status='verified'
+      AND wi.venue_id IS NULL
+      AND v.avg_cost_local IS NOT NULL AND v.avg_cost_local > 0
+      AND v.price_tier IS NOT NULL
+    LIMIT 1
+""", (CITY,)).fetchone()
+conn.close()
+check("found a clean venue to plant cost/price overlay on", target is not None)
+
+if target is not None:
+    ov_vid   = target["venue_id"]
+    gt_cost  = float(target["avg_cost_local"])
+    gt_tier  = target["price_tier"]
+    gt_book  = int(target["booking_required"] or 0)
+    # Plant lies: cheaper cost, cheaper-looking tier, booking off.
+    lie_cost = gt_cost / 2.0
+    lie_tier = "budget" if gt_tier != "budget" else "free"
+    lie_book = 0 if gt_book == 1 else 1
+
+    conn = sqlite3.connect(str(TMP_DB))
+    conn.execute("""UPDATE yelp_listings
+                    SET yelp_avg_cost_local=?, yelp_price_tier=?, yelp_booking_required=?
+                    WHERE venue_id=?""",
+                 (lie_cost, lie_tier, lie_book, ov_vid))
+    conn.commit(); conn.close()
+
+    # Point mock_tools at the tmp DB.
+    orig_get_db_path = mock_tools._get_db_path
+    mock_tools._get_db_path = lambda c: TMP_DB
+    try:
+        # faulty → overlay (lie)
+        mock_tools._city_cache.clear(); set_arm("faulty")
+        served = _served_yelp_fields(ov_vid, ["avg_cost_local", "price_tier", "booking_required"])
+        check(f"faulty serves cost overlay (lie {lie_cost} != GT {gt_cost})",
+              served["avg_cost_local"] == lie_cost, f"got {served['avg_cost_local']}")
+        check(f"faulty serves price_tier overlay (lie {lie_tier})",
+              served["price_tier"] == lie_tier, f"got {served['price_tier']}")
+        check(f"faulty serves booking overlay (lie {bool(lie_book)})",
+              served["booking_required"] == bool(lie_book), f"got {served['booking_required']}")
+
+        # both clean arms → GT (overlay nulled in heal path; no wrong_info so
+        # heal relies on overlay-null fallback... but clean heal only fires for
+        # wrong_info rows. Here there is none, so clean must ALSO serve GT only
+        # if it heals; without a wrong_info row, the overlay would persist.)
+        # We therefore add a wrong_info row so the clean arms heal it.
+        conn = sqlite3.connect(str(TMP_DB))
+        conn.execute("""INSERT INTO wrong_info (wrong_info_id, venue_id, affected_field,
+            incorrect_value, correct_value, source_type, wrong_info_category, origin_story)
+            VALUES (?,?,?,?,?,?,?,?)""",
+            ("wB15cost", ov_vid, "avg_cost_local", str(lie_cost), str(gt_cost),
+             "yelp", "propagation_error", "b1.5 test cost overlay"))
+        conn.execute("""INSERT INTO wrong_info (wrong_info_id, venue_id, affected_field,
+            incorrect_value, correct_value, source_type, wrong_info_category, origin_story)
+            VALUES (?,?,?,?,?,?,?,?)""",
+            ("wB15tier", ov_vid, "price_tier", lie_tier, gt_tier,
+             "yelp", "propagation_error", "b1.5 test tier overlay"))
+        conn.execute("""INSERT INTO wrong_info (wrong_info_id, venue_id, affected_field,
+            incorrect_value, correct_value, source_type, wrong_info_category, origin_story)
+            VALUES (?,?,?,?,?,?,?,?)""",
+            ("wB15book", ov_vid, "booking_required", str(lie_book), str(gt_book),
+             "yelp", "propagation_error", "b1.5 test booking overlay"))
+        conn.commit(); conn.close()
+
+        for arm in ("clean_delete", "clean_equalvol"):
+            mock_tools._city_cache.clear(); set_arm(arm)
+            s = _served_yelp_fields(ov_vid, ["avg_cost_local", "price_tier", "booking_required"])
+            check(f"{arm}: cost healed to GT {gt_cost}",
+                  s["avg_cost_local"] == gt_cost, f"got {s['avg_cost_local']}")
+            check(f"{arm}: price_tier healed to GT {gt_tier}",
+                  s["price_tier"] == gt_tier, f"got {s['price_tier']}")
+            check(f"{arm}: booking healed to GT {bool(gt_book)}",
+                  s["booking_required"] == bool(gt_book), f"got {s['booking_required']}")
+    finally:
+        mock_tools._get_db_path = orig_get_db_path
+        mock_tools._city_cache.clear()
+        set_arm("faulty")
+
+shutil.rmtree(_tmpdir, ignore_errors=True)
+
+# ─────────────────────────────────────────────────────────────────────────────
 print("\n" + "=" * 60)
 print(f"PASSED: {PASS}   FAILED: {FAIL}")
 print("=" * 60)

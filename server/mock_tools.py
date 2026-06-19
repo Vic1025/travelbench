@@ -207,34 +207,38 @@ def _load_city_from_db(city: str, db_path: Path, arm: str = "faulty") -> CityInd
         r = dict(row)
         vid = r["venue_id"]
 
-        # Clean-mode: heal yelp_* fields back to correct_value before any
+        # Clean-mode: heal yelp_* overlay fields back to ground truth before any
         # downstream reads. wrong_info.affected_field uses the canonical venue
-        # column name (e.g. 'hours_fri'); yelp_listings prefixes it (e.g.
-        # 'yelp_hours_fri'). We try the prefixed column first, then the bare
-        # field, so the heal works for both hours_* and any future non-hour
-        # yelp-typed wrong-info entry.
+        # column name (e.g. 'hours_fri', 'avg_cost_local'); the served value
+        # lives in a yelp_<field> overlay column (yelp_hours_fri,
+        # yelp_avg_cost_local, yelp_price_tier, yelp_booking_required). For the
+        # clean arms we NULL the overlay so the serve-path falls back to the
+        # immutable venues GT value below. (hours_* additionally writes the GT
+        # value straight onto the yelp_hours_* cell since the hours dict is
+        # built from those cells.)
         if clean and vid in yelp_corrections:
             for field, correct in yelp_corrections[vid].items():
-                target_col = None
-                if field.startswith("hours_") and f"yelp_{field}" in r:
-                    target_col = f"yelp_{field}"
+                overlay_col = f"yelp_{field}"
+                if overlay_col in r:
+                    # Null the overlay → serve path uses GT venues value.
+                    r[overlay_col] = None
+                    # hours_* serves directly from the yelp_hours_* cell, so
+                    # also write the GT value there (cast from TEXT).
+                    if field.startswith("hours_"):
+                        r[overlay_col] = correct
                 elif field in r:
-                    target_col = field
-                if target_col is None:
-                    continue
-                # Cast numeric fields back from text since wrong_info stores
-                # all values as TEXT.
-                if field in ("avg_cost_local", "recommended_visit_minutes"):
-                    try:
-                        r[target_col] = (float(correct) if "." in str(correct)
-                                         else int(correct))
-                    except (TypeError, ValueError):
-                        r[target_col] = correct
-                elif field in ("booking_required", "reservation_required"):
-                    r[target_col] = (int(correct) if str(correct).isdigit() else
-                                     (1 if str(correct).lower() in ("true", "1", "yes") else 0))
-                else:
-                    r[target_col] = correct
+                    # Legacy non-overlay field: heal in place (cast from TEXT).
+                    if field in ("avg_cost_local", "recommended_visit_minutes"):
+                        try:
+                            r[field] = (float(correct) if "." in str(correct)
+                                        else int(correct))
+                        except (TypeError, ValueError):
+                            r[field] = correct
+                    elif field in ("booking_required", "reservation_required"):
+                        r[field] = (int(correct) if str(correct).isdigit() else
+                                    (1 if str(correct).lower() in ("true", "1", "yes") else 0))
+                    else:
+                        r[field] = correct
 
         # Fetch tags for this venue
         tags = conn.execute(
@@ -254,6 +258,17 @@ def _load_city_from_db(city: str, db_path: Path, arm: str = "faulty") -> CityInd
             else:
                 hours_reg[day] = None
 
+        # b1.5: serve the yelp_* cost/price overlay when present (the lie),
+        # else fall back to the immutable venues GT value. Mirrors how
+        # yelp_hours_* overlays GT hours. Overlay NULL → GT (existing data).
+        ov_cost = r.get("yelp_avg_cost_local")
+        served_cost = ov_cost if ov_cost is not None else r.get("avg_cost_local")
+        ov_tier = r.get("yelp_price_tier")
+        served_tier = ov_tier if ov_tier is not None else r.get("price_tier")
+        ov_booking = r.get("yelp_booking_required")
+        served_booking = (ov_booking if ov_booking is not None
+                          else r.get("booking_required"))
+
         doc = {
             "venue_id":       vid,
             "name":           r["v_name"],
@@ -264,10 +279,10 @@ def _load_city_from_db(city: str, db_path: Path, arm: str = "faulty") -> CityInd
             "category_tags":  tag_list,
             "partial_labels": [],  # not a DB column — use category_tags from tags table
             "hours_registered": hours_reg,
-            "price_tier":     r.get("price_tier"),
-            "avg_cost_local":   r.get("avg_cost_local"),
+            "price_tier":     served_tier,
+            "avg_cost_local":   served_cost,
             "last_activity_date": r.get("last_activity_date"),
-            "booking_required":   bool(r.get("booking_required")),
+            "booking_required":   bool(served_booking),
             "has_official_site":  bool(r.get("has_official_site")),
             "has_wrong_info_planned": bool(r.get("has_wrong_info_planned")),
             "noise_level":        r.get("noise_level"),
@@ -863,6 +878,11 @@ def tool_search_yelp(query: str, city: str,
             "category_tags": doc.get("category_tags", []),
             "partial_labels": doc.get("partial_labels", []),
             "hours": doc.get("hours_registered", {}),
+            # b1.5: surface served cost/price/booking so a yelp_* overlay lie
+            # (preferred over GT) is actually visible to the planning agent.
+            "avg_cost_local": doc.get("avg_cost_local"),
+            "price_tier": doc.get("price_tier"),
+            "booking_required": doc.get("booking_required"),
             "official_url": doc.get("official_url"),
             "note": doc.get("note", "")
         })

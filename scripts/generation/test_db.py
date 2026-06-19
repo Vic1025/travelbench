@@ -256,6 +256,38 @@ conn.commit()
 cr = conn.execute("SELECT * FROM corruption_runs WHERE run_id = 'run-1'").fetchone()
 check("corruption_runs insert+query", cr is not None and cr["gt_hash"] == "deadbeef")
 
+# ─── Test 10b: b1.5 yelp_listings cost/price overlay columns (fresh) ─────────
+print("\n[10b] yelp_listings cost/price overlay columns — fresh DB")
+_YELP_OVERLAY_COLS = {
+    "yelp_avg_cost_local": "REAL",
+    "yelp_price_tier": "TEXT",
+    "yelp_booking_required": "INTEGER",
+}
+yl_info = conn.execute("PRAGMA table_info(yelp_listings)").fetchall()
+yl_cols_now = {r["name"] for r in yl_info}
+for c in _YELP_OVERLAY_COLS:
+    check(f"yelp_listings.{c} exists (fresh)", c in yl_cols_now)
+# Nullable + no default → existing data unchanged when NULL.
+for r in yl_info:
+    if r["name"] in _YELP_OVERLAY_COLS:
+        check(f"yelp_listings.{r['name']} nullable (no default)",
+              r["dflt_value"] is None, repr(r["dflt_value"]))
+
+# Insert a yelp_listing exercising the overlay columns (roundtrip + types).
+conn.execute("""
+    INSERT INTO yelp_listings (venue_id, city, name, category, district,
+        stars, review_count,
+        yelp_avg_cost_local, yelp_price_tier, yelp_booking_required)
+    VALUES (?,?,?,?,?,?,?,?,?,?)
+""", (vid, "paris", "Test Cafe", "cafe", "Le Marais", 4.2, 99,
+      20.0, "budget", 0))
+conn.commit()
+yl = conn.execute("SELECT * FROM yelp_listings WHERE venue_id = ?", (vid,)).fetchone()
+check("yelp overlay insert+query", yl is not None)
+check("yelp_avg_cost_local roundtrip (REAL)", yl["yelp_avg_cost_local"] == 20.0)
+check("yelp_price_tier roundtrip (TEXT)", yl["yelp_price_tier"] == "budget")
+check("yelp_booking_required roundtrip (INTEGER)", yl["yelp_booking_required"] == 0)
+
 # ─── Test 11: migration on a simulated OLD db (idempotent) ───────────────────
 print("\n[11] corruption migration — old DB + idempotency")
 with tempfile.NamedTemporaryFile(suffix=".db", delete=False) as f2:
@@ -276,6 +308,13 @@ raw.executescript("""
         wrong_info_category TEXT NOT NULL,
         origin_story        TEXT NOT NULL
     );
+    -- yelp_listings WITHOUT the b1.5 overlay columns (pre-b1.5 schema).
+    CREATE TABLE yelp_listings (
+        venue_id        TEXT PRIMARY KEY,
+        city            TEXT NOT NULL,
+        yelp_hours_mon  TEXT
+    );
+    INSERT INTO yelp_listings (venue_id, city) VALUES ('vOld', 'paris');
     INSERT INTO venues (venue_id, city) VALUES ('vOld', 'paris');
     INSERT INTO wrong_info (wrong_info_id, venue_id, affected_field,
         incorrect_value, correct_value, source_type, wrong_info_category, origin_story)
@@ -288,8 +327,12 @@ old_wi_cols = {r[1] for r in raw.execute("PRAGMA table_info(wrong_info)").fetcha
 old_tables = {r[0] for r in raw.execute(
     "SELECT name FROM sqlite_master WHERE type='table'").fetchall()}
 raw.close()
+old_yl_cols = {r[1] for r in sqlite3.connect(str(OLD_DB)).execute(
+    "PRAGMA table_info(yelp_listings)").fetchall()}
 check("OLD db lacks new wrong_info cols", not (set(_CORRUPTION_WI_COLS) & old_wi_cols))
 check("OLD db lacks corruption_runs", "corruption_runs" not in old_tables)
+check("OLD db lacks b1.5 yelp overlay cols",
+      not (set(_YELP_OVERLAY_COLS) & old_yl_cols))
 
 # Opening via get_connection() must migrate it.
 oldconn = get_connection(OLD_DB)
@@ -299,6 +342,18 @@ mig_tables = {r["name"] for r in oldconn.execute(
 for c in _CORRUPTION_WI_COLS:
     check(f"migrated wrong_info.{c}", c in mig_wi)
 check("migrated corruption_runs table", "corruption_runs" in mig_tables)
+
+# b1.5: yelp overlay columns added by migration on the old DB.
+mig_yl = {r["name"] for r in oldconn.execute(
+    "PRAGMA table_info(yelp_listings)").fetchall()}
+for c in _YELP_OVERLAY_COLS:
+    check(f"migrated yelp_listings.{c}", c in mig_yl)
+# Existing yelp row still readable; new overlay cols default to NULL.
+old_yl_row = oldconn.execute(
+    "SELECT * FROM yelp_listings WHERE venue_id = 'vOld'").fetchone()
+check("legacy yelp row preserved", old_yl_row is not None)
+check("legacy yelp overlay cols are NULL",
+      all(old_yl_row[c] is None for c in _YELP_OVERLAY_COLS))
 
 # Legacy row preserved and readable
 legacy = oldconn.execute(

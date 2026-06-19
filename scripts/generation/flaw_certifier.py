@@ -37,19 +37,38 @@ from typing import Any, Dict, List, Optional
 
 
 # Fields that a Yelp listing actually carries (yelp_<field> columns exist).
-_YELP_SERVED_FIELDS = {
+# Hours have always had yelp_hours_* overlays; b1.5 adds cost/price/booking
+# overlays (yelp_avg_cost_local / yelp_price_tier / yelp_booking_required) so
+# the served lie for those fields lives in yelp_listings too.
+_YELP_HOURS_FIELDS = {
     "hours_mon", "hours_tue", "hours_wed", "hours_thu",
     "hours_fri", "hours_sat", "hours_sun",
 }
+_YELP_OVERLAY_FIELDS = {"avg_cost_local", "price_tier", "booking_required"}
+_YELP_SERVED_FIELDS = _YELP_HOURS_FIELDS | _YELP_OVERLAY_FIELDS
 
-# Fields official_site_docs carries as per-field columns (hours only).
-_OFFICIAL_SERVED_FIELDS = {
+# Fields the official site serves authoritatively (always == ground truth).
+# hours_* come from official_site_docs per-field columns; cost/booking are
+# served by mock_tools.get_official_site from the venues row (b1.5), so the
+# official site is a recovery path for those too — unless authority-suppressed.
+_OFFICIAL_HOURS_FIELDS = {
     "hours_mon", "hours_tue", "hours_wed", "hours_thu",
     "hours_fri", "hours_sat", "hours_sun",
 }
+_OFFICIAL_OVERLAY_FIELDS = {"avg_cost_local", "booking_required"}
+_OFFICIAL_SERVED_FIELDS = _OFFICIAL_HOURS_FIELDS | _OFFICIAL_OVERLAY_FIELDS
 
 OFFICIAL_WEIGHT = 3.0
 BASE_WEIGHT = 1.0
+
+
+def _has_column(conn: sqlite3.Connection, table: str, column: str) -> bool:
+    """True iff `column` exists on `table` (resilient to pre-b1.5 schemas)."""
+    try:
+        cols = {r[1] for r in conn.execute(f"PRAGMA table_info({table})").fetchall()}
+    except sqlite3.Error:
+        return False
+    return column in cols
 
 
 def _norm(v: Any) -> Optional[str]:
@@ -80,7 +99,11 @@ def load_flaw_evidence(conn: sqlite3.Connection, wrong_info_row: Dict[str, Any])
     claims: List[Dict[str, Any]] = []
 
     # --- Yelp claim (only for fields Yelp serves) -------------------------
-    if field in _YELP_SERVED_FIELDS:
+    # The served value lives in a yelp_<field> overlay column. hours_* overlays
+    # have always existed; cost/price/booking overlays were added in b1.5. On a
+    # pre-b1.5 DB the overlay column may be absent — treat that as "no yelp
+    # claim" (the lie is carried elsewhere) rather than crashing.
+    if field in _YELP_SERVED_FIELDS and _has_column(conn, "yelp_listings", "yelp_" + field):
         col = "yelp_" + field
         row = conn.execute(
             f"SELECT {col} AS v FROM yelp_listings WHERE venue_id = ?",
@@ -129,23 +152,44 @@ def load_flaw_evidence(conn: sqlite3.Connection, wrong_info_row: Dict[str, Any])
             "weight_eng": BASE_WEIGHT + math.log1p(max(0, likes)),
         })
 
-    # --- Official claim (only when site exists AND field cell populated) ---
+    # --- Official claim (only when site exists AND field is populated) -----
+    # The official site is a (truthful) recovery path. Skip it when this row is
+    # authority-suppressed (mock_tools drops/staleifies the official value).
     if field in _OFFICIAL_SERVED_FIELDS:
         has_site_row = conn.execute(
             "SELECT has_official_site FROM venues WHERE venue_id = ?",
             (venue_id,),
         ).fetchone()
         has_site = bool(has_site_row["has_official_site"]) if has_site_row else False
-        if has_site:
-            off = conn.execute(
-                f"SELECT {field} AS v FROM official_site_docs WHERE venue_id = ?",
-                (venue_id,),
-            ).fetchone()
-            if off is not None and off["v"] is not None and _norm(off["v"]) != "":
+        suppressed = False
+        try:
+            suppressed = bool(wrong_info_row["suppress_authority"])
+        except (KeyError, IndexError, TypeError):
+            suppressed = False
+        if has_site and not suppressed:
+            off_val = None
+            if field in _OFFICIAL_HOURS_FIELDS:
+                # Hours live as per-field columns on official_site_docs.
+                off = conn.execute(
+                    f"SELECT {field} AS v FROM official_site_docs WHERE venue_id = ?",
+                    (venue_id,),
+                ).fetchone()
+                if off is not None and off["v"] is not None and _norm(off["v"]) != "":
+                    off_val = off["v"]
+            elif field in _OFFICIAL_OVERLAY_FIELDS:
+                # b1.5: mock_tools.get_official_site serves cost/booking from the
+                # venues row (always GT). Present iff the venues cell is set.
+                vrow = conn.execute(
+                    f"SELECT {field} AS v FROM venues WHERE venue_id = ?",
+                    (venue_id,),
+                ).fetchone()
+                if vrow is not None and vrow["v"] is not None and _norm(vrow["v"]) != "":
+                    off_val = vrow["v"]
+            if off_val is not None:
                 claims.append({
                     "source_id": f"official:{venue_id}",
                     "surface": "official",
-                    "value": _norm(off["v"]),
+                    "value": _norm(off_val),
                     # official always reflects ground truth
                     "is_correct": True,
                     "weight": OFFICIAL_WEIGHT,
