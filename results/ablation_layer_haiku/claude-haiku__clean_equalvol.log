@@ -1,0 +1,128 @@
+  Using evaluator DB: /Users/victoriajin/Documents/Career_related/TravelPlanningAgent/travelbench_Phase5.10/data/cities/new_york/runs/test_layer/travelbench.db
+  🧼 ARM=clean_equalvol — heal yelp fields + REPLACE incorrect_source doc bodies with neutral filler (volume held constant)
+
+───────────────────────────────────────────────────────
+TOKEN BUDGET ESTIMATE — claude-haiku-4-5-20251001
+───────────────────────────────────────────────────────
+  gpt_5_4_new_york_type4_20260521_1779375371 (medium) ~16,350 tokens  (~12 tool calls)
+  gemini_3_1_pro_preview_new_york_type4_20260521_1779375809 (hard  ) ~30,500 tokens  (~18 tool calls)
+  gemini_3_1_pro_preview_new_york_type2_20260521_1779375520 (medium) ~16,350 tokens  (~12 tool calls)
+  gemini_3_1_pro_preview_new_york_type5_20260521_1779375933 (hard  ) ~30,500 tokens  (~18 tool calls)
+  claude_sonnet_4_5_new_york_type4_20260521_1779375721 (medium) ~16,350 tokens  (~12 tool calls)
+  claude_sonnet_4_5_new_york_type5_20260521_1779375846 (hard  ) ~30,500 tokens  (~18 tool calls)
+  ──────────────────────────────────────────────────
+  Total input:  ~73,950
+  Total output: ~66,600
+  Total tokens: ~140,550
+  Est. cost:    ~$0.3256
+───────────────────────────────────────────────────────
+
+[1/6] Running gpt_5_4_new_york_type4_20260521_1779375371  (medium)  → claude-haiku-4-5-20251001
+    [turn 0] blocks=['text', 'tool_use', 'tool_use', 'tool_use'] text_chars=182 stop=tool_use
+    [turn 3] blocks=['text', 'tool_use', 'tool_use', 'tool_use'] text_chars=47 stop=tool_use
+    [turn 6] blocks=['text', 'tool_use', 'tool_use', 'tool_use'] text_chars=717 stop=tool_use
+    [turn 9] blocks=['text', 'tool_use', 'tool_use'] text_chars=1110 stop=tool_use
+    [turn 11] blocks=['text', 'tool_use', 'tool_use', 'tool_use', 'tool_use'] text_chars=1290 stop=tool_use
+    [turn 15] blocks=['text', 'tool_use', 'tool_use', 'tool_use'] text_chars=617 stop=tool_use
+    [turn 18] blocks=['text', 'tool_use', 'tool_use', 'tool_use'] text_chars=1212 stop=tool_use
+    [turn 21] blocks=['text', 'tool_use'] text_chars=1346 stop=tool_use
+    [turn 21] blocks=['text'] text_chars=7923 stop=end_turn
+
+  ┌─ gpt_5_4_new_york_type4_20260521_1779375371  (medium)  [173,399 tokens]
+  │  Tool calls: 21
+  │  Plan parsed: yes
+  │
+  │  C-score (process): 68.0%  ✅ deductions=8 warnings=2
+  │    −0.04  [call 1] search_yelp: city='New York' doesn't match task city 'new_york'
+  │    −0.04  [call 2] search_yelp: city='New York' doesn't match task city 'new_york'
+  │    −0.04  [call 3] search_blogs_and_forums: city='New York' doesn't match task city 'new_york'
+  │    −0.04  [call 15] get_travel_time: to_venue_id='Db2Afr2' not seen in prior tool results
+  │    −0.04  [call 19] get_travel_time: from_venue_id='Db2Afr2' not seen in prior tool results
+  │    ⚠  Day 1: venue_id 'BiMQKnh' appears 4 times. If this is a split visit (e.g. morning + aftern
+  │    ⚠  Day 2: venue_id 'IhQ1cao' appears 6 times. If this is a split visit (e.g. morning + aftern
+  │  F-score (feasibility): 96.0%  ✅
+  │    −0.02 [F4a] Day 1: 'Brooklyn Bridge' over-scheduled 285min (max 150, rec 90mi
+  │    −0.02 [F4a] Day 2: 'Brooklyn Bridge Park' over-scheduled 930min (max 180, rec
+  │  P-score (preferences): 75.0%
+  │    ✗ [pc_001] score=0.00  Total estimated cost per day must stay within the 
+  │    ✓ [pc_002] score=1.00  All visit activities must be at free-entry venues:
+  │    ✓ [pc_003] score=1.00  No venue in the plan may be tagged as a tourist tr
+  │    ✓ [pc_004] score=1.00  All meal activities must be at budget-priced venue
+  │  B-score (bonus):       100.0%
+  │
+  ⏱  62.7s  [166,431in + 6,968out = 173,399 tokens]
+  📝 Transcript: gpt_5_4_new_york_type4_20260521_1779375371_20260623_002402.json.gz (7KB)
+  💾 Saved: 20260623_002402_gpt_5_4_new_york_type4_20260521_1779375371_claude-haiku-4-5-20251001.json
+[2/6] Running gemini_3_1_pro_preview_new_york_type4_20260521_1779375809  (hard)  → claude-haiku-4-5-20251001
+    [turn 0] blocks=['tool_use'] text_chars=0 stop=tool_use
+    [turn 0] blocks=['text', 'tool_use', 'tool_use', 'tool_use', 'tool_use'] text_chars=63 stop=tool_use
+    [turn 4] blocks=['tool_use', 'tool_use', 'tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 7] blocks=['tool_use', 'tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 9] blocks=['tool_use', 'tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 11] blocks=['tool_use', 'tool_use', 'tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 14] blocks=['tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 15] blocks=['tool_use'] text_chars=0 stop=end_turn
+
+  ┌─ gemini_3_1_pro_preview_new_york_type4_20260521_1779375809  (hard)  [152,577 tokens]
+  │  Tool calls: 15
+  │  Plan parsed: NO ← check raw output
+  │
+  │  C-score (process):  0.0%  ❌ deductions=1 warnings=0
+  │    −1.00  Hard gate: no <final_plan> produced or JSON parse failed
+  │  [C gate failed — F/P/B not evaluated]
+  │
+  │  ── Agent debug (15/30 tool rounds) ──
+  │  call 1: search_yelp(query=free entry attractions, city=new_york, top_k=6)
+  │  call 2: search_yelp(query=free museums pay what you, city=new_york, category=museum)
+  │  call 3: search_yelp(query=parks walking neighborhoo, city=new_york, top_k=6)
+  │  call 4: search_blogs_and_forums(query=free things to do New Yor, city=new_york, top_k=5)
+  │  call 5: get_official_site(venue_id=kFCebpo, city=new_york, date=2026-07-05)
+  │  call 6: search_blogs_and_forums(venue_name=Metropolitan Museum of Ar, city=new_york, top_k=3)
+  │  call 7: search_blogs_and_forums(query=cheap budget eats New Yor, city=new_york, top_k=3)
+  │  call 8: search_yelp(query=budget food cheap eats un, city=new_york, category=restaurant)
+  │  ── end debug ──
+  │
+  ⏱  114.0s  [140,947in + 11,630out = 152,577 tokens]
+  📝 Transcript: gemini_3_1_pro_preview_new_york_type4_20260521_1779375809_20260623_002402.json.gz (7KB)
+  💾 Saved: 20260623_002402_gemini_3_1_pro_preview_new_york_type4_20260521_1779375809_claude-haiku-4-5-20251001.json
+[3/6] Running gemini_3_1_pro_preview_new_york_type2_20260521_1779375520  (medium)  → claude-haiku-4-5-20251001
+    [turn 0] blocks=['text', 'tool_use', 'tool_use'] text_chars=174 stop=tool_use
+    [turn 2] blocks=['text', 'tool_use'] text_chars=40 stop=tool_use
+    [turn 2] blocks=['text', 'tool_use', 'tool_use', 'tool_use'] text_chars=121 stop=tool_use
+    [turn 5] blocks=['tool_use'] text_chars=0 stop=tool_use
+    [turn 5] blocks=['text', 'tool_use', 'tool_use'] text_chars=89 stop=tool_use
+    [turn 7] blocks=['tool_use'] text_chars=0 stop=tool_use
+    [turn 7] blocks=['tool_use'] text_chars=0 stop=tool_use
+    [turn 7] blocks=['text', 'tool_use', 'tool_use'] text_chars=105 stop=tool_use
+    [turn 9] blocks=['tool_use'] text_chars=0 stop=end_turn
+
+  ┌─ gemini_3_1_pro_preview_new_york_type2_20260521_1779375520  (medium)  [104,948 tokens]
+  │  Tool calls: 9
+  │  Plan parsed: NO ← check raw output
+  │
+  │  C-score (process):  0.0%  ❌ deductions=1 warnings=0
+  │    −1.00  Hard gate: no <final_plan> produced or JSON parse failed
+  │  [C gate failed — F/P/B not evaluated]
+  │
+  │  ── Agent debug (9/15 tool rounds) ──
+  │  call 1: search_yelp(query=free attractions downtown, city=new_york, category=attraction)
+  │  call 2: search_blogs_and_forums(query=free things to do downtow, city=new_york, top_k=5)
+  │  call 3: get_official_site(venue_id=IYmC84W, city=new_york, date=2026-07-04)
+  │  call 4: search_yelp(query=Charging Bull Bowling Gre, city=new_york, category=attraction)
+  │  call 5: search_yelp(query=Battery Park free downtow, city=new_york, category=attraction)
+  │  call 6: search_yelp(query=9/11 Memorial Financial D, city=new_york, category=attraction)
+  │  call 7: search_yelp(query=Federal Hall Trinity Chur, city=new_york, category=attraction)
+  │  call 8: get_official_site(venue_id=BiMQKnh, city=new_york, date=2026-07-04)
+  │  ── end debug ──
+  │
+  ⏱  55.9s  [99,994in + 4,954out = 104,948 tokens]
+  📝 Transcript: gemini_3_1_pro_preview_new_york_type2_20260521_1779375520_20260623_002402.json.gz (3KB)
+  💾 Saved: 20260623_002402_gemini_3_1_pro_preview_new_york_type2_20260521_1779375520_claude-haiku-4-5-20251001.json
+[4/6] Running gemini_3_1_pro_preview_new_york_type5_20260521_1779375933  (hard)  → claude-haiku-4-5-20251001
+    [turn 0] blocks=['text', 'tool_use', 'tool_use', 'tool_use', 'tool_use'] text_chars=181 stop=tool_use
+    [turn 4] blocks=['text', 'tool_use', 'tool_use', 'tool_use', 'tool_use', 'tool_use'] text_chars=116 stop=tool_use
+    [turn 8] blocks=['tool_use', 'tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 10] blocks=['tool_use', 'tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 13] blocks=['tool_use', 'tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 15] blocks=['tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 17] blocks=['tool_use', 'tool_use'] text_chars=0 stop=tool_use

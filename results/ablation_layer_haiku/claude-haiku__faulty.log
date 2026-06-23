@@ -1,0 +1,253 @@
+  Using evaluator DB: /Users/victoriajin/Documents/Career_related/TravelPlanningAgent/travelbench_Phase5.10/data/cities/new_york/runs/test_layer/travelbench.db
+
+───────────────────────────────────────────────────────
+TOKEN BUDGET ESTIMATE — claude-haiku-4-5-20251001
+───────────────────────────────────────────────────────
+  gpt_5_4_new_york_type4_20260521_1779375371 (medium) ~16,350 tokens  (~12 tool calls)
+  gemini_3_1_pro_preview_new_york_type4_20260521_1779375809 (hard  ) ~30,500 tokens  (~18 tool calls)
+  gemini_3_1_pro_preview_new_york_type2_20260521_1779375520 (medium) ~16,350 tokens  (~12 tool calls)
+  gemini_3_1_pro_preview_new_york_type5_20260521_1779375933 (hard  ) ~30,500 tokens  (~18 tool calls)
+  claude_sonnet_4_5_new_york_type4_20260521_1779375721 (medium) ~16,350 tokens  (~12 tool calls)
+  claude_sonnet_4_5_new_york_type5_20260521_1779375846 (hard  ) ~30,500 tokens  (~18 tool calls)
+  ──────────────────────────────────────────────────
+  Total input:  ~73,950
+  Total output: ~66,600
+  Total tokens: ~140,550
+  Est. cost:    ~$0.3256
+───────────────────────────────────────────────────────
+
+[1/6] Running gpt_5_4_new_york_type4_20260521_1779375371  (medium)  → claude-haiku-4-5-20251001
+    [turn 0] blocks=['tool_use', 'tool_use', 'tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 3] blocks=['tool_use'] text_chars=0 stop=tool_use
+    [turn 3] blocks=['tool_use', 'tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 6] blocks=['tool_use'] text_chars=0 stop=tool_use
+    [turn 6] blocks=['text', 'tool_use', 'tool_use', 'tool_use'] text_chars=64 stop=tool_use
+    [turn 9] blocks=['tool_use', 'tool_use', 'tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 12] blocks=['tool_use', 'tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 14] blocks=['tool_use', 'tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 16] blocks=['tool_use', 'tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 18] blocks=['tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 19] blocks=['text', 'tool_use'] text_chars=82 stop=max_tokens
+    [turn 19] blocks=['text'] text_chars=7032 stop=end_turn
+
+  ┌─ gpt_5_4_new_york_type4_20260521_1779375371  (medium)  [238,605 tokens]
+  │  Tool calls: 19
+  │  Plan parsed: yes
+  │
+  │  C-score (process): 60.0%  ✅ deductions=10 warnings=3
+  │    −0.04  [call 1] search_yelp: city='New York' doesn't match task city 'new_york'
+  │    −0.04  [call 2] search_yelp: city='New York' doesn't match task city 'new_york'
+  │    −0.04  [call 3] search_blogs_and_forums: city='New York' doesn't match task city 'new_york'
+  │    −0.04  [call 13] get_travel_time: from_venue_id='ROn06pn' not seen in prior tool results
+  │    −0.04  [call 17] get_official_site: venue_id 'ROn06pn' not seen in prior tool results
+  │    ⚠  total_estimated_cost_local mismatch: stated=46 vs computed=36 (diff 10)
+  │    ⚠  Day 1: venue_id 'IhQ1cao' appears 2 times. If this is a split visit (e.g. morning + aftern
+  │    ⚠  Day 2: venue_id 'QBVmIuR' appears 2 times. If this is a split visit (e.g. morning + aftern
+  │  F-score (feasibility): 58.5%  ⚠
+  │    −0.03 [F2c] Day 1: 'Tacos El Bronco' verified truth-carrier but plan still re
+  │    −0.02 [F4a] Day 1: 'Brooklyn Bridge Park' over-scheduled 225min (max 180, rec
+  │    −0.15 [F1b] Day 1: gap 'The Halal Guys'→'Brooklyn Bridge' is 0min but walk ta
+  │    ... +3 more
+  │  P-score (preferences): 50.0%
+  │    ✗ [pc_001] score=0.00  Total estimated cost per day must stay within the 
+  │    ✓ [pc_002] score=1.00  All visit activities must be at free-entry venues:
+  │    ✓ [pc_003] score=1.00  No venue in the plan may be tagged as a tourist tr
+  │    ✗ [pc_004] score=0.00  All meal activities must be at budget-priced venue
+  │  B-score (bonus):       50.0%
+  │
+  ⏱  128.9s  [225,629in + 12,976out = 238,605 tokens]
+  📝 Transcript: gpt_5_4_new_york_type4_20260521_1779375371_20260623_001439.json.gz (12KB)
+  💾 Saved: 20260623_001439_gpt_5_4_new_york_type4_20260521_1779375371_claude-haiku-4-5-20251001.json
+[2/6] Running gemini_3_1_pro_preview_new_york_type4_20260521_1779375809  (hard)  → claude-haiku-4-5-20251001
+    [turn 0] blocks=['text', 'tool_use', 'tool_use', 'tool_use', 'tool_use'] text_chars=146 stop=tool_use
+    [turn 4] blocks=['text', 'tool_use', 'tool_use', 'tool_use', 'tool_use'] text_chars=171 stop=tool_use
+    [turn 7] blocks=['text', 'tool_use', 'tool_use', 'tool_use', 'tool_use'] text_chars=143 stop=tool_use
+    [turn 10] blocks=['text', 'tool_use', 'tool_use', 'tool_use'] text_chars=305 stop=tool_use
+    [turn 13] blocks=['text', 'tool_use'] text_chars=143 stop=tool_use
+    [turn 13] blocks=['tool_use', 'tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 16] blocks=['text', 'tool_use', 'tool_use', 'tool_use'] text_chars=125 stop=tool_use
+    [turn 18] blocks=['text', 'tool_use'] text_chars=146 stop=tool_use
+    [turn 18] blocks=['text', 'tool_use', 'tool_use'] text_chars=150 stop=tool_use
+    [turn 19] blocks=['text'] text_chars=5373 stop=end_turn
+
+  ┌─ gemini_3_1_pro_preview_new_york_type4_20260521_1779375809  (hard)  [246,735 tokens]
+  │  Tool calls: 19
+  │  Plan parsed: yes
+  │
+  │  C-score (process): 96.0%  ✅ deductions=1 warnings=3
+  │    −0.04  Plan task_id 'nyc_2day_budget_travel_july_5_6_2026' doesn't match task 'gemini_3_1_pr
+  │    ⚠  Day 1: venue_id 'IhQ1cao' appears 2 times. If this is a split visit (e.g. morning + aftern
+  │    ⚠  Day 2: venue_id 'zLloxQ6' appears 2 times. If this is a split visit (e.g. morning + aftern
+  │    ⚠  Day 2: venue_id 'JboXcKO' appears 2 times. If this is a split visit (e.g. morning + aftern
+  │  F-score (feasibility):  6.0%  ❌
+  │    −0.02 [F4a] Day 1: 'Central Park' over-scheduled 240min (max 180, rec 120min)
+  │    −0.02 [F4a] Day 1: 'Brooklyn Bridge Park' over-scheduled 285min (max 180, rec
+  │    −0.15 [F1b] Day 1: gap 'Central Park'→'Golden Shopping Mall Food Court' is 0m
+  │    ... +5 more
+  │  P-score (preferences): 66.7%
+  │    ✓ [pc_001] score=1.00  Total estimated cost per day must be <= 25.: per-d
+  │    ✗ [pc_002] score=0.00  All visit activities must have an average cost of 
+  │    ✓ [pc_003] score=1.00  No more than one museum per day.: pass (per_day)
+  │  B-score (bonus):       100.0%
+  │
+  ⏱  80.1s  [239,284in + 7,451out = 246,735 tokens]
+  📝 Transcript: gemini_3_1_pro_preview_new_york_type4_20260521_1779375809_20260623_001439.json.gz (7KB)
+  💾 Saved: 20260623_001439_gemini_3_1_pro_preview_new_york_type4_20260521_1779375809_claude-haiku-4-5-20251001.json
+[3/6] Running gemini_3_1_pro_preview_new_york_type2_20260521_1779375520  (medium)  → claude-haiku-4-5-20251001
+    [turn 0] blocks=['text', 'tool_use', 'tool_use'] text_chars=183 stop=tool_use
+    [turn 2] blocks=['text', 'tool_use', 'tool_use'] text_chars=40 stop=tool_use
+    [turn 4] blocks=['text', 'tool_use', 'tool_use'] text_chars=163 stop=tool_use
+    [turn 6] blocks=['text', 'tool_use', 'tool_use', 'tool_use'] text_chars=3400 stop=tool_use
+    [turn 9] blocks=['text', 'tool_use', 'tool_use'] text_chars=1545 stop=tool_use
+    [turn 10] blocks=['text', 'tool_use', 'tool_use'] text_chars=1267 stop=tool_use
+    [turn 12] blocks=['text', 'tool_use'] text_chars=2263 stop=tool_use
+    [turn 13] blocks=['text'] text_chars=6426 stop=end_turn
+
+  ┌─ gemini_3_1_pro_preview_new_york_type2_20260521_1779375520  (medium)  [92,913 tokens]
+  │  Tool calls: 13
+  │  Plan parsed: yes
+  │
+  │  C-score (process): 80.0%  ✅ deductions=5 warnings=0
+  │    −0.04  [call 1] search_yelp: city='New York' doesn't match task city 'new_york'
+  │    −0.04  [call 2] search_yelp: city='New York' doesn't match task city 'new_york'
+  │    −0.04  Plan task_id 'downtown_manhattan_saturday_afternoon' doesn't match task 'gemini_3_1_p
+  │    −0.04  Day 1 act 1: venue_id 'BATTERY_PARK' not seen in any tool result
+  │    −0.04  Day 1 act 3: venue_id 'CHARGING_BULL' not seen in any tool result
+  │  F-score (feasibility): 100.0%  ✅
+  │  P-score (preferences):  0.0%
+  │    ✗ [pc_001] score=0.00  All activities must be in Downtown Manhattan / Fin
+  │    ✗ [pc_002] score=0.00  At least 50% of activities must be free: 0/2 match
+  │    ✗ [pc_003] score=0.00  At least 2 attractions must be scheduled: 0/0 matc
+  │  B-score (bonus):       100.0%
+  │
+  ⏱  62.0s  [87,301in + 5,612out = 92,913 tokens]
+  📝 Transcript: gemini_3_1_pro_preview_new_york_type2_20260521_1779375520_20260623_001439.json.gz (6KB)
+  💾 Saved: 20260623_001439_gemini_3_1_pro_preview_new_york_type2_20260521_1779375520_claude-haiku-4-5-20251001.json
+[4/6] Running gemini_3_1_pro_preview_new_york_type5_20260521_1779375933  (hard)  → claude-haiku-4-5-20251001
+    [turn 0] blocks=['text', 'tool_use', 'tool_use', 'tool_use'] text_chars=176 stop=tool_use
+    [turn 3] blocks=['text', 'tool_use', 'tool_use'] text_chars=93 stop=tool_use
+    [turn 5] blocks=['text', 'tool_use', 'tool_use', 'tool_use', 'tool_use'] text_chars=1676 stop=tool_use
+    [turn 9] blocks=['text', 'tool_use', 'tool_use', 'tool_use', 'tool_use'] text_chars=1354 stop=tool_use
+    [turn 13] blocks=['text', 'tool_use', 'tool_use', 'tool_use', 'tool_use'] text_chars=1561 stop=tool_use
+    [turn 17] blocks=['text', 'tool_use', 'tool_use', 'tool_use'] text_chars=2478 stop=tool_use
+    [turn 20] blocks=['text', 'tool_use'] text_chars=3793 stop=max_tokens
+    [turn 20] blocks=['text'] text_chars=8585 stop=end_turn
+
+  ┌─ gemini_3_1_pro_preview_new_york_type5_20260521_1779375933  (hard)  [137,307 tokens]
+  │  Tool calls: 20
+  │  Plan parsed: yes
+  │
+  │  C-score (process): 88.0%  ✅ deductions=3 warnings=3
+  │    −0.04  Plan task_id 'nyc_2day_wheelchair_budget_cafe_itinerary' doesn't match task 'gemini_3
+  │    −0.04  Day 1 act 6: missing field 'venue_name'
+  │    −0.04  Day 2 act 5: missing field 'venue_name'
+  │    ⚠  Day 1: venue_id 'Db2Afr2' appears 2 times. If this is a split visit (e.g. morning + aftern
+  │    ⚠  Day 2: venue_id 'vdtpXwm' appears 2 times. If this is a split visit (e.g. morning + aftern
+  │    ⚠  Day 2: venue_id 'JEskJsa' appears 2 times. If this is a split visit (e.g. morning + aftern
+  │  F-score (feasibility): 49.0%  ❌
+  │    −0.02 [F4a] Day 1: 'Central Park' over-scheduled 325min (max 180, rec 120min)
+  │    −0.15 [F1b] Day 1: gap 'Central Park'→'Veselka' is 0min but walk takes 100min
+  │    −0.02 [F4a] Day 2: 'Veselka' over-scheduled 135min (max 120, rec 60min)
+  │    ... +3 more
+  │  P-score (preferences): 66.7%
+  │    ✗ [pc_001] score=0.00  All venues must be budget or free: 7/9 matching (f
+  │    ✓ [pc_002] score=1.00  All venues must be wheelchair accessible: 9/9 matc
+  │    ✓ [pc_003] score=1.00  Visit at least 1 cafe: 1/1 matching (pass)
+  │  B-score (bonus):        0.0%
+  │
+  ⏱  88.5s  [126,443in + 10,864out = 137,307 tokens]
+  📝 Transcript: gemini_3_1_pro_preview_new_york_type5_20260521_1779375933_20260623_001439.json.gz (7KB)
+  💾 Saved: 20260623_001439_gemini_3_1_pro_preview_new_york_type5_20260521_1779375933_claude-haiku-4-5-20251001.json
+[5/6] Running claude_sonnet_4_5_new_york_type4_20260521_1779375721  (medium)  → claude-haiku-4-5-20251001
+    [turn 0] blocks=['tool_use', 'tool_use', 'tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 3] blocks=['tool_use', 'tool_use', 'tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 6] blocks=['tool_use', 'tool_use', 'tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 9] blocks=['tool_use', 'tool_use', 'tool_use', 'tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 13] blocks=['tool_use', 'tool_use', 'tool_use', 'tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 17] blocks=['tool_use', 'tool_use', 'tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 20] blocks=['tool_use', 'tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 22] blocks=['tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 23] blocks=['tool_use'] text_chars=0 stop=max_tokens
+    [turn 23] blocks=['text'] text_chars=10721 stop=end_turn
+
+  ┌─ claude_sonnet_4_5_new_york_type4_20260521_1779375721  (medium)  [218,239 tokens]
+  │  Tool calls: 23
+  │  Plan parsed: yes
+  │
+  │  C-score (process): 68.0%  ✅ deductions=8 warnings=5
+  │    −0.04  [call 1] search_yelp: city='New York' doesn't match task city 'new_york'
+  │    −0.04  [call 2] search_yelp: city='New York' doesn't match task city 'new_york'
+  │    −0.04  [call 3] search_yelp: city='New York' doesn't match task city 'new_york'
+  │    −0.04  [call 16] get_travel_time: to_venue_id='ABpIlfR' not seen in prior tool results
+  │    −0.04  [call 22] get_travel_time: to_venue_id='mBcK519' not seen in prior tool results
+  │    ⚠  Day 1: venue_id 'IhQ1cao' appears 5 times. If this is a split visit (e.g. morning + aftern
+  │    ⚠  Day 2: venue_id 'Db2Afr2' appears 2 times. If this is a split visit (e.g. morning + aftern
+  │    ⚠  Day 2: venue_id 'm7aYL07' appears 2 times. If this is a split visit (e.g. morning + aftern
+  │  F-score (feasibility): 30.0%  ❌
+  │    −0.02 [F4a] Day 1: 'Brooklyn Bridge Park' over-scheduled 690min (max 180, rec
+  │    −0.15 [F1b] Day 1: gap 'Brooklyn Bridge Park'→'Brooklyn Bridge' is 0min but w
+  │    −0.15 [F1b] Day 1: gap 'Brooklyn Bridge'→'Grimaldi's Pizzeria' is 0min but wa
+  │    ... +6 more
+  │  P-score (preferences): 75.0%
+  │    ✗ [pc_001] score=0.00  Daily spending must not exceed $26: per-day sums [
+  │    ✓ [pc_002] score=1.00  All meals must be budget or mid price tier to keep
+  │    ✓ [pc_003] score=1.00  Plan must include at least 2 iconic NYC venues: 17
+  │    ✓ [pc_004] score=1.00  At least one meal must be at a popular-with-locals
+  │  B-score (bonus):       66.7%
+  │
+  ⏱  124.5s  [204,633in + 13,606out = 218,239 tokens]
+  📝 Transcript: claude_sonnet_4_5_new_york_type4_20260521_1779375721_20260623_001439.json.gz (14KB)
+  💾 Saved: 20260623_001439_claude_sonnet_4_5_new_york_type4_20260521_1779375721_claude-haiku-4-5-20251001.json
+[6/6] Running claude_sonnet_4_5_new_york_type5_20260521_1779375846  (hard)  → claude-haiku-4-5-20251001
+    [turn 0] blocks=['text', 'tool_use', 'tool_use', 'tool_use', 'tool_use'] text_chars=179 stop=tool_use
+    [turn 4] blocks=['text', 'tool_use', 'tool_use'] text_chars=74 stop=tool_use
+    [turn 6] blocks=['text', 'tool_use', 'tool_use'] text_chars=667 stop=tool_use
+    [turn 8] blocks=['text', 'tool_use', 'tool_use', 'tool_use', 'tool_use'] text_chars=389 stop=tool_use
+    [turn 12] blocks=['text', 'tool_use', 'tool_use', 'tool_use', 'tool_use'] text_chars=897 stop=tool_use
+    [turn 16] blocks=['text', 'tool_use', 'tool_use', 'tool_use', 'tool_use'] text_chars=1343 stop=tool_use
+    [turn 20] blocks=['text', 'tool_use', 'tool_use', 'tool_use', 'tool_use'] text_chars=1736 stop=tool_use
+    [turn 24] blocks=['text', 'tool_use', 'tool_use'] text_chars=1281 stop=tool_use
+    [turn 26] blocks=['text', 'tool_use', 'tool_use', 'tool_use', 'tool_use'] text_chars=1596 stop=tool_use
+    [rescue] stop_reason=end_turn out_tokens=2484 text_len=8186 has_tag=True
+
+  ┌─ claude_sonnet_4_5_new_york_type5_20260521_1779375846  (hard)  [169,600 tokens]
+  │  Tool calls: 30
+  │  Plan parsed: yes
+  │
+  │  C-score (process): 96.0%  ✅ deductions=1 warnings=2
+  │    −0.04  Plan task_id 'nyc_anniversary_july_2026' doesn't match task 'claude_sonnet_4_5_new_yo
+  │    ⚠  total_estimated_cost_local mismatch: stated=1034 vs computed=656 (diff 378)
+  │    ⚠  Day 2: venue_id 'jkss9CP' appears 2 times. If this is a split visit (e.g. morning + aftern
+  │  F-score (feasibility): 10.0%  ❌
+  │    −0.05 [F2c] Day 1: 'Bemelmans Bar' has wrong info, agent never verified and p
+  │    −0.15 [F1b] Day 1: gap 'One World Observatory'→'Nom Wah Tea Parlor' is 15min 
+  │    −0.15 [F2a] Day 2: 'The Metropolitan Museum of Art' CLOSED on mon (scheduled 
+  │    ... +5 more
+  │  P-score (preferences): 75.0%
+  │    ✗ [pc_001] score=0.00  All venues must be upscale or luxury price tier: 5
+  │    ✓ [pc_002] score=1.00  Plan must include at least 2 museum visits: 4/4 ma
+  │    ✓ [pc_003] score=1.00  Plan must include at least 1 romantic venue: 1/10 
+  │    ✓ [pc_004] score=1.00  Plan must include at least 1 venue with views: 3/1
+  │  B-score (bonus):       50.0%
+  │
+  ⏱  72.8s  [161,967in + 7,633out = 169,600 tokens]
+  📝 Transcript: claude_sonnet_4_5_new_york_type5_20260521_1779375846_20260623_001439.json.gz (7KB)
+  💾 Saved: 20260623_001439_claude_sonnet_4_5_new_york_type5_20260521_1779375846_claude-haiku-4-5-20251001.json
+
+════════════════════════════════════════════════════════════
+RUN SUMMARY — claude-haiku-4-5-20251001
+════════════════════════════════════════════════════════════
+Task                      Diff        C      F      P   Tokens
+────────────────────────────────────────────────────────────
+  gpt_5_4_new_york_type4_20260521_1779375371 medium    60%    58%    50%  238,605
+  gemini_3_1_pro_preview_new_york_type4_20260521_1779375809 hard      96%     6%    67%  246,735
+  gemini_3_1_pro_preview_new_york_type2_20260521_1779375520 medium    80%   100%     0%   92,913
+  gemini_3_1_pro_preview_new_york_type5_20260521_1779375933 hard      88%    49%    67%  137,307
+  claude_sonnet_4_5_new_york_type4_20260521_1779375721 medium    68%    30%    75%  218,239
+  claude_sonnet_4_5_new_york_type5_20260521_1779375846 hard      96%    10%    75%  169,600
+────────────────────────────────────────────────────────────
+  TOTAL                                    1,103,399 tokens
+  Wall time: 562.0s
+════════════════════════════════════════════════════════════
+
+💾 Summary saved: 20260623_001439_summary_claude-haiku-4-5-20251001.json
