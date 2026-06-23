@@ -68,6 +68,7 @@ from server.mock_tools import (
     TOOL_SCHEMAS, dispatch_tool, set_run_name, set_clean_environment, set_arm,
 )
 from eval.evaluator import evaluate, load_task
+from agents.runner import truncate_tool_output
 
 # ─────────────────────────────────────────────────────────────────────────────
 # TOKEN ESTIMATOR
@@ -317,7 +318,8 @@ def run_anthropic(task: dict, model: str, api_key: str,
             log_entry   = {
                 "tool_name":   tu.name,
                 "tool_input":  tu.input,
-                "tool_output": tool_output,
+                # Persist a bounded copy for post-hoc recovery analysis.
+                "tool_output": truncate_tool_output(tool_output),
             }
             # THINK is free — log to think_log, don't count toward budget
             if tu.name == "THINK":
@@ -513,11 +515,13 @@ def run_openai(task: dict, model: str, api_key: str,
             tool_call_log.append({
                 "tool_name":   tc.function.name,
                 "tool_input":  tool_input,
-                "tool_output": tool_output,
+                # Persist a bounded copy for post-hoc recovery analysis.
+                "tool_output": truncate_tool_output(tool_output),
             })
             messages.append({
                 "role":         "tool",
                 "tool_call_id": tc.id,
+                # Model still receives the FULL, untruncated output.
                 "content":      json.dumps(tool_output),
             })
             tool_result_log.append({

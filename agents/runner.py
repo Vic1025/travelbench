@@ -192,7 +192,58 @@ def parse_final_plan(text: str) -> dict | None:
 # AGENT RUNNER
 # ─────────────────────────────────────────────────────────────────────────────
 
-RESULT_SCHEMA_VERSION = "1.1"   # bump when result JSON shape changes
+RESULT_SCHEMA_VERSION = "1.2"   # bump when result JSON shape changes
+
+# Bound the persisted tool_output so transcripts don't bloat: keep at most the
+# first TOOL_OUTPUT_TOP_K results and cap the serialized size at
+# TOOL_OUTPUT_MAX_CHARS.  Truncation is recorded in-band so post-hoc analysis
+# can tell a truncated payload from a complete one.
+TOOL_OUTPUT_TOP_K     = 8
+TOOL_OUTPUT_MAX_CHARS = 4000
+
+
+def truncate_tool_output(output):
+    """
+    Return a persistence-safe copy of a tool output for logging.
+
+    - dict with a 'results' list -> keep first TOOL_OUTPUT_TOP_K, annotate
+      '_results_truncated' / '_results_total' when trimmed.
+    - then cap the JSON size at TOOL_OUTPUT_MAX_CHARS (store a truncated string
+      under '_truncated_repr' if still too large).
+    - non-dict / unserializable -> string repr, capped.
+
+    Backward-compatible: older transcripts that stored the full output still
+    parse; this only changes what NEW runs persist.
+    """
+    try:
+        if isinstance(output, dict):
+            out = dict(output)
+            results = out.get("results")
+            if isinstance(results, list) and len(results) > TOOL_OUTPUT_TOP_K:
+                out["_results_total"] = len(results)
+                out["_results_truncated"] = True
+                out["results"] = results[:TOOL_OUTPUT_TOP_K]
+            serialized = json.dumps(out, default=str)
+            if len(serialized) > TOOL_OUTPUT_MAX_CHARS:
+                return {
+                    "_truncated": True,
+                    "_orig_chars": len(serialized),
+                    "_truncated_repr": serialized[:TOOL_OUTPUT_MAX_CHARS],
+                    **{k: out[k] for k in ("tool", "count", "_results_total",
+                                           "_results_truncated") if k in out},
+                }
+            # Round-trip through default=str so the persisted copy is guaranteed
+            # JSON-serializable (handles odd objects inside the output).
+            return json.loads(serialized)
+        # non-dict payloads
+        s = json.dumps(output, default=str)
+        if len(s) > TOOL_OUTPUT_MAX_CHARS:
+            return {"_truncated": True, "_orig_chars": len(s),
+                    "_truncated_repr": s[:TOOL_OUTPUT_MAX_CHARS]}
+        return output
+    except Exception as e:
+        return {"_truncated": True, "_error": f"unserializable: {e}",
+                "_truncated_repr": repr(output)[:TOOL_OUTPUT_MAX_CHARS]}
 
 
 def run_agent(task: dict, model: str, api_key: str) -> dict:
@@ -287,12 +338,14 @@ def run_agent(task: dict, model: str, api_key: str) -> dict:
                 "round": round_count,
                 "tool_name": tool_name,
                 "tool_input": tool_input,
-                "tool_output": tool_output,
+                # Persist a bounded copy for post-hoc recovery analysis.
+                "tool_output": truncate_tool_output(tool_output),
             })
 
             tool_results.append({
                 "type": "tool_result",
                 "tool_use_id": tool_id,
+                # Model still receives the FULL, untruncated output.
                 "content": json.dumps(tool_output)
             })
 

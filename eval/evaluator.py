@@ -395,6 +395,24 @@ def load_ground_truth(city: str, db_path=None) -> tuple[dict, dict]:
     except Exception:
         pass   # table may not exist in older DBs
 
+    # Load served-lie values (incorrect/correct) per venue+field for F2c 3-tier.
+    # Attached onto the venue dict as venue["wrong_info_values"] = {field: {lie, gt}}.
+    # Backward-compatible: absent on older DBs / venues without wrong_info.
+    try:
+        wi_rows = conn.execute(
+            "SELECT venue_id, affected_field, incorrect_value, correct_value "
+            "FROM wrong_info"
+        ).fetchall()
+        for row in wi_rows:
+            vid = row["venue_id"]
+            if vid in venues:
+                venues[vid].setdefault("wrong_info_values", {})[row["affected_field"]] = {
+                    "lie": row["incorrect_value"],
+                    "gt":  row["correct_value"],
+                }
+    except Exception:
+        pass   # table may not exist in older DBs
+
     conn.close()
 
     if not matrix:
@@ -989,6 +1007,77 @@ def evaluate_c_score(result: dict, task: dict, venues: dict) -> dict:
 # ─────────────────────────────────────────────────────────────────────────────
 # TIER 2: F-SCORE — Feasibility
 # ─────────────────────────────────────────────────────────────────────────────
+# F2c 3-tier belief detection: does the plan reflect the TRUTH or the served LIE
+# for a corrupted field?  Shared signal logic with scripts/analysis/misled_metric.py.
+# ─────────────────────────────────────────────────────────────────────────────
+
+_F2C_COST_RECOVERY_RE = re.compile(
+    r"misinformation|not free|actually|admission|\bcharge|\bfee\b|"
+    r"older posts?|not \$?0\b|entrance fee|costs? \$",
+    re.IGNORECASE,
+)
+_F2C_PRICE_RECOVERY_RE = re.compile(
+    r"pricier|upscale|expensive|fine[- ]?dining|higher price|more expensive|"
+    r"premium|not budget|costlier",
+    re.IGNORECASE,
+)
+_F2C_ACCESS_RECOVERY_RE = re.compile(
+    r"\bstep\b|stairs|not accessible|not step[- ]?free|wheelchair|inaccessible",
+    re.IGNORECASE,
+)
+
+
+def _f2c_plan_reflects_truth(venue: dict, vid: str, plan_activities: list) -> bool:
+    """
+    Returns True if the agent's PLAN reflects the TRUE value for a corrupted
+    field on this venue (i.e. recovered), using the same belief signals as the
+    misled/recovered metric:
+      - estimated_cost_local closer to GT than to the lie (free-confusion), or
+      - a corrective flag on any of the venue's scheduled activities.
+
+    Conservative: returns False when there is no recovery signal (lie-tracking
+    or no observable belief).  Used only as the "recovered" gate of the 3-tier
+    F2c; the verification gate is computed separately by the caller.
+    """
+    wi = venue.get("wrong_info_values") or {}
+    if not wi:
+        return False
+
+    # Collect flag text across this venue's scheduled activities.
+    flag_text = " ".join(
+        f for a in plan_activities for f in (a.get("flags") or [])
+    )
+
+    for field, vals in wi.items():
+        if field == "avg_cost_local":
+            if _F2C_COST_RECOVERY_RE.search(flag_text):
+                return True
+            try:
+                gt  = float(vals["gt"])
+                lie = float(vals["lie"])
+            except (TypeError, ValueError, KeyError):
+                gt = lie = None
+            if gt is not None:
+                for a in plan_activities:
+                    est = a.get("estimated_cost_local")
+                    if est is None:
+                        continue
+                    try:
+                        ec = float(est)
+                    except (TypeError, ValueError):
+                        continue
+                    if abs(ec - gt) < abs(ec - lie):
+                        return True
+        elif field == "price_tier":
+            if _F2C_PRICE_RECOVERY_RE.search(flag_text):
+                return True
+        elif field == "wheelchair_accessible":
+            if _F2C_ACCESS_RECOVERY_RE.search(flag_text):
+                return True
+    return False
+
+
+# ─────────────────────────────────────────────────────────────────────────────
 
 def evaluate_f_score(result: dict, task: dict, venues: dict, matrix: dict,
                      truth_carriers: dict = None) -> dict:
@@ -1076,6 +1165,17 @@ def evaluate_f_score(result: dict, task: dict, venues: dict, matrix: dict,
     # don't multiply the deduction. (The truth-carrier retrieval is a single
     # binary action by the agent across the whole task.)
     f2c_checked_task: set = set()
+
+    # Pre-index every scheduled activity by venue_id (across all days) so the
+    # F2c belief check can inspect estimated_cost_local / flags wherever a
+    # wrong-info venue is scheduled.
+    from collections import defaultdict as _f2c_dd
+    _acts_by_venue: dict = _f2c_dd(list)
+    for _d in days:
+        for _a in _d.get("activities", []):
+            _vid = _a.get("venue_id")
+            if _vid:
+                _acts_by_venue[_vid].append(_a)
 
     for day_idx, day in enumerate(days):
         date_str, day_key = get_day_date(task, day_idx)
@@ -1189,10 +1289,35 @@ def evaluate_f_score(result: dict, task: dict, venues: dict, matrix: dict,
                         and c.get("tool_input", {}).get("venue_id") == vid
                         for c in tool_log
                     )
-                if not retrieved:
-                    _ded("F2c", 0.05,
-                         f"Day {day_idx+1}: '{vname}' has wrong info but agent "
-                         f"never retrieved truth-carrier document")
+
+                # 3-tier F2c (value-based).  We have per-venue served-lie values
+                # available → grade by whether the PLAN reflects the truth:
+                #   recovered (plan reflects GT)              → 0.0   (no deduction)
+                #   verified but plan still reflects the lie  → -0.025 (partial)
+                #   not verified AND plan reflects the lie    → -0.05  (misled)
+                # Backward-compatible: if no served-lie values are available
+                # (older DBs / no wrong_info_values), fall back to the original
+                # binary behavior keyed solely on retrieval.
+                has_values = bool(venue.get("wrong_info_values"))
+                if has_values:
+                    recovered = _f2c_plan_reflects_truth(
+                        venue, vid, _acts_by_venue.get(vid, []))
+                    if recovered:
+                        pass  # 0.0 — plan reflects the true value
+                    elif retrieved:
+                        _ded("F2c", 0.025,
+                             f"Day {day_idx+1}: '{vname}' verified truth-carrier but "
+                             f"plan still reflects the served lie (partial)")
+                    else:
+                        _ded("F2c", 0.05,
+                             f"Day {day_idx+1}: '{vname}' has wrong info, agent "
+                             f"never verified and plan reflects the lie (misled)")
+                else:
+                    # Legacy binary fallback.
+                    if not retrieved:
+                        _ded("F2c", 0.05,
+                             f"Day {day_idx+1}: '{vname}' has wrong info but agent "
+                             f"never retrieved truth-carrier document")
 
             # F2d: Event capacity sold out (weekend evening)
             if active_evt and evt_overrides.get("capacity_limited"):
