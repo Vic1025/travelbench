@@ -181,6 +181,8 @@ CREATE TABLE IF NOT EXISTS tags (
     city            TEXT NOT NULL,
     venue_id        TEXT NOT NULL,
     yelp_visible    INTEGER NOT NULL DEFAULT 0,  -- 0/1
+    injected        INTEGER DEFAULT 0,  -- 0/1: 1 = layer-injected served lie tag
+                                        --   (clean arms exclude these). Real tags = 0.
     FOREIGN KEY (venue_id) REFERENCES venues(venue_id),
     FOREIGN KEY (city) REFERENCES city_config(city),
     UNIQUE(tag, venue_id)
@@ -531,6 +533,15 @@ def _apply_migrations(conn: sqlite3.Connection) -> None:
         ]:
             if col not in yl_cols:
                 conn.execute(f"ALTER TABLE yelp_listings ADD COLUMN {col} {defn}")
+
+    # Layer sandbox: tags.injected — marks served wrong-signal tags newly added
+    # by inject_layers (e.g. 'free-entry', 'step-free'). The clean ablation arms
+    # exclude injected tags so the lie is truly healed; the faulty arm serves
+    # them. Nullable default 0 so pre-existing real tags stay served everywhere.
+    if "tags" in tables:
+        tag_cols = {r[1] for r in conn.execute("PRAGMA table_info(tags)").fetchall()}
+        if "injected" not in tag_cols:
+            conn.execute("ALTER TABLE tags ADD COLUMN injected INTEGER DEFAULT 0")
 
     # Corruption pipeline: additive wrong_info columns + corruption_runs table.
     # All columns nullable (suppress_authority defaults 0); existing inserts use

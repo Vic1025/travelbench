@@ -314,6 +314,17 @@ raw.executescript("""
         city            TEXT NOT NULL,
         yelp_hours_mon  TEXT
     );
+    -- tags WITHOUT the injected column (pre-layer-sandbox schema).
+    CREATE TABLE tags (
+        id           INTEGER PRIMARY KEY AUTOINCREMENT,
+        tag          TEXT NOT NULL,
+        city         TEXT NOT NULL,
+        venue_id     TEXT NOT NULL,
+        yelp_visible INTEGER NOT NULL DEFAULT 0,
+        UNIQUE(tag, venue_id)
+    );
+    INSERT INTO tags (tag, city, venue_id, yelp_visible)
+        VALUES ('hidden-gem', 'paris', 'vOld', 1);
     INSERT INTO yelp_listings (venue_id, city) VALUES ('vOld', 'paris');
     INSERT INTO venues (venue_id, city) VALUES ('vOld', 'paris');
     INSERT INTO wrong_info (wrong_info_id, venue_id, affected_field,
@@ -329,10 +340,13 @@ old_tables = {r[0] for r in raw.execute(
 raw.close()
 old_yl_cols = {r[1] for r in sqlite3.connect(str(OLD_DB)).execute(
     "PRAGMA table_info(yelp_listings)").fetchall()}
+old_tag_cols = {r[1] for r in sqlite3.connect(str(OLD_DB)).execute(
+    "PRAGMA table_info(tags)").fetchall()}
 check("OLD db lacks new wrong_info cols", not (set(_CORRUPTION_WI_COLS) & old_wi_cols))
 check("OLD db lacks corruption_runs", "corruption_runs" not in old_tables)
 check("OLD db lacks b1.5 yelp overlay cols",
       not (set(_YELP_OVERLAY_COLS) & old_yl_cols))
+check("OLD db lacks tags.injected col", "injected" not in old_tag_cols)
 
 # Opening via get_connection() must migrate it.
 oldconn = get_connection(OLD_DB)
@@ -348,6 +362,17 @@ mig_yl = {r["name"] for r in oldconn.execute(
     "PRAGMA table_info(yelp_listings)").fetchall()}
 for c in _YELP_OVERLAY_COLS:
     check(f"migrated yelp_listings.{c}", c in mig_yl)
+
+# Layer sandbox: tags.injected added by migration; legacy tag row preserved
+# with injected defaulting to 0 (real tags stay served everywhere).
+mig_tag = {r["name"] for r in oldconn.execute(
+    "PRAGMA table_info(tags)").fetchall()}
+check("migrated tags.injected", "injected" in mig_tag)
+old_tag_row = oldconn.execute(
+    "SELECT * FROM tags WHERE venue_id='vOld' AND tag='hidden-gem'").fetchone()
+check("legacy tag row preserved", old_tag_row is not None)
+check("legacy tag injected defaults to 0",
+      old_tag_row is not None and (old_tag_row["injected"] or 0) == 0)
 # Existing yelp row still readable; new overlay cols default to NULL.
 old_yl_row = oldconn.execute(
     "SELECT * FROM yelp_listings WHERE venue_id = 'vOld'").fetchone()

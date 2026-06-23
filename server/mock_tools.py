@@ -141,6 +141,15 @@ def _load_city_from_db(city: str, db_path: Path, arm: str = "faulty") -> CityInd
 
     clean = arm in ("clean_delete", "clean_equalvol")
 
+    # Guard: older DBs may predate the tags.injected column. Probe once so the
+    # clean-arm tag query only references it when present.
+    try:
+        tags_has_injected = "injected" in {
+            c[1] for c in conn.execute("PRAGMA table_info(tags)").fetchall()
+        }
+    except Exception:
+        tags_has_injected = False
+
     # Clean-mode preload: pull wrong_info corrections and incorrect-source doc
     # IDs into in-memory lookups so the per-row loaders below stay simple.
     yelp_corrections: dict[str, dict[str, str]] = {}   # vid -> {field: correct_value}
@@ -148,7 +157,22 @@ def _load_city_from_db(city: str, db_path: Path, arm: str = "faulty") -> CityInd
     # For equalvol: doc_id -> list of {affected_field, incorrect_value,
     # correct_value, source_type} so we can neutralise the right sentences.
     doc_flaw_specs: dict[str, list[dict]] = {}
+    # Overlay fields are served structurally by search_yelp (the yelp_<field>
+    # overlay column, or the immutable venues GT). A layer flaw plants its lie in
+    # blog/forum prose (source_type != 'yelp') but ALSO sets the served overlay
+    # (e.g. yelp_avg_cost_local=0, yelp_price_tier=<cheaper>). To truly heal the
+    # clean arms we must reset that overlay from ANY wrong_info row touching an
+    # overlay field, regardless of source_type — otherwise search_yelp keeps
+    # serving the lie in clean. Non-overlay (prose-only) fields stay yelp-typed.
+    _OVERLAY_FIELDS = {
+        "avg_cost_local", "price_tier", "booking_required",
+        "recommended_visit_minutes",
+        "hours_mon", "hours_tue", "hours_wed", "hours_thu",
+        "hours_fri", "hours_sat", "hours_sun",
+    }
     if clean:
+        # 1. Genuinely yelp-typed flaws: heal every affected_field (existing
+        #    behavior — these flaws live in the yelp listing itself).
         wi_rows = conn.execute("""
             SELECT venue_id, affected_field, correct_value, source_type
             FROM wrong_info
@@ -157,6 +181,19 @@ def _load_city_from_db(city: str, db_path: Path, arm: str = "faulty") -> CityInd
         for r in wi_rows:
             d = dict(r)
             yelp_corrections.setdefault(d["venue_id"], {})[d["affected_field"]] = d["correct_value"]
+
+        # 2. Overlay fields from NON-yelp flaws (blog/forum layer lies that still
+        #    set a served structured overlay). Heal the overlay back to GT too.
+        overlay_rows = conn.execute("""
+            SELECT venue_id, affected_field, correct_value, source_type
+            FROM wrong_info
+            WHERE source_type != 'yelp'
+        """).fetchall()
+        for r in overlay_rows:
+            d = dict(r)
+            if d["affected_field"] in _OVERLAY_FIELDS:
+                yelp_corrections.setdefault(d["venue_id"], {}) \
+                    .setdefault(d["affected_field"], d["correct_value"])
 
         bad_doc_rows = conn.execute("""
             SELECT DISTINCT doc_id
@@ -240,10 +277,21 @@ def _load_city_from_db(city: str, db_path: Path, arm: str = "faulty") -> CityInd
                     else:
                         r[field] = correct
 
-        # Fetch tags for this venue
-        tags = conn.execute(
-            "SELECT tag FROM tags WHERE venue_id = ? AND yelp_visible = 1", (vid,)
-        ).fetchall()
+        # Fetch served (yelp_visible) tags for this venue. In the clean arms,
+        # additionally exclude tags marked injected=1 — these are the served
+        # wrong-signal tags planted by inject_layers (e.g. 'free-entry',
+        # 'step-free'); serving them would keep the lie alive in a "clean"
+        # control. The faulty arm serves all yelp_visible tags (lie included).
+        # COALESCE(injected,0) guards older DBs that lack the injected column.
+        if clean and tags_has_injected:
+            tags = conn.execute(
+                "SELECT tag FROM tags WHERE venue_id = ? AND yelp_visible = 1 "
+                "AND COALESCE(injected, 0) = 0", (vid,)
+            ).fetchall()
+        else:
+            tags = conn.execute(
+                "SELECT tag FROM tags WHERE venue_id = ? AND yelp_visible = 1", (vid,)
+            ).fetchall()
         tag_list = [t["tag"] for t in tags]
 
         # Parse hours JSON from yelp_listing

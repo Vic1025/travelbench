@@ -626,6 +626,99 @@ if target is not None:
 shutil.rmtree(_tmpdir, ignore_errors=True)
 
 # ─────────────────────────────────────────────────────────────────────────────
+# [10] LAYER-STYLE FLAW — blog overlay + injected tag healed in clean arms
+# A layer flaw plants its lie in BLOG prose (source_type='blog') yet ALSO sets a
+# served structured overlay (yelp_avg_cost_local=0) plus an injected yelp_visible
+# tag ('free-entry'). The faulty arm must serve both (cost=0 lie + tag present);
+# the clean arms must heal both (cost back to GT + injected tag NOT served).
+# Uses a /tmp COPY so the real corpus DB is never mutated.
+# ─────────────────────────────────────────────────────────────────────────────
+print("\n[10] layer-style flaw (blog overlay + injected tag): faulty serves lie, "
+      "clean arms heal both cost AND tag")
+
+def _served_yelp_cost_tags(vid):
+    """Return (avg_cost_local, category_tags list) from search_yelp for vid."""
+    res = tool_search_yelp("", CITY, top_k=10_000)
+    for r in res.get("results", []):
+        if r["venue_id"] == vid:
+            return r.get("avg_cost_local"), (r.get("category_tags") or [])
+    return "VENUE_NOT_FOUND", []
+
+_tmpdir2 = tempfile.mkdtemp(prefix="layerclean_")
+TMP_DB2 = Path(_tmpdir2) / "travelbench.db"
+shutil.copyfile(DB_PATH, TMP_DB2)
+for ext in ("-wal", "-shm"):
+    side = Path(str(DB_PATH) + ext)
+    if side.exists():
+        shutil.copyfile(str(side), str(TMP_DB2) + ext)
+# Apply migrations so the tmp copy has the tags.injected column.
+get_connection(TMP_DB2).close()
+
+LIE_TAG = "free-entry"
+# Pick a clean verified venue with GT cost > 0, no wrong_info collision, AND no
+# pre-existing LIE_TAG (so the injected tag we plant is genuinely new).
+conn = sqlite3.connect(str(TMP_DB2)); conn.row_factory = sqlite3.Row
+ltarget = conn.execute("""
+    SELECT v.venue_id, v.avg_cost_local
+    FROM venues v JOIN yelp_listings y ON y.venue_id = v.venue_id
+    LEFT JOIN wrong_info wi ON wi.venue_id = v.venue_id
+    WHERE LOWER(v.city)=? AND v.page_status='verified'
+      AND wi.venue_id IS NULL
+      AND v.avg_cost_local IS NOT NULL AND v.avg_cost_local > 0
+      AND NOT EXISTS (SELECT 1 FROM tags t
+                      WHERE t.venue_id = v.venue_id AND t.tag = ?)
+    LIMIT 1
+""", (CITY, LIE_TAG)).fetchone()
+conn.close()
+check("found a clean venue to plant a layer-style flaw on", ltarget is not None)
+
+if ltarget is not None:
+    lvid    = ltarget["venue_id"]
+    lgt     = float(ltarget["avg_cost_local"])
+
+    conn = sqlite3.connect(str(TMP_DB2))
+    # Served structured overlay: cost -> 0 (the layer lie).
+    conn.execute("UPDATE yelp_listings SET yelp_avg_cost_local=0 WHERE venue_id=?", (lvid,))
+    # Injected served wrong-signal tag (mirrors inject_layers._set_visible_tag
+    # on a freshly created tag → injected=1).
+    conn.execute(
+        "INSERT INTO tags (tag, city, venue_id, yelp_visible, injected) "
+        "VALUES (?,?,?,1,1)", (LIE_TAG, "new_york", lvid))
+    # Blog-typed wrong_info row (lie lives in prose; NOT source_type='yelp').
+    conn.execute("""INSERT INTO wrong_info (wrong_info_id, venue_id, affected_field,
+        incorrect_value, correct_value, source_type, wrong_info_category, origin_story)
+        VALUES (?,?,?,?,?,?,?,?)""",
+        ("wLAYcost", lvid, "avg_cost_local", "0", str(lgt),
+         "blog", "temporal_decay", "layer-style test: free-confusion overlay"))
+    conn.commit(); conn.close()
+
+    orig_get_db_path2 = mock_tools._get_db_path
+    mock_tools._get_db_path = lambda c: TMP_DB2
+    try:
+        # faulty: serves the lie (cost=0) AND the injected tag.
+        mock_tools._city_cache.clear(); set_arm("faulty")
+        f_cost, f_tags = _served_yelp_cost_tags(lvid)
+        check("layer/faulty: cost overlay served as lie (0)",
+              f_cost == 0, f"got {f_cost}")
+        check("layer/faulty: injected tag served (present)",
+              LIE_TAG in f_tags, f"tags={f_tags}")
+
+        # both clean arms: cost healed to GT AND injected tag NOT served.
+        for arm in ("clean_delete", "clean_equalvol"):
+            mock_tools._city_cache.clear(); set_arm(arm)
+            c_cost, c_tags = _served_yelp_cost_tags(lvid)
+            check(f"layer/{arm}: cost healed to GT {lgt}",
+                  c_cost == lgt, f"got {c_cost}")
+            check(f"layer/{arm}: injected tag NOT served (absent)",
+                  LIE_TAG not in c_tags, f"leaked tag, tags={c_tags}")
+    finally:
+        mock_tools._get_db_path = orig_get_db_path2
+        mock_tools._city_cache.clear()
+        set_arm("faulty")
+
+shutil.rmtree(_tmpdir2, ignore_errors=True)
+
+# ─────────────────────────────────────────────────────────────────────────────
 print("\n" + "=" * 60)
 print(f"PASSED: {PASS}   FAILED: {FAIL}")
 print("=" * 60)
