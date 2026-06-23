@@ -520,3 +520,47 @@ Report **recovery-rate × trap-tier** as primary; aggregate C/F/P only as second
 - **certifier retro:** `certifier_retro.py` on `<run>_dense` + its transcripts (FREE).
 - **validate_corruption:** `--db <run>_dense` (FREE) — gates fairness before any API spend.
 - **in-plan recovery metric:** on `<run>_dense` ablation transcripts (FREE).
+
+---
+
+## 14. Layer model (2026-06-22) — the validated direction
+
+Diagnosis of why b1/b1.5 flaws were inert (measured on test_lb2): the operator corrupted
+**hours (130) + cost (38) + price (13)**, but the 18 NYC tasks bind their *selection*
+conditions on **tags / category / traffic_tier / price_tier** (hours is never a selection
+condition; `avg_cost` binds 2/18). Result: 93% of flaws sat on non-binding fields; 18/20
+in-play hours visits were **inert** (agent schedules at normal times, the widened-hours lie
+changes nothing). Also: the operator never used the handbook origin-story/type flow (stamped
+mask-label stories + a bogus `propagation_error` category) and the "incorrect_source" docs
+literally state the wrong value only ~1/8 of the time — narratively hollow.
+
+**The fix — flaw LAYERS, not per-venue isolated flaws.** A layer = a systematic
+source×attribute bias applied stochastically across the pool (e.g. "accessibility info is
+optimistically wrong", "prices are stale-cheaper", "paid venues look free"). This is *more*
+realistic than i.i.d. random field noise — real internet error is source-correlated and
+attribute-systematic (OSM/truth-discovery). Layers stack; per-(venue,field) collisions
+resolved keep-one (deterministic by seed/priority). Layers are chosen to **cover the task
+references** (corrupt the attributes tasks bind on) — but applied by a task-blind stochastic
+rule, so it's systematic bias, not test-overfitting.
+
+**Literature-grounded constants** (papers set structure + bounds; per-attribute rate
+interpolated within them):
+- per-attribute density ~**20–40%**, visibility-scaled (Klinkhardt omission gradient 27%
+  visible → 78% hidden; saturating in popularity). Our pool ≈70 venues → 20–30 flaws/layer.
+- within a flawed venue, wrong value is the **majority** of its ~3-4 sources; truth a
+  **minority** (Li 2016: truth in 1–2 of 18 sources, 62% of cases) + a cross-venue **tell**
+  (shared mistake → fair/detectable).
+- recoverability tiers: minority/tell strength tuned to repairability ≈ **0.8/0.5/0.25**
+  (BART easy/med/hard). Total injected fraction bounded by BART 1–10%/attr (realistic) up to
+  25–75% (stress). Ghost layer ~15–20% (Klinkhardt 9/49 areas).
+
+**Free confirm (no API, `feasible-set shift` test):** applying accessibility-flip +
+price-shift + free/paid layers at ~30% density to test_70 → **12/12 binding tasks show a
+shifted feasible set**, with large *falsely-eligible* counts (e.g. avg_cost task GT-feasible
+13 → faulty 33: 20 paid venues look free; price+wheelchair 11 → 26). These are the
+GT-scorable false positives the old hours flaws couldn't produce. Direction validated:
+layers on *binding* attributes bite structurally (every binding task), independent of
+venue-selection drift; ~30% (literature) density suffices. **Build target: a layer operator**
+replacing the per-field mechanical operator — corrupting tags + categorical/numeric binding
+attributes in doc prose + structured fields, with origin stories, correlated (copying-bloc +
+cross-venue tell), at literature densities.

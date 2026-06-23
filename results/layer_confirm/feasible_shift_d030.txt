@@ -1,0 +1,13 @@
+  claude_sonnet_4_5_new_york_type4_2 GT=60 faulty=62 +false=2 -lost=0
+  claude_sonnet_4_5_new_york_type5_2 GT=10 faulty= 8 +false=0 -lost=2
+  gpt_5_4_new_york_type6_20260521_17 GT=34 faulty=26 +false=0 -lost=8
+  gpt_5_4_new_york_type1_20260521_17 GT=10 faulty= 8 +false=0 -lost=2
+  gpt_5_4_new_york_type4_20260521_17 GT=20 faulty=30 +false=10 -lost=0
+  gemini_3_1_pro_preview_new_york_ty GT=13 faulty=33 +false=20 -lost=0
+  gemini_3_1_pro_preview_new_york_ty GT=11 faulty=26 +false=15 -lost=0
+  gemini_3_1_pro_preview_new_york_ty GT=24 faulty=18 +false=2 -lost=8
+  gemini_3_1_pro_preview_new_york_ty GT=13 faulty=33 +false=20 -lost=0
+  gemini_3_1_pro_preview_new_york_ty GT=34 faulty=26 +false=0 -lost=8
+  deepseek_reasoner_new_york_type4_2 GT=60 faulty=62 +false=2 -lost=0
+  deepseek_reasoner_new_york_type5_2 GT=10 faulty= 8 +false=0 -lost=2
+TASKS shifted: 12/12 at density=0.3
