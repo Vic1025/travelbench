@@ -8,9 +8,9 @@ import os
 import sys
 import sqlite3
 
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
-from flaw_certifier import load_flaw_evidence, certify  # noqa: E402
+from scripts.generation.flaw_certifier import load_flaw_evidence, certify  # noqa: E402
 
 DB_PATH = os.path.join(
     os.path.dirname(os.path.abspath(__file__)),

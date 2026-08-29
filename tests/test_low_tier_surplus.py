@@ -18,7 +18,7 @@ from pathlib import Path
 from collections import Counter
 
 # Add project root to path
-sys.path.insert(0, str(Path(__file__).parent))
+sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from scripts.generation.research_city import STUB_CONFIGS
 from scripts.generation.generate_city_venues import plan_venues
