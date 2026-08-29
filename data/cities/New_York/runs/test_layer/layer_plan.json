@@ -1,0 +1,548 @@
+{
+  "operator_version": "layer.v1",
+  "seed": "layer-001",
+  "density": 0.3,
+  "model": "claude-sonnet-4-5-20250929",
+  "src_db": "data/cities/New_York/runs/test_70/travelbench.db",
+  "dst_db": "data/cities/New_York/runs/test_layer/travelbench.db",
+  "collision_priority": "free-confusion > accessibility-optimism > price-deflation",
+  "dropped_collisions": [],
+  "layers": [
+    {
+      "layer": "free-confusion",
+      "field": "avg_cost_local",
+      "eligible": 57,
+      "selected_after_collision": 20,
+      "flaws_written": 19,
+      "docs_authored": 38,
+      "unreliable_sources_used": {
+        "OldTownWanderer / Frugal NYC Notebook": 6,
+        "budget_nomad_77 / Free Things To Do Forum": 7,
+        "ThriftyCityGuides / ThriftyCityGuides Blog": 6
+      },
+      "validity_rejections": [
+        {
+          "venue_id": "QliRU3Y",
+          "reason": "llm_error: JSONDecodeError: Expecting ',' delimiter: line 1 column 3562 (char 3561)"
+        }
+      ],
+      "venues": [
+        {
+          "venue_id": "Bhnf3XT",
+          "name": "Katz's Delicatessen",
+          "field": "avg_cost_local",
+          "wrong_value": "0",
+          "true_value": "25.0",
+          "unreliable_source": "OldTownWanderer / Frugal NYC Notebook",
+          "truth_source": "just_visited_ny / NYC Recent Visits Blog",
+          "incorrect_doc_id": "q32nxPbH",
+          "truth_doc_id": "vWMtVv24",
+          "incorrect_doc_embeds_wrong_claim": true,
+          "truth_doc_embeds_true_value": true
+        },
+        {
+          "venue_id": "IYmC84W",
+          "name": "One World Observatory",
+          "field": "avg_cost_local",
+          "wrong_value": "0",
+          "true_value": "44.0",
+          "unreliable_source": "budget_nomad_77 / Free Things To Do Forum",
+          "truth_source": "just_visited_ny / NYC Recent Visits Blog",
+          "incorrect_doc_id": "rlzQ1v9H",
+          "truth_doc_id": "BvoUbiZY",
+          "incorrect_doc_embeds_wrong_claim": true,
+          "truth_doc_embeds_true_value": true
+        },
+        {
+          "venue_id": "JEskJsa",
+          "name": "9/11 Memorial & Museum",
+          "field": "avg_cost_local",
+          "wrong_value": "0",
+          "true_value": "28.0",
+          "unreliable_source": "ThriftyCityGuides / ThriftyCityGuides Blog",
+          "truth_source": "just_visited_ny / NYC Recent Visits Blog",
+          "incorrect_doc_id": "Yry526hF",
+          "truth_doc_id": "tCW0Xme1",
+          "incorrect_doc_embeds_wrong_claim": true,
+          "truth_doc_embeds_true_value": true
+        },
+        {
+          "venue_id": "ROn06pn",
+          "name": "The Halal Guys",
+          "field": "avg_cost_local",
+          "wrong_value": "0",
+          "true_value": "10.0",
+          "unreliable_source": "budget_nomad_77 / Free Things To Do Forum",
+          "truth_source": "just_visited_ny / NYC Recent Visits Blog",
+          "incorrect_doc_id": "FWSk30uH",
+          "truth_doc_id": "tn02nu1p",
+          "incorrect_doc_embeds_wrong_claim": true,
+          "truth_doc_embeds_true_value": true
+        },
+        {
+          "venue_id": "SRG9nLl",
+          "name": "Snug Harbor Cultural Center",
+          "field": "avg_cost_local",
+          "wrong_value": "0",
+          "true_value": "10.0",
+          "unreliable_source": "ThriftyCityGuides / ThriftyCityGuides Blog",
+          "truth_source": "weekend_in_nyc / Manhattan This Month",
+          "incorrect_doc_id": "V7aYBkMF",
+          "truth_doc_id": "nHCaX2Fe",
+          "incorrect_doc_embeds_wrong_claim": true,
+          "truth_doc_embeds_true_value": true
+        },
+        {
+          "venue_id": "SYt42bV",
+          "name": "Trini-Pak Roti Shop",
+          "field": "avg_cost_local",
+          "wrong_value": "0",
+          "true_value": "10.0",
+          "unreliable_source": "OldTownWanderer / Frugal NYC Notebook",
+          "truth_source": "weekend_in_nyc / Manhattan This Month",
+          "incorrect_doc_id": "vD930fdC",
+          "truth_doc_id": "XcFrboA9",
+          "incorrect_doc_embeds_wrong_claim": true,
+          "truth_doc_embeds_true_value": true
+        },
+        {
+          "venue_id": "UqHByOI",
+          "name": "Isamu Noguchi Museum",
+          "field": "avg_cost_local",
+          "wrong_value": "0",
+          "true_value": "12.0",
+          "unreliable_source": "budget_nomad_77 / Free Things To Do Forum",
+          "truth_source": "just_visited_ny / NYC Recent Visits Blog",
+          "incorrect_doc_id": "jqYe5M2X",
+          "truth_doc_id": "hnhizYhK",
+          "incorrect_doc_embeds_wrong_claim": true,
+          "truth_doc_embeds_true_value": true
+        },
+        {
+          "venue_id": "WYZ8rbm",
+          "name": "Whitney Museum of American Art",
+          "field": "avg_cost_local",
+          "wrong_value": "0",
+          "true_value": "30.0",
+          "unreliable_source": "ThriftyCityGuides / ThriftyCityGuides Blog",
+          "truth_source": "weekend_in_nyc / Manhattan This Month",
+          "incorrect_doc_id": "AHEbwV4Y",
+          "truth_doc_id": "RXtXLeis",
+          "incorrect_doc_embeds_wrong_claim": true,
+          "truth_doc_embeds_true_value": true
+        },
+        {
+          "venue_id": "aUYpAyy",
+          "name": "Tenement Museum",
+          "field": "avg_cost_local",
+          "wrong_value": "0",
+          "true_value": "30.0",
+          "unreliable_source": "OldTownWanderer / Frugal NYC Notebook",
+          "truth_source": "just_visited_ny / NYC Recent Visits Blog",
+          "incorrect_doc_id": "Kn4yAkSB",
+          "truth_doc_id": "eJfZK2MW",
+          "incorrect_doc_embeds_wrong_claim": true,
+          "truth_doc_embeds_true_value": true
+        },
+        {
+          "venue_id": "b7IQRkW",
+          "name": "Smorgasburg LIC Winter Pop-Up",
+          "field": "avg_cost_local",
+          "wrong_value": "0",
+          "true_value": "35.0",
+          "unreliable_source": "budget_nomad_77 / Free Things To Do Forum",
+          "truth_source": "just_visited_ny / NYC Recent Visits Blog",
+          "incorrect_doc_id": "sRmskI9X",
+          "truth_doc_id": "uGaJswPx",
+          "incorrect_doc_embeds_wrong_claim": true,
+          "truth_doc_embeds_true_value": true
+        },
+        {
+          "venue_id": "eAL7JCE",
+          "name": "Angel's Share",
+          "field": "avg_cost_local",
+          "wrong_value": "0",
+          "true_value": "35.0",
+          "unreliable_source": "ThriftyCityGuides / ThriftyCityGuides Blog",
+          "truth_source": "weekend_in_nyc / Manhattan This Month",
+          "incorrect_doc_id": "Oxp87kCS",
+          "truth_doc_id": "mqbFfC8h",
+          "incorrect_doc_embeds_wrong_claim": true,
+          "truth_doc_embeds_true_value": true
+        },
+        {
+          "venue_id": "fH7GO2B",
+          "name": "The Brooklyn Inn",
+          "field": "avg_cost_local",
+          "wrong_value": "0",
+          "true_value": "14.0",
+          "unreliable_source": "OldTownWanderer / Frugal NYC Notebook",
+          "truth_source": "weekend_in_nyc / Manhattan This Month",
+          "incorrect_doc_id": "xSrvLBaK",
+          "truth_doc_id": "FDDVnbSl",
+          "incorrect_doc_embeds_wrong_claim": true,
+          "truth_doc_embeds_true_value": true
+        },
+        {
+          "venue_id": "gt6jik6",
+          "name": "Grimaldi's Pizzeria",
+          "field": "avg_cost_local",
+          "wrong_value": "0",
+          "true_value": "25.0",
+          "unreliable_source": "budget_nomad_77 / Free Things To Do Forum",
+          "truth_source": "weekend_in_nyc / Manhattan This Month",
+          "incorrect_doc_id": "U9AxYh0b",
+          "truth_doc_id": "X89FDnLS",
+          "incorrect_doc_embeds_wrong_claim": true,
+          "truth_doc_embeds_true_value": true
+        },
+        {
+          "venue_id": "gzSEluN",
+          "name": "Ess-a-Bagel",
+          "field": "avg_cost_local",
+          "wrong_value": "0",
+          "true_value": "12.0",
+          "unreliable_source": "ThriftyCityGuides / ThriftyCityGuides Blog",
+          "truth_source": "just_visited_ny / NYC Recent Visits Blog",
+          "incorrect_doc_id": "Lxry3P8z",
+          "truth_doc_id": "vnIrg1AB",
+          "incorrect_doc_embeds_wrong_claim": true,
+          "truth_doc_embeds_true_value": true
+        },
+        {
+          "venue_id": "ilZN4ee",
+          "name": "Zero Otto Nove",
+          "field": "avg_cost_local",
+          "wrong_value": "0",
+          "true_value": "25.0",
+          "unreliable_source": "OldTownWanderer / Frugal NYC Notebook",
+          "truth_source": "just_visited_ny / NYC Recent Visits Blog",
+          "incorrect_doc_id": "GxxWxxoV",
+          "truth_doc_id": "uXoVWjtS",
+          "incorrect_doc_embeds_wrong_claim": true,
+          "truth_doc_embeds_true_value": true
+        },
+        {
+          "venue_id": "nqLW7ZH",
+          "name": "Taverna Kyclades",
+          "field": "avg_cost_local",
+          "wrong_value": "0",
+          "true_value": "35.0",
+          "unreliable_source": "budget_nomad_77 / Free Things To Do Forum",
+          "truth_source": "weekend_in_nyc / Manhattan This Month",
+          "incorrect_doc_id": "oGWKAEKh",
+          "truth_doc_id": "jtCEaxjv",
+          "incorrect_doc_embeds_wrong_claim": true,
+          "truth_doc_embeds_true_value": true
+        },
+        {
+          "venue_id": "o9ivBEY",
+          "name": "The Ear Inn",
+          "field": "avg_cost_local",
+          "wrong_value": "0",
+          "true_value": "18.0",
+          "unreliable_source": "ThriftyCityGuides / ThriftyCityGuides Blog",
+          "truth_source": "just_visited_ny / NYC Recent Visits Blog",
+          "incorrect_doc_id": "uz8eX5Xw",
+          "truth_doc_id": "bNl1eFK2",
+          "incorrect_doc_embeds_wrong_claim": true,
+          "truth_doc_embeds_true_value": true
+        },
+        {
+          "venue_id": "oROvMoN",
+          "name": "Empire State Building",
+          "field": "avg_cost_local",
+          "wrong_value": "0",
+          "true_value": "44.0",
+          "unreliable_source": "OldTownWanderer / Frugal NYC Notebook",
+          "truth_source": "weekend_in_nyc / Manhattan This Month",
+          "incorrect_doc_id": "SXwH3Stu",
+          "truth_doc_id": "lLywmWDH",
+          "incorrect_doc_embeds_wrong_claim": true,
+          "truth_doc_embeds_true_value": true
+        },
+        {
+          "venue_id": "zLloxQ6",
+          "name": "Rockefeller Center",
+          "field": "avg_cost_local",
+          "wrong_value": "0",
+          "true_value": "40.0",
+          "unreliable_source": "budget_nomad_77 / Free Things To Do Forum",
+          "truth_source": "weekend_in_nyc / Manhattan This Month",
+          "incorrect_doc_id": "u3z66KTb",
+          "truth_doc_id": "IoFTlbhU",
+          "incorrect_doc_embeds_wrong_claim": true,
+          "truth_doc_embeds_true_value": true
+        }
+      ]
+    },
+    {
+      "layer": "accessibility-optimism",
+      "field": "wheelchair_accessible",
+      "eligible": 48,
+      "selected_after_collision": 14,
+      "flaws_written": 10,
+      "docs_authored": 20,
+      "unreliable_sources_used": {
+        "AccessOptimist / Easy Access City Blog": 5,
+        "rolling_explorer / Step-Free Travel Forum": 5
+      },
+      "validity_rejections": [
+        {
+          "venue_id": "SYt42bV",
+          "reason": "llm_error: JSONDecodeError: Expecting ',' delimiter: line 1 column 3733 (char 3732)"
+        },
+        {
+          "venue_id": "hbFeqZP",
+          "reason": "llm_error: JSONDecodeError: Expecting ',' delimiter: line 1 column 4046 (char 4045)"
+        },
+        {
+          "venue_id": "nqLW7ZH",
+          "reason": "llm_error: JSONDecodeError: Expecting ',' delimiter: line 1 column 3701 (char 3700)"
+        },
+        {
+          "venue_id": "ywrp541",
+          "reason": "llm_error: JSONDecodeError: Expecting ',' delimiter: line 1 column 3484 (char 3483)"
+        }
+      ],
+      "venues": [
+        {
+          "venue_id": "CKCyUYQ",
+          "name": "Guggenheim Museum",
+          "field": "wheelchair_accessible",
+          "wrong_value": "1",
+          "true_value": "0",
+          "unreliable_source": "AccessOptimist / Easy Access City Blog",
+          "truth_source": "mobility_first_ny / Real Access Reports",
+          "incorrect_doc_id": "YkHkwt4v",
+          "truth_doc_id": "qEtt7POu",
+          "incorrect_doc_embeds_wrong_claim": true,
+          "truth_doc_embeds_true_value": true
+        },
+        {
+          "venue_id": "Oc2eKuU",
+          "name": "Peter Luger Steak House",
+          "field": "wheelchair_accessible",
+          "wrong_value": "1",
+          "true_value": "0",
+          "unreliable_source": "rolling_explorer / Step-Free Travel Forum",
+          "truth_source": "wheels_on_tour / Access Checked NYC",
+          "incorrect_doc_id": "cJkGPa9P",
+          "truth_doc_id": "NYRMcu2k",
+          "incorrect_doc_embeds_wrong_claim": true,
+          "truth_doc_embeds_true_value": true
+        },
+        {
+          "venue_id": "TXIPjox",
+          "name": "Flushing Meadows-Corona Park",
+          "field": "wheelchair_accessible",
+          "wrong_value": "1",
+          "true_value": "0",
+          "unreliable_source": "rolling_explorer / Step-Free Travel Forum",
+          "truth_source": "wheels_on_tour / Access Checked NYC",
+          "incorrect_doc_id": "y8Zq8rzA",
+          "truth_doc_id": "rX7DmKoM",
+          "incorrect_doc_embeds_wrong_claim": true,
+          "truth_doc_embeds_true_value": true
+        },
+        {
+          "venue_id": "UqtiW9m",
+          "name": "Black Flamingo",
+          "field": "wheelchair_accessible",
+          "wrong_value": "1",
+          "true_value": "0",
+          "unreliable_source": "AccessOptimist / Easy Access City Blog",
+          "truth_source": "mobility_first_ny / Real Access Reports",
+          "incorrect_doc_id": "W18kQLjv",
+          "truth_doc_id": "c5Ctjt04",
+          "incorrect_doc_embeds_wrong_claim": true,
+          "truth_doc_embeds_true_value": true
+        },
+        {
+          "venue_id": "X4SR51S",
+          "name": "Punjabi Grocery & Deli",
+          "field": "wheelchair_accessible",
+          "wrong_value": "1",
+          "true_value": "0",
+          "unreliable_source": "rolling_explorer / Step-Free Travel Forum",
+          "truth_source": "wheels_on_tour / Access Checked NYC",
+          "incorrect_doc_id": "JyCDTTFa",
+          "truth_doc_id": "Ufu2uD50",
+          "incorrect_doc_embeds_wrong_claim": true,
+          "truth_doc_embeds_true_value": true
+        },
+        {
+          "venue_id": "YbRCZWo",
+          "name": "The Frick Collection",
+          "field": "wheelchair_accessible",
+          "wrong_value": "1",
+          "true_value": "0",
+          "unreliable_source": "AccessOptimist / Easy Access City Blog",
+          "truth_source": "wheels_on_tour / Access Checked NYC",
+          "incorrect_doc_id": "ZrQ9mHsE",
+          "truth_doc_id": "OvhcPc4k",
+          "incorrect_doc_embeds_wrong_claim": true,
+          "truth_doc_embeds_true_value": true
+        },
+        {
+          "venue_id": "fex6LeU",
+          "name": "The Bronx Museum of the Arts",
+          "field": "wheelchair_accessible",
+          "wrong_value": "1",
+          "true_value": "0",
+          "unreliable_source": "rolling_explorer / Step-Free Travel Forum",
+          "truth_source": "mobility_first_ny / Real Access Reports",
+          "incorrect_doc_id": "aOI1vqtP",
+          "truth_doc_id": "F3df9n8A",
+          "incorrect_doc_embeds_wrong_claim": true,
+          "truth_doc_embeds_true_value": true
+        },
+        {
+          "venue_id": "osyt7Ts",
+          "name": "Blue Note Jazz Club",
+          "field": "wheelchair_accessible",
+          "wrong_value": "1",
+          "true_value": "0",
+          "unreliable_source": "AccessOptimist / Easy Access City Blog",
+          "truth_source": "wheels_on_tour / Access Checked NYC",
+          "incorrect_doc_id": "a2RWXQX1",
+          "truth_doc_id": "DyBEQsb8",
+          "incorrect_doc_embeds_wrong_claim": true,
+          "truth_doc_embeds_true_value": true
+        },
+        {
+          "venue_id": "tolkCnu",
+          "name": "The Ramble, Central Park",
+          "field": "wheelchair_accessible",
+          "wrong_value": "1",
+          "true_value": "0",
+          "unreliable_source": "rolling_explorer / Step-Free Travel Forum",
+          "truth_source": "mobility_first_ny / Real Access Reports",
+          "incorrect_doc_id": "ZV8MIYu7",
+          "truth_doc_id": "xYN9LDio",
+          "incorrect_doc_embeds_wrong_claim": true,
+          "truth_doc_embeds_true_value": true
+        },
+        {
+          "venue_id": "v8egoen",
+          "name": "Uptown Lounge",
+          "field": "wheelchair_accessible",
+          "wrong_value": "1",
+          "true_value": "0",
+          "unreliable_source": "AccessOptimist / Easy Access City Blog",
+          "truth_source": "mobility_first_ny / Real Access Reports",
+          "incorrect_doc_id": "nvMf57nu",
+          "truth_doc_id": "VCAqmcgh",
+          "incorrect_doc_embeds_wrong_claim": true,
+          "truth_doc_embeds_true_value": true
+        }
+      ]
+    },
+    {
+      "layer": "price-deflation",
+      "field": "price_tier",
+      "eligible": 34,
+      "selected_after_collision": 8,
+      "flaws_written": 6,
+      "docs_authored": 12,
+      "unreliable_sources_used": {
+        "StalePriceList / Old Menu Prices Blog": 3,
+        "deal_hunter_nyc / Cheap Eats NYC Forum": 1,
+        "ValueDiner2019 / ValueDiner Reviews": 2
+      },
+      "validity_rejections": [
+        {
+          "venue_id": "TsuPa05",
+          "reason": "llm_error: JSONDecodeError: Expecting ',' delimiter: line 1 column 3788 (char 3787)"
+        },
+        {
+          "venue_id": "c38iUVk",
+          "reason": "llm_error: JSONDecodeError: Expecting ',' delimiter: line 1 column 3476 (char 3475)"
+        }
+      ],
+      "venues": [
+        {
+          "venue_id": "ASZuBYu",
+          "name": "Dead Rabbit",
+          "field": "price_tier",
+          "wrong_value": "mid",
+          "true_value": "upscale",
+          "unreliable_source": "StalePriceList / Old Menu Prices Blog",
+          "truth_source": "ate_there_last_week / Current NYC Eats",
+          "incorrect_doc_id": "qBkT0vId",
+          "truth_doc_id": "nqzEH8F5",
+          "incorrect_doc_embeds_wrong_claim": true,
+          "truth_doc_embeds_true_value": true
+        },
+        {
+          "venue_id": "AvAj4NI",
+          "name": "Diner",
+          "field": "price_tier",
+          "wrong_value": "budget",
+          "true_value": "mid",
+          "unreliable_source": "deal_hunter_nyc / Cheap Eats NYC Forum",
+          "truth_source": "nyc_bill_watch / What It Costs Now",
+          "incorrect_doc_id": "SHPienmn",
+          "truth_doc_id": "NqWDPvOi",
+          "incorrect_doc_embeds_wrong_claim": true,
+          "truth_doc_embeds_true_value": true
+        },
+        {
+          "venue_id": "Oc2eKuU",
+          "name": "Peter Luger Steak House",
+          "field": "price_tier",
+          "wrong_value": "upscale",
+          "true_value": "fine-dining",
+          "unreliable_source": "ValueDiner2019 / ValueDiner Reviews",
+          "truth_source": "ate_there_last_week / Current NYC Eats",
+          "incorrect_doc_id": "tKlPtDMF",
+          "truth_doc_id": "S3fCDM2L",
+          "incorrect_doc_embeds_wrong_claim": true,
+          "truth_doc_embeds_true_value": true
+        },
+        {
+          "venue_id": "P1tmn5B",
+          "name": "Bemelmans Bar",
+          "field": "price_tier",
+          "wrong_value": "mid",
+          "true_value": "upscale",
+          "unreliable_source": "StalePriceList / Old Menu Prices Blog",
+          "truth_source": "ate_there_last_week / Current NYC Eats",
+          "incorrect_doc_id": "nJai7dB0",
+          "truth_doc_id": "BXrwlUqY",
+          "incorrect_doc_embeds_wrong_claim": true,
+          "truth_doc_embeds_true_value": true
+        },
+        {
+          "venue_id": "WYZ8rbm",
+          "name": "Whitney Museum of American Art",
+          "field": "price_tier",
+          "wrong_value": "budget",
+          "true_value": "mid",
+          "unreliable_source": "ValueDiner2019 / ValueDiner Reviews",
+          "truth_source": "ate_there_last_week / Current NYC Eats",
+          "incorrect_doc_id": "CvgsOPvZ",
+          "truth_doc_id": "y89U3I6z",
+          "incorrect_doc_embeds_wrong_claim": true,
+          "truth_doc_embeds_true_value": true
+        },
+        {
+          "venue_id": "aUYpAyy",
+          "name": "Tenement Museum",
+          "field": "price_tier",
+          "wrong_value": "budget",
+          "true_value": "mid",
+          "unreliable_source": "StalePriceList / Old Menu Prices Blog",
+          "truth_source": "nyc_bill_watch / What It Costs Now",
+          "incorrect_doc_id": "RqaCTony",
+          "truth_doc_id": "hFGVGvYM",
+          "incorrect_doc_embeds_wrong_claim": true,
+          "truth_doc_embeds_true_value": true
+        }
+      ]
+    }
+  ],
+  "incorrect_docs_total": 35,
+  "incorrect_docs_embedding_lie": 35,
+  "pct_incorrect_docs_state_lie": 100.0
+}

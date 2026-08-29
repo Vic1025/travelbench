@@ -1,0 +1,286 @@
+  Using evaluator DB: /Users/victoriajin/Documents/Career_related/TravelPlanningAgent/travelbench_Phase5.10/data/cities/new_york/runs/test_lb2/travelbench.db
+  🧼 ARM=clean_equalvol — heal yelp fields + REPLACE incorrect_source doc bodies with neutral filler (volume held constant)
+
+───────────────────────────────────────────────────────
+TOKEN BUDGET ESTIMATE — claude-sonnet-4-5
+───────────────────────────────────────────────────────
+  claude_sonnet_4_5_new_york_type1_20260521_1779375385 (medium) ~16,350 tokens  (~12 tool calls)
+  claude_sonnet_4_5_new_york_type2_20260521_1779375498 (medium) ~16,350 tokens  (~12 tool calls)
+  claude_sonnet_4_5_new_york_type3_20260521_1779375614 (medium) ~16,350 tokens  (~12 tool calls)
+  claude_sonnet_4_5_new_york_type4_20260521_1779375721 (medium) ~16,350 tokens  (~12 tool calls)
+  claude_sonnet_4_5_new_york_type5_20260521_1779375846 (hard  ) ~30,500 tokens  (~18 tool calls)
+  deepseek_reasoner_new_york_type6_20260521_1779375871 (medium) ~16,350 tokens  (~12 tool calls)
+  ──────────────────────────────────────────────────
+  Total input:  ~60,450
+  Total output: ~51,800
+  Total tokens: ~112,250
+  Est. cost:    unknown (model not in pricing table)
+───────────────────────────────────────────────────────
+
+[1/6] Running claude_sonnet_4_5_new_york_type1_20260521_1779375385  (medium)  → claude-sonnet-4-5
+    [turn 0] blocks=['text', 'tool_use'] text_chars=261 stop=tool_use
+    [turn 0] blocks=['tool_use', 'tool_use', 'tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 4] blocks=['tool_use', 'tool_use', 'tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 8] blocks=['tool_use', 'tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 11] blocks=['tool_use', 'tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 14] blocks=['tool_use'] text_chars=0 stop=tool_use
+    [turn 14] blocks=['tool_use', 'tool_use', 'tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 18] blocks=['tool_use', 'tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 21] blocks=['tool_use', 'tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 24] blocks=['tool_use'] text_chars=0 stop=tool_use
+    [turn 24] blocks=['tool_use', 'tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 27] blocks=['tool_use', 'tool_use', 'tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 31] blocks=['tool_use', 'tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 34] blocks=['tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 36] blocks=['tool_use'] text_chars=0 stop=tool_use
+    [turn 36] blocks=['tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 38] blocks=['tool_use'] text_chars=0 stop=tool_use
+    [turn 38] blocks=['text'] text_chars=11844 stop=end_turn
+
+  ┌─ claude_sonnet_4_5_new_york_type1_20260521_1779375385  (medium)  [396,347 tokens]
+  │  Tool calls: 38
+  │  Plan parsed: yes
+  │
+  │  C-score (process): 96.0%  ✅ deductions=1 warnings=3
+  │    −0.04  Plan task_id 'nyc_july4_architecture_photography_culinary' doesn't match task 'claude
+  │    ⚠  Day 1: venue_id 'IhQ1cao' appears 3 times. If this is a split visit (e.g. morning + aftern
+  │    ⚠  Day 2: venue_id 'Db2Afr2' appears 2 times. If this is a split visit (e.g. morning + aftern
+  │    ⚠  Day 3: venue_id 'ZAA2ohh' appears 2 times. If this is a split visit (e.g. morning + aftern
+  │  F-score (feasibility): 29.0%  ❌
+  │    −0.05 [F2c] Day 1: 'Ess-a-Bagel' has wrong info but agent never retrieved tru
+  │    −0.02 [F4a] Day 1: 'Brooklyn Bridge Park' over-scheduled 300min (max 180, rec
+  │    −0.05 [F2c] Day 2: 'Westlight Bar' has wrong info but agent never retrieved t
+  │    ... +7 more
+  │  P-score (preferences): 100.0%
+  │    ✓ [pc_001] score=1.00  At least 60% of meals at local cuisine restaurants
+  │    ✓ [pc_002] score=1.00  At least 3 distinct cuisines across meals: 7/7 mat
+  │    ✓ [pc_003] score=1.00  At least 1 art museum visit: 2/2 matching (pass)
+  │    ✓ [pc_004] score=1.00  At least 2 waterfront venues: 4/9 matching (distin
+  │  B-score (bonus):       33.3%
+  │
+  ⏱  157.9s  [386,403in + 9,944out = 396,347 tokens]
+  📝 Transcript: claude_sonnet_4_5_new_york_type1_20260521_1779375385_20260619_111424.json.gz (9KB)
+  💾 Saved: 20260619_111424_claude_sonnet_4_5_new_york_type1_20260521_1779375385_claude-sonnet-4-5.json
+[2/6] Running claude_sonnet_4_5_new_york_type2_20260521_1779375498  (medium)  → claude-sonnet-4-5
+    [turn 0] blocks=['text', 'tool_use'] text_chars=211 stop=tool_use
+    [turn 0] blocks=['tool_use', 'tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 3] blocks=['tool_use', 'tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 6] blocks=['tool_use'] text_chars=0 stop=tool_use
+    [turn 6] blocks=['tool_use', 'tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 9] blocks=['tool_use'] text_chars=0 stop=tool_use
+    [turn 9] blocks=['tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 11] blocks=['tool_use'] text_chars=0 stop=tool_use
+    [turn 11] blocks=['tool_use'] text_chars=0 stop=tool_use
+    [turn 12] blocks=['text', 'tool_use'] text_chars=244 stop=tool_use
+    [turn 12] blocks=['text'] text_chars=2076 stop=end_turn
+
+  ┌─ claude_sonnet_4_5_new_york_type2_20260521_1779375498  (medium)  [204,339 tokens]
+  │  Tool calls: 12
+  │  Plan parsed: yes
+  │
+  │  C-score (process): 92.0%  ✅ deductions=2 warnings=0
+  │    −0.04  Plan task_id 'nyc_local_food_neighborhoods_jul5-6' doesn't match task 'claude_sonnet_
+  │    −0.04  Day 2: sparse — 1 activities, 270-min idle gap (expected ~2 in 4h budget)
+  │  F-score (feasibility): 55.0%  ⚠
+  │    −0.15 [F1b] Day 1: gap 'Astoria Greek Quarter Walk'→'Taverna Kyclades' is 0mi
+  │    −0.30 [F2e] type2 spread time-ceiling overrun: 271min engaged (ceiling 270min
+  │  P-score (preferences): 83.4%
+  │    ~ [pc_001] score=0.67  At least 3 meal activities at venues with popular-
+  │    ✓ [pc_002] score=1.00  No venues tagged as tourist traps: 0/3 matching (p
+  │    ~ [pc_003] score=0.67  Visit activities span at least 3 distinct district
+  │    ✓ [pc_004] score=1.00  Include at least 1 neighbourhood-category venue: 1
+  │  B-score (bonus):       100.0%
+  │
+  ⏱  86.2s  [200,345in + 3,994out = 204,339 tokens]
+  📝 Transcript: claude_sonnet_4_5_new_york_type2_20260521_1779375498_20260619_111424.json.gz (4KB)
+  💾 Saved: 20260619_111424_claude_sonnet_4_5_new_york_type2_20260521_1779375498_claude-sonnet-4-5.json
+[3/6] Running claude_sonnet_4_5_new_york_type3_20260521_1779375614  (medium)  → claude-sonnet-4-5
+    [turn 0] blocks=['text', 'tool_use'] text_chars=172 stop=tool_use
+    [turn 0] blocks=['tool_use', 'tool_use', 'tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 4] blocks=['tool_use', 'tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 7] blocks=['tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 9] blocks=['tool_use'] text_chars=0 stop=tool_use
+    [turn 9] blocks=['tool_use', 'tool_use', 'tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 13] blocks=['tool_use'] text_chars=0 stop=tool_use
+    [turn 13] blocks=['tool_use', 'tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 16] blocks=['tool_use', 'tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 19] blocks=['tool_use', 'tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 22] blocks=['tool_use'] text_chars=0 stop=tool_use
+    [turn 22] blocks=['tool_use', 'tool_use', 'tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 26] blocks=['tool_use', 'tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 29] blocks=['tool_use', 'tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 32] blocks=['tool_use'] text_chars=0 stop=tool_use
+    [turn 32] blocks=['tool_use', 'tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 35] blocks=['tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 37] blocks=['tool_use'] text_chars=0 stop=tool_use
+    [turn 37] blocks=['tool_use', 'tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 40] blocks=['tool_use'] text_chars=0 stop=tool_use
+    [turn 40] blocks=['text'] text_chars=9438 stop=end_turn
+
+  ┌─ claude_sonnet_4_5_new_york_type3_20260521_1779375614  (medium)  [445,983 tokens]
+  │  Tool calls: 40
+  │  Plan parsed: yes
+  │
+  │  C-score (process): 96.0%  ✅ deductions=1 warnings=1
+  │    −0.04  Plan task_id 'nyc_july4_weekend_2026' doesn't match task 'claude_sonnet_4_5_new_york_
+  │    ⚠  Day 1: venue_id 'IhQ1cao' appears 2 times. If this is a split visit (e.g. morning + aftern
+  │  F-score (feasibility):  1.0%  ❌
+  │    −0.05 [F2c] Day 1: 'Ess-a-Bagel' has wrong info but agent never retrieved tru
+  │    −0.02 [F4a] Day 1: 'Brooklyn Bridge Park' over-scheduled 380min (max 180, rec
+  │    −0.15 [F1b] Day 1: gap 'Brooklyn Bridge Park'→'Grimaldi's Pizzeria' is 0min b
+  │    ... +8 more
+  │  P-score (preferences): 93.3%
+  │    ✓ [pc_001] score=1.00  Include at least 5 high-traffic tourist venues to 
+  │    ✓ [pc_002] score=0.80  Include at least 5 low-traffic hidden venues for q
+  │    ✓ [pc_003] score=1.00  No more than one intense-pace activity per day to 
+  │  B-score (bonus):       33.3%
+  │
+  ⏱  157.9s  [436,438in + 9,545out = 445,983 tokens]
+  📝 Transcript: claude_sonnet_4_5_new_york_type3_20260521_1779375614_20260619_111424.json.gz (8KB)
+  💾 Saved: 20260619_111424_claude_sonnet_4_5_new_york_type3_20260521_1779375614_claude-sonnet-4-5.json
+[4/6] Running claude_sonnet_4_5_new_york_type4_20260521_1779375721  (medium)  → claude-sonnet-4-5
+    [turn 0] blocks=['text', 'tool_use'] text_chars=203 stop=tool_use
+    [turn 0] blocks=['tool_use', 'tool_use', 'tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 4] blocks=['tool_use', 'tool_use', 'tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 8] blocks=['tool_use', 'tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 11] blocks=['tool_use'] text_chars=0 stop=tool_use
+    [turn 11] blocks=['tool_use', 'tool_use', 'tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 15] blocks=['tool_use'] text_chars=0 stop=tool_use
+    [turn 15] blocks=['tool_use', 'tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 18] blocks=['tool_use', 'tool_use', 'tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 22] blocks=['tool_use', 'tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 25] blocks=['tool_use'] text_chars=0 stop=tool_use
+    [turn 25] blocks=['tool_use', 'tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 28] blocks=['tool_use', 'tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 31] blocks=['tool_use'] text_chars=0 stop=tool_use
+    [turn 31] blocks=['tool_use', 'tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 34] blocks=['tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 36] blocks=['tool_use'] text_chars=0 stop=tool_use
+    [turn 36] blocks=['text'] text_chars=10520 stop=end_turn
+
+  ┌─ claude_sonnet_4_5_new_york_type4_20260521_1779375721  (medium)  [444,351 tokens]
+  │  Tool calls: 36
+  │  Plan parsed: yes
+  │
+  │  C-score (process): 96.0%  ✅ deductions=1 warnings=1
+  │    −0.04  Plan task_id 'nyc_july4_budget_challenge' doesn't match task 'claude_sonnet_4_5_new_y
+  │    ⚠  Day 2: venue_id 'mMHXc7L' appears 2 times. If this is a split visit (e.g. morning + aftern
+  │  F-score (feasibility): 38.0%  ❌
+  │    −0.05 [F2c] Day 1: 'The Halal Guys' has wrong info but agent never retrieved 
+  │    −0.02 [F4a] Day 1: 'Brooklyn Bridge Park' over-scheduled 390min (max 180, rec
+  │    −0.15 [F1b] Day 1: gap 'Times Square'→'The Halal Guys' is 0min but walk takes
+  │    ... +4 more
+  │  P-score (preferences): 75.0%
+  │    ✗ [pc_001] score=0.00  Daily spending must not exceed $26: per-day sums [
+  │    ✓ [pc_002] score=1.00  All meals must be budget or mid price tier to keep
+  │    ✓ [pc_003] score=1.00  Plan must include at least 2 iconic NYC venues: 16
+  │    ✓ [pc_004] score=1.00  At least one meal must be at a popular-with-locals
+  │  B-score (bonus):       66.7%
+  │
+  ⏱  180.9s  [434,840in + 9,511out = 444,351 tokens]
+  📝 Transcript: claude_sonnet_4_5_new_york_type4_20260521_1779375721_20260619_111424.json.gz (10KB)
+  💾 Saved: 20260619_111424_claude_sonnet_4_5_new_york_type4_20260521_1779375721_claude-sonnet-4-5.json
+[5/6] Running claude_sonnet_4_5_new_york_type5_20260521_1779375846  (hard)  → claude-sonnet-4-5
+    [turn 0] blocks=['text', 'tool_use'] text_chars=205 stop=tool_use
+    [turn 0] blocks=['tool_use', 'tool_use', 'tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 4] blocks=['tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 6] blocks=['tool_use'] text_chars=0 stop=tool_use
+    [turn 6] blocks=['tool_use', 'tool_use', 'tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 10] blocks=['tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 12] blocks=['tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 14] blocks=['tool_use'] text_chars=0 stop=tool_use
+    [turn 14] blocks=['tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 16] blocks=['tool_use', 'tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 19] blocks=['tool_use', 'tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 22] blocks=['tool_use'] text_chars=0 stop=tool_use
+    [turn 22] blocks=['tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 24] blocks=['tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 26] blocks=['tool_use'] text_chars=0 stop=tool_use
+    [turn 26] blocks=['tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 28] blocks=['tool_use'] text_chars=0 stop=tool_use
+    [turn 28] blocks=['text'] text_chars=6930 stop=end_turn
+
+  ┌─ claude_sonnet_4_5_new_york_type5_20260521_1779375846  (hard)  [378,402 tokens]
+  │  Tool calls: 28
+  │  Plan parsed: yes
+  │
+  │  C-score (process): 96.0%  ✅ deductions=1 warnings=0
+  │    −0.04  Plan task_id 'nyc_10th_anniversary_upscale_celebration' doesn't match task 'claude_so
+  │  F-score (feasibility):  0.0%  ❌
+  │    −0.15 [F2a] Day 1: 'Dead Rabbit' outside hours (windows: [('13:00', '22:00')]
+  │    −0.15 [F2a] Day 1: 'Bemelmans Bar' outside hours (windows: [('17:30', '23:30'
+  │    −0.05 [F2c] Day 1: 'Bemelmans Bar' has wrong info but agent never retrieved t
+  │    ... +5 more
+  │  P-score (preferences): 75.0%
+  │    ✗ [pc_001] score=0.00  All venues must be upscale or luxury price tier: 8
+  │    ✓ [pc_002] score=1.00  Plan must include at least 2 museum visits: 3/3 ma
+  │    ✓ [pc_003] score=1.00  Plan must include at least 1 romantic venue: 1/10 
+  │    ✓ [pc_004] score=1.00  Plan must include at least 1 venue with views: 5/1
+  │  B-score (bonus):       100.0%
+  │
+  ⏱  150.7s  [371,342in + 7,060out = 378,402 tokens]
+  📝 Transcript: claude_sonnet_4_5_new_york_type5_20260521_1779375846_20260619_111424.json.gz (6KB)
+  💾 Saved: 20260619_111424_claude_sonnet_4_5_new_york_type5_20260521_1779375846_claude-sonnet-4-5.json
+[6/6] Running deepseek_reasoner_new_york_type6_20260521_1779375871  (medium)  → claude-sonnet-4-5
+    [turn 0] blocks=['text', 'tool_use'] text_chars=267 stop=tool_use
+    [turn 0] blocks=['tool_use', 'tool_use', 'tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 4] blocks=['tool_use', 'tool_use', 'tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 8] blocks=['tool_use'] text_chars=0 stop=tool_use
+    [turn 8] blocks=['tool_use', 'tool_use', 'tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 12] blocks=['tool_use', 'tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 15] blocks=['tool_use'] text_chars=0 stop=tool_use
+    [turn 15] blocks=['tool_use', 'tool_use', 'tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 19] blocks=['tool_use', 'tool_use', 'tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 23] blocks=['tool_use', 'tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 26] blocks=['tool_use'] text_chars=0 stop=tool_use
+    [turn 26] blocks=['tool_use', 'tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 29] blocks=['tool_use', 'tool_use', 'tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 33] blocks=['tool_use'] text_chars=0 stop=tool_use
+    [turn 33] blocks=['tool_use', 'tool_use', 'tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 37] blocks=['tool_use'] text_chars=0 stop=tool_use
+    [turn 37] blocks=['tool_use', 'tool_use', 'tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 41] blocks=['tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 43] blocks=['tool_use'] text_chars=0 stop=tool_use
+    [turn 43] blocks=['tool_use', 'tool_use', 'tool_use'] text_chars=0 stop=tool_use
+    [turn 46] blocks=['text'] text_chars=11092 stop=end_turn
+
+  ┌─ deepseek_reasoner_new_york_type6_20260521_1779375871  (medium)  [501,727 tokens]
+  │  Tool calls: 46
+  │  Plan parsed: yes
+  │
+  │  C-score (process): 96.0%  ✅ deductions=1 warnings=1
+  │    −0.04  Plan task_id 'nyc_july4_family_2026' doesn't match task 'deepseek_reasoner_new_york_t
+  │    ⚠  Day 3: venue_id 'Db2Afr2' appears 2 times. If this is a split visit (e.g. morning + aftern
+  │  F-score (feasibility): 36.0%  ❌
+  │    −0.05 [F2c] Day 1: 'Ess-a-Bagel' has wrong info but agent never retrieved tru
+  │    −0.05 [F2c] Day 1: 'The Halal Guys' has wrong info but agent never retrieved 
+  │    −0.05 [F2c] Day 1: 'Veselka' has wrong info but agent never retrieved truth-c
+  │    ... +5 more
+  │  P-score (preferences): 75.0%
+  │    ✓ [pc_001] score=1.00  All venues must be family-friendly, suitable for c
+  │    ✓ [pc_002] score=1.00  Must visit the Empire State Building: 1/1 matching
+  │    ✓ [pc_003] score=1.00  Must visit the Statue of Liberty: 1/1 matching (pa
+  │    ✗ [pc_004] score=0.00  At most 3 activities per day to keep a relaxed pac
+  │  B-score (bonus):       25.0%
+  │
+  ⏱  183.3s  [491,088in + 10,639out = 501,727 tokens]
+  📝 Transcript: deepseek_reasoner_new_york_type6_20260521_1779375871_20260619_111424.json.gz (9KB)
+  💾 Saved: 20260619_111424_deepseek_reasoner_new_york_type6_20260521_1779375871_claude-sonnet-4-5.json
+
+════════════════════════════════════════════════════════════
+RUN SUMMARY — claude-sonnet-4-5
+════════════════════════════════════════════════════════════
+Task                      Diff        C      F      P   Tokens
+────────────────────────────────────────────────────────────
+  claude_sonnet_4_5_new_york_type1_20260521_1779375385 medium    96%    29%   100%  396,347
+  claude_sonnet_4_5_new_york_type2_20260521_1779375498 medium    92%    55%    83%  204,339
+  claude_sonnet_4_5_new_york_type3_20260521_1779375614 medium    96%     1%    93%  445,983
+  claude_sonnet_4_5_new_york_type4_20260521_1779375721 medium    96%    38%    75%  444,351
+  claude_sonnet_4_5_new_york_type5_20260521_1779375846 hard      96%     0%    75%  378,402
+  deepseek_reasoner_new_york_type6_20260521_1779375871 medium    96%    36%    75%  501,727
+────────────────────────────────────────────────────────────
+  TOTAL                                    2,371,149 tokens
+  Wall time: 922.3s
+════════════════════════════════════════════════════════════
+
+💾 Summary saved: 20260619_111424_summary_claude-sonnet-4-5.json

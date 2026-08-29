@@ -26,6 +26,17 @@ Format per entry: title + authors / arxiv ID or URL / date consulted / one-line 
 
 ---
 
+## Self-evolve / long-horizon
+
+➡️ **Moved into `docs/SELF_EVOLVE_DESIGN.md` §12** (consolidated 2026-06-19 so the design
++ its sources read as one doc). The full annotated list (19 self-evolve papers + the
+long-horizon set + ACE / Claude memory tool / "Whose Facts Win?" / OWASP poisoning)
+lives there. Local PDFs: `~/Documents/Books and Papers/Papers/self-evolve/literature.md`
+and `~/Documents/Books and Papers/Papers/long-horizon-agents-reading-map.md`.
+
+Upstream repo: `Vic1025/Evolve-on-exp-agent-framework` (private) — adapted into
+`docs/SELF_EVOLVE_DESIGN.md` (deltas in §8).
+
 ## Repos
 
 *(entries added as consulted)*
